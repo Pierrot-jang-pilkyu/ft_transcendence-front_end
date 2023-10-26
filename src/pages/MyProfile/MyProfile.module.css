@@ -1,0 +1,55 @@
+
+.edit {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.photo {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+    border-radius: 120px;
+    border: 1px solid #FFF;
+    position: relative;
+    margin: 0 auto;
+    top: 50px;
+
+}
+
+.profilebackground {
+    width: 340px;
+    height: 510px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.50);
+
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    right: 59.90%;
+    left: 22.40%;
+    top: 17.50%;
+    bottom: 35.28%;
+    gap: 16px;
+
+}
+
+.profiletitle {
+    color: #FFF;
+
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.background {
+    width: 100vw;
+    height: 100vh;
+    background: #285ADA;
+}

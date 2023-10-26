@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Mode from './pages/Mode/Mode';
+import Myprofile from './pages/MyProfile/MyPofile';
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
 		<BrowserRouter>
 			<Routes>
 				<Route index element={<Home />} />
+				<Route path='/MyProfile' element={<Myprofile />} />
 				<Route path='/Mode' element={<Mode />} />
 			</Routes>
 		</BrowserRouter>
