@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home/Home';
+import Lobby from './pages/Lobby/Lobby';
 import Mode from './pages/Mode/Mode';
 
 
@@ -15,6 +16,7 @@ function App() {
 		<BrowserRouter>
 			<Routes>
 				<Route index element={<Home />} />
+				<Route path='/Lobby' element={<Lobby />} />
 				<Route path='/Mode' element={<Mode />} />
 			</Routes>
 		</BrowserRouter>
