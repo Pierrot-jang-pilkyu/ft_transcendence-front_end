@@ -1,0 +1,22 @@
+.button {
+	position: relative;
+	color: #FFF;
+	text-align: center;
+	font-family: 'Anton', sans-serif;
+	font-weight: 700;
+	font-size: 28px;
+	font-style: normal;
+	line-height: normal;
+	width: 320px;
+	height: 64px;
+	flex-shrink: 0;
+	border-radius: 8px;
+  	border: 3px solid #FFF;
+  	background: #285ADA;
+}
+
+.button:hover {
+	background-color: #FFF;
+	color: #102D78;
+	transition: 0.3s;
+}
