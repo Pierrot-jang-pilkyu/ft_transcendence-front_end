@@ -1,7 +1,7 @@
 import styles from "./Mode.module.css";
 import Button from "./Button.tsx";
 import Header from "../../components/Header.tsx";
-import Ball from "./img.png";
+import Ball from "../../assets/img.png";
 
 function Mode()
 {
