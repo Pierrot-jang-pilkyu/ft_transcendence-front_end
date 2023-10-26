@@ -1,9 +1,17 @@
+import { useNavigate } from 'react-router-dom';
 import styles from "./Button_8px.module.css"
 import React from 'react';
 
 function Button(props) {
+
+	const navigate = useNavigate();
+
+	const handlerButton = () => {
+		navigate('/Mode')
+	};
+
 	return (
-		<button className={styles.button}>{props.name}</button>
+		<button className={styles.button} onClick={handlerButton}>{props.name}</button>
 	);
 }
 
