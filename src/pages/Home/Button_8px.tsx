@@ -7,7 +7,7 @@ function Button(props:any) {
 	const navigate = useNavigate();
 
 	const handlerButton = () => {
-		navigate('/Mode')
+		navigate('/MyProfile')
 	};
 
 	return (
