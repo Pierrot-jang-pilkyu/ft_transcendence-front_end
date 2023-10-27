@@ -67,7 +67,8 @@
 
 .profile_win {
     position: absolute;
-    color: #D8BFD8;                         /* 스코틀랜드 왕가 훈장색 (엉겅퀴) */
+    /* color: #D8BFD8;                         스코틀랜드 왕가 훈장색 (엉겅퀴) */
+    color: #FFF;
     font-family: 'Noto Sans', sans-serif;
     font-size: 2.22vh;
     font-style: normal;
@@ -78,7 +79,8 @@
 
 .profile_lose {
     position: absolute;
-    color: #990000;                         /* 핏빛 */
+    /* color: #990000;                         핏빛 */
+    color: #FFF;
     font-family: 'Noto Sans', sans-serif;
     font-size: 2.22vh;
     font-style: normal;
