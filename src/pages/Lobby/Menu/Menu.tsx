@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import styles from "./Menu.module.css";
 import GameStart from "../../../assets/GameStart.svg";
 import ChattingRoom from "../../../assets/Chatting.svg";
@@ -6,9 +7,16 @@ import FriendsArrow from "../../../assets/FriendsArrow.svg";
 
 function Menu()
 {
+	const navigate = useNavigate();
+
+	const handlerButton = () => {
+		// navigate('/Mode')
+		navigate('/Game')
+	};
+
 	return (
 	<div className={`${styles.buttons}`}>
-		<button className={`${styles.button} ${styles.game}`}>
+		<button className={`${styles.button} ${styles.game}`} onClick={handlerButton}>
 			<img src={GameStart}></img>
 			<div className={`${styles.game_font}`}>Start Game!</div>
 		</button>
