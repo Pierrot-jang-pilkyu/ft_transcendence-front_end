@@ -145,8 +145,10 @@
 
 .profile_crown {
 	position: absolute;
-	left: 87.3%;
+	left: 86.5%;
 	top: 23.1%;
+	width: 5.66%;
+	height: 25%;
 }
 
 .profile_rank {
