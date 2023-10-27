@@ -7,10 +7,8 @@ function Myprofile(props:any) {
     return (
         <div className={`${styles.background}`}>
             <Header />
-            {/* <div className={`${styles.Allcontainer}`}> */}
-                <ProfileCard />
-                <MatchHistory />
-            {/* </div> */}
+            <ProfileCard />
+	        <MatchHistory />
         </div>
     );
 }

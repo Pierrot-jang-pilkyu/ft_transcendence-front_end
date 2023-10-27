@@ -5,7 +5,6 @@ function MatchHistory() {
         <div className={`${styles.Historycontainer}`}>
             <div className={`${styles.Historytitle}`}>Match History</div>
             <div className={`${styles.Historybackground}`}>
-                <text>test</text>
             </div>
         </div>
     );
