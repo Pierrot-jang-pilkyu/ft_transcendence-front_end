@@ -111,3 +111,9 @@
 	/* aspect-ratio: 1920 / 1080; */
 	background: #285ADA;
 }
+
+.menu_container {
+	position: absolute;
+    left: 22%;
+	top: 12%;
+}
