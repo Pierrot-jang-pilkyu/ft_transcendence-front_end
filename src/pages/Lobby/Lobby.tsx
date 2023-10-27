@@ -1,6 +1,7 @@
 import styles from "./Lobby.module.css";
 import Profile from "./Profile";
 import Header from "../../components/Header";
+import Menu from "./Menu/Menu";
 // import HomeBall from "../../assets/HomeBall.png";
 
 function Home()
@@ -9,6 +10,9 @@ function Home()
 		<div className={`${styles.background}`}>
 			{/* <img className={`${styles.img}`} src={HomeBall}/> */}
 			<Header />
+			<div className={`${styles.menu_container}`}>
+				<Menu />
+			</div>
 			<div className={`${styles.profile_container}`}>
 				{/* <div className={`${styles.title}`}>Deer Feer</div> */}
                 <div className={`${styles.profile_img}`}></div>
