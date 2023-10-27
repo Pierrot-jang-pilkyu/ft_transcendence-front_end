@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Mode from './pages/Mode/Mode';
-import Myprofile from './pages/MyProfile/MyPofile';
+import Myprofile from './pages/MyProfile/Myprofile';
 
 
 function App() {
