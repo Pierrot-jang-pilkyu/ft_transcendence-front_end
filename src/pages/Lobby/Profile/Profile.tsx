@@ -14,7 +14,7 @@ function Profile(props:any) {
 
 	return (
 		<div className={`${styles.profile_container}`}>
-            <div className={`${styles.profile_img}`}></div>
+            {/* <div className={`${styles.profile_img}`}></div> */}
 			<img className={`${styles.profile_img}`} src={ProfileImg} />
             <div className={`${styles.profile_second}`}>
                	<div className={`${styles.profile_name}`}>{props.name}</div>
