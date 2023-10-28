@@ -1,7 +1,7 @@
 import Header from "../../components/Header";
 import ProfileCard from "./profileCard/PofileCard";
 import MatchHistory from "./Match History/MatchHistory";
-import styles from "./Myprofile.module.css"
+import styles from "./profile.module.css"
 
 function Myprofile(props:any) {
     return (
