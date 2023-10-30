@@ -14,6 +14,11 @@ function Menu()
 		navigate('/Game')
 	};
 
+	const handlerButtonFriends = () => {
+		// navigate('/Mode')
+		navigate('/Friends')
+	};
+
 	return (
 	<div className={`${styles.buttons}`}>
 		<button className={`${styles.button} ${styles.game}`} onClick={handlerButton}>
@@ -22,13 +27,27 @@ function Menu()
 		</button>
 		<button className={`${styles.button} ${styles.chat}`}>
 				<img src={ChattingRoom}/>
-				<div className={`${styles.chat_font}`}>Chatting Room</div>
+				<div className={`${styles.chat_font}`} onClick={handlerButtonFriends}>Chatting Room</div>
 		</button>
-		<button className={`${styles.button} ${styles.friend}`}>
-			<img src={SearchFriends}></img>
-			<div className={`${styles.friend_font}`}>Search Friends</div>
-			<img src={FriendsArrow}></img>
-		</button>
+		<div className="drawer drawer-end">
+            	<input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+				<div className="drawer-content">
+					{/* Page content here */}
+					<label htmlFor="my-drawer-4" className={`${styles.button} ${styles.friend} ${styles.friend_font}` }>
+						<img src={SearchFriends}></img>
+						<div className={`${styles.friend_font}`}>Search Friends</div>
+						<img src={FriendsArrow}></img>
+					</label>
+				</div> 
+				<div className="drawer-side">
+					<label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
+					<ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+						{/* Sidebar content here */}
+						<li><a>Sidebar Item 1</a></li>
+						<li><a>Sidebar Item 2</a></li>
+					</ul>
+				</div>
+			</div>
 	</div>
 	);
 }

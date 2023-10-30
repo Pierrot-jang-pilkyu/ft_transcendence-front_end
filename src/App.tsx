@@ -4,6 +4,8 @@ import Lobby from './pages/Lobby/Lobby';
 import Mode from './pages/Mode/Mode';
 import Game from './pages/Game/Game';
 
+import Friends from "./pages/Lobby/Friends/Friends";
+
 
 function App() {
   return (
@@ -20,6 +22,7 @@ function App() {
 				<Route path='/Lobby' element={<Lobby />} />
 				<Route path='/Mode' element={<Mode />} />
 				<Route path='/Game' element={<Game />} />
+				<Route path='/Friends' element={<Friends />} />
 			</Routes>
 		</BrowserRouter>
     </div>

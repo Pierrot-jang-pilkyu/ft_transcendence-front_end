@@ -1,0 +1,50 @@
+.container {
+    position: fixed;
+    width: 30vw;
+    height: 10vh;
+    top: 50%;
+    left: 50%;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.input_container {
+    display: flex;
+    flex-direction: column;
+    bottom: 0%;
+}
+
+.button {
+	flex-shrink: 0;
+	border-radius: 12px;
+	background: #FFF;
+	box-shadow: 0px 0px 22px 4px rgba(32, 16, 16, 0.20);
+}
+
+.button:hover {
+	--tw-border-opacity: 1;
+    border-color: hsl(var(--b3) / var(--tw-border-opacity));
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--b3) / var(--tw-bg-opacity));
+}
+
+.friend {
+	grid-area: friend;
+	width: 27vw;
+	height: 9vh;
+	padding-left: 2vw;
+	position: relative;
+	gap: 3vw;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.friend_font {
+	color: #285ADA;
+	text-align: center;
+    font-family: 'Noto Sans', sans-serif;
+	font-size: 32px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+}
