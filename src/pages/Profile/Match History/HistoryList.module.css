@@ -1,0 +1,61 @@
+.listcontainer {
+	position: relative;
+	display: flex;
+	justify-content: flex-start;
+	flex-shrink: 0;
+	height: 3.69%;
+	width: 100%;
+	left: 4.93%;
+}
+
+.listwin {
+	margin-right: 6.09%;
+	color: #285ADA;
+	font-size: 1.8519vh;
+	font-style: normal;
+	font-family: 'Noto Sans', sans-serif;
+	line-height: normal;
+	font-weight: 700;
+	letter-spacing: 0.2px;
+}
+
+.listlose {
+	margin-right: 4.93%;
+	color: #FF9416;
+	font-family: 'Noto Sans', sans-serif;
+	font-size: 1.8519vh;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+	letter-spacing: 0.2px;
+}
+
+.listtime {
+	margin-right: 29.77%;
+	color: #353535;
+	font-family: 'Noto Sans', sans-serif;
+	font-size: 1.5741vh;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+}
+
+.listmatchtext {
+	margin-right: 1.97%;
+	color: #7B7B7B;
+	font-family: 'Noto Sans', sans-serif;
+	font-size: 1.5741vh;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+}
+
+.listname {
+	margin-right: 0;
+	color: #353535;
+	font-family: 'Noto Sans', sans-serif;
+	font-size: 1.5741vh;
+	font-style: normal;
+	font-weight: 700;
+	line-height: normal;
+}
