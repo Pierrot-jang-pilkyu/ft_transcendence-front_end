@@ -3,7 +3,7 @@ import styles from "./Canvas.module.css"
 
 function Canvas() {
 	const canvasRef = useRef(null);
-		
+		// 
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		canvas.width = 1060;
@@ -45,7 +45,7 @@ function Canvas() {
 			x : canvas.width/2,
 			y : canvas.height/2,
 			radius : 10,
-			speed : 20,
+			speed : 10,
 			vX : 10,
 			vY : 10,
 			color : "white"
@@ -55,6 +55,12 @@ function Canvas() {
 			return ball.y + ball.radius > canvas.height
 				|| ball.y - ball.radius < 0
 		}
+
+		function isOut() {
+			return ball.x < 0
+				|| ball.x > canvas.width
+		}
+
 		function isHitBy(player) {
 			return ball.right > player.left
 				&& ball.left < player.right
@@ -73,7 +79,7 @@ function Canvas() {
 			const player = (ball.x < canvas.width/2) ? user : com;
 			if (isHitByWall())
 				ball.vY *= -1;
-			if (isHitBy(player))
+			else if (isHitBy(player))
 			{
 				const fPoint = ball.y - (user.y + user.height/2); 
 				const angle = (fPoint / user.height/2) * Math.PI / 4;
@@ -82,8 +88,14 @@ function Canvas() {
 				if (ball.x > canvas.width/2)
 					ball.vX *= -1;
 				ball.vY = ball.speed * Math.sin(angle);
-				ball.speed += 0.2;
+				ball.speed += 0.01;
 			}
+			else if (isOut())
+			{
+				ball.x = canvas.width/2;
+				ball.y = canvas.height/2;
+			}
+
 		}
 
 		function updatePlayer(p) {
@@ -102,7 +114,7 @@ function Canvas() {
 
 		function moveUser(event) {
 			const rect = canvas.getBoundingClientRect();
-			user.y = event.clientY - rect.top;
+			user.y = event.clientY - rect.top - 70;
 		}
 
 		function moveCom() {
@@ -111,7 +123,7 @@ function Canvas() {
 		}
 
 		function render() {
-			drawRect(0, 0, canvas.width, canvas.height, "#102D78");
+			context.clearRect(0, 0, canvas.width, canvas.height)
 			drawRect(0, canvas.height/2 - 1, 1060, 2, "#FFFFFF");
 			drawRect(user.x, user.y, user.width, user.height, user.color);
 			drawRect(com.x, com.y, com.width, com.height, com.color);
@@ -121,9 +133,10 @@ function Canvas() {
 		function game() {
 			update();
 			render();
+			requestAnimationFrame(game);
 		}
 
-		setInterval(game, 40);
+		requestAnimationFrame(game);
 		canvas.addEventListener("mousemove", moveUser);
 	}, []);
 	return (
