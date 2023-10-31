@@ -1,0 +1,14 @@
+.Allcontainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: absolute;
+    top: 17.50%;
+    left: 22.40%;
+}
+
+.background {
+    width: 100vw;
+    height: 100vh;
+    background: #285ADA;
+}
