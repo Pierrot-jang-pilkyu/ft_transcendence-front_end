@@ -13,6 +13,10 @@
 	background: none;
 }
 
+.button:focus {
+	outline: none;
+}
+
 .home {
 	position: absolute;
 	left: 22%;
