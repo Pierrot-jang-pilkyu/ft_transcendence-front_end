@@ -9,7 +9,7 @@ function Profile(props:any) {
 	const navigate = useNavigate();
 
 	const handlerButton = () => {
-		navigate('/Lobby')
+		navigate('/MyProfile')
 	};
 
 	return (
