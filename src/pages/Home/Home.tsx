@@ -1,7 +1,7 @@
 import styles from "./Home.module.css";
 import Button from "./Button_8px.js";
 import Header from "./Header.js";
-import HomeBall from "./HomeBall.png";
+import HomeBall from "../../assets/HomeBall.png";
 
 function Home()
 {
@@ -10,7 +10,7 @@ function Home()
 			<img className={`${styles.img}`} src={HomeBall}/>
 			<Header/>
 			<div className={`${styles.main}`}>
-				<div className={`${styles.title}`}>D or Feer  P__ong</div>
+				<div className={`${styles.title}`}>Deer Feer</div>
 				<Button name="login"/>
 			</div>
 		</div>

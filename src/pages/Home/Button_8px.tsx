@@ -7,7 +7,8 @@ function Button(props:any) {
 	const navigate = useNavigate();
 
 	const handlerButton = () => {
-		navigate('/Friendprofile')
+		// navigate('/Mode')
+		navigate('/Lobby')
 	};
 
 	return (
