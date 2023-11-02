@@ -79,17 +79,45 @@
 }
 
 
-
+.fl_background {
+    position: fixed;
+    top: 0%;
+    width: 20rem;
+    height: 100vh;
+    height: 100dvh;
+    background-color: rgb(229 231 235);
+}
 
 .input_container {
     display: flex;
     flex-direction: row;
 	justify-content: space-between;
 	position: fixed;
-    bottom: 3vh;
+    left: 1vw;
+    bottom: 2vh;
+    height: 3rem;
+
 }
 
+.add_container {
+    display: inline-flex;
+    flex-shrink: 0;
+    position: relative;
+    left: 0.7vw;
+	bottom: 0.2vh;
+    width: 3rem;
+    height: 3rem;
+}
 
+.add_container:active {
+    display: inline-flex;
+    flex-shrink: 0;
+    position: relative;
+    left: 0.8vw;
+	bottom: 0.3vh;
+    width: 2.7rem;
+    height: 2.7rem;
+}
 
 /* -------------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------------- */
@@ -117,24 +145,24 @@
     border-color: transparent;
     border-color: hsl(var(--b2) / var(--tw-border-opacity));
     text-align: center;
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    /* transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    transition-duration: 200ms;
+    transition-duration: 200ms; */
     border-radius: var(--rounded-btn, 0.5rem/* 8px */);
+    width: 3rem;
     height: 3rem/* 48px */;
     padding-left: 1rem/* 16px */;
     padding-right: 1rem/* 16px */;
     min-height: 3rem/* 48px */;
-    font-size: 0.875rem/* 14px */;
+    /* font-size: 0.875rem14px; */
     line-height: 1em;
     gap: 0.5rem/* 8px */;
-    font-weight: 600;
-    text-decoration-line: none;
-    text-decoration-line: none;
+    /* font-weight: 600; */
+    /* text-decoration-line: none; */
     border-width: var(--border-btn, 1px);
     animation: button-pop var(--animation-btn, 0.25s) ease-out;
-    text-transform: var(--btn-text-case, uppercase);
+    /* text-transform: var(--btn-text-case, uppercase); */
     --tw-border-opacity: 1;
     --tw-bg-opacity: 1;
     background-color: hsl(var(--b2) / var(--tw-bg-opacity));
@@ -143,7 +171,7 @@
     outline-color: hsl(var(--bc) / 1);
 
 	position: relative;
-	right: 0.2vw;
+	left: 0.2vw;
 	bottom: 0.1vh;
 }
 .btn-disabled,
@@ -413,7 +441,7 @@
     background-color: hsl(var(--b1) / var(--tw-bg-opacity));
     border-radius: var(--rounded-btn, 0.5rem/* 8px */);
 	position: relative;
-	right: 0.5vw;
+	right: 0vw;
 }
 .input-group > .input {
     isolation: isolate;
@@ -522,4 +550,124 @@
 
 .input-bordered {
     --tw-border-opacity: 0.2;
+}
+
+
+
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* ------------------------------- side ------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+
+
+
+.friend_list {
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    height: 92vh;
+    height: 92dvh;
+    scrollbar-width: none;
+    background: #FFF;
+}
+
+.friend_list::-webkit-scrollbar {
+    display: none;
+}
+
+
+.drawer-side {
+    pointer-events: none;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    grid-column-start: 1;
+    grid-row-start: 1;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-template-rows: repeat(1, minmax(0, 1fr));
+    align-items: flex-start;
+    justify-items: start;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    height: 100vh;
+    height: 100dvh;
+    scrollbar-width: none;
+}
+.drawer-side::-webkit-scrollbar {
+    display: none;
+}
+.drawer-side > .drawer-overlay {
+    position: sticky;
+    top: 0px;
+    place-self: stretch;
+    cursor: pointer;
+    background-color: transparent;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    transition-duration: 200ms;
+}
+.drawer-side > * {
+    grid-column-start: 1;
+    grid-row-start: 1;
+}
+.drawer-side > *:not(.drawer-overlay) {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    transition-duration: 300ms;
+    transform: translateX(-100%);
+}
+[dir="rtl"] .drawer-side > *:not(.drawer-overlay) {
+    transform: translateX(-100%);
+}
+.drawer-toggle:checked ~ .drawer-side {
+    pointer-events: auto;
+    visibility: visible;
+}
+.drawer-toggle:checked ~ .drawer-side > *:not(.drawer-overlay) {
+    transform: translateX(0%);
+}
+.drawer-end .drawer-toggle ~ .drawer-side {
+    grid-column-start: 2;
+    justify-items: end;
+}
+.drawer-end .drawer-toggle ~ .drawer-side > *:not(.drawer-overlay) {
+    transform: translateX(100%);
+}
+.drawer-end .drawer-toggle:checked ~ .drawer-side > *:not(.drawer-overlay) {
+    transform: translateX(0%);
+}
+.drawer-toggle:checked ~ .drawer-side > .drawer-overlay {
+    background-color: hsl(0 0% 0%/0.4);
+}
+.drawer-open > .drawer-toggle ~ .drawer-side {
+    pointer-events: auto;
+    visibility: visible;
+    position: sticky;
+    display: block;
+    width: auto;
+    overscroll-behavior: auto;
+}
+.drawer-open > .drawer-toggle ~ .drawer-side > *:not(.drawer-overlay) {
+    transform: translateX(0%);
+}
+[dir="rtl"] .drawer-open > .drawer-toggle ~ .drawer-side > *:not(.drawer-overlay) {
+    transform: translateX(0%);
+}
+.drawer-open > .drawer-toggle:checked ~ .drawer-side {
+    pointer-events: auto;
+    visibility: visible;
+}
+.drawer-open > .drawer-toggle ~ .drawer-side > .drawer-overlay {
+    cursor: default;
+    background-color: transparent;
 }

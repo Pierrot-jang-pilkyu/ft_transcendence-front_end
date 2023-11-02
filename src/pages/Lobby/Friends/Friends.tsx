@@ -24,10 +24,11 @@ function Friends()
 				<div className="input-group">
     				<input type="text" placeholder="Search…" className="input input-bordered" />
     				<button className={styles.btn}>
-						<svg width="100%" height="36" viewBox="0 0 36 36" fill="" xmlns="http://www.w3.org/2000/svg">
+						{/* <svg width="100%" height="36" viewBox="0 0 36 36" fill="" xmlns="http://www.w3.org/2000/svg">
 							<rect width="100%" height="36" rx="4" fill="#285ADA"/>
 							<path d="M12 18H18M18 18H24M18 18V12M18 18V24" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-						</svg>
+						</svg> */}
+						{/* <img src="../../../assets/img_Profile.png" /> */}
 					</button>
   				</div>
 			</div>
@@ -86,8 +87,8 @@ function Friends()
 			<a> c</a>
 			<a>d </a>
 			<div className="avatar online">
-  				<div className="w-24 rounded-full">
-    				<img src={ProfileImg} />
+  				<div className={styles.test_container}>
+					<img id="mainImg" src="src/assets/img_Profile.png" alt="loading" />
   				</div>
 			</div>
 			<div className="avatar offline">
