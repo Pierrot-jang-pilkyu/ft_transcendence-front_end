@@ -5,7 +5,7 @@ import Mode from './pages/Mode/Mode';
 import Myprofile from './pages/Profile/Myprofile';
 import Friendprofile from './pages/Profile/FriendProfile';
 import Game from './pages/Game/Game';
-
+import Tmp from './hooks/Axios/useAxios'
 
 function App() {
   return (
@@ -25,6 +25,7 @@ function App() {
 				<Route path='/Mode' element={<Mode />} />
 				<Route path='/Game' element={<Game />} />
 			</Routes>
+			<Tmp/>
 		</BrowserRouter>
     </div>
   );
