@@ -6,9 +6,7 @@ function Avatar(props:any) {
     return (
         <button className={`${styles.friend_container}`}>
             <div className="avatar online">
-                <div className={`${styles.h_5} ${styles.rounded_full}`}>
-                    <img src={ProfileImg} />
-                </div>
+                <img className={`${styles.h_5} ${styles.rounded_full}`} src={props.img} />
             </div>
             <div className={styles.friend_font}>{props.name}</div>
         </button>

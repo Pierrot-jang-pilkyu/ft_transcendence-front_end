@@ -1,0 +1,42 @@
+<div className="drawer-side">
+				<label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
+				<div className={styles.friend_list} >
+						<ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+							{/* Sidebar content here */}
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+							<li><Avatar name="James Dinn" /></li>
+						</ul>
+				</div>
+				<div className={styles.input_container}>
+					<div className="input-group">
+						<input type="text" placeholder="Search…" className={`${styles.input}`} />
+						<img className={styles.btn} src={FriendsAdd} ></img>
+					</div>
+				</div>
+			</div>
