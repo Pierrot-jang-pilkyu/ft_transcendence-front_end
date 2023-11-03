@@ -9,6 +9,7 @@ import Menu from "./Menu/Menu";
 interface FriendProps {
 	name: string;
 	img: string;
+	state: string;
 }
 
 function Lobby()
@@ -16,7 +17,7 @@ function Lobby()
 	// const Objects = [ { name: "pjang", img: "src/assets/img_Profile.png" },  { name: "sehjang", img: "src/assets/react.svg" }];
 	// const Objects:any = [ { name: "pjang", img: "src/assets/img_Profile.png" },  { name: "sehjang", img: "src/assets/react.svg" }];
 	// const Objects:any[] = [ { name: "pjang", img: "src/assets/img_Profile.png" },  { name: "sehjang", img: "src/assets/react.svg" }];
-	const Objects:FriendProps[] = [ { name: "pjang", img: "src/assets/img_Profile.png" },  { name: "sehjang", img: "src/assets/react.svg" }];
+	const Objects:FriendProps[] = [ { name: "pjang", img: "https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg", state: "online" },  { name: "sehjang", img: "src/assets/react.svg", state: "playing" }];
 	return (
 		<div className={`${styles.background}`}>
 			{/* <img className={`${styles.img}`} src={HomeBall}/> */}
