@@ -22,13 +22,13 @@ function Menu(props:any)
 	const changeAvatar = () => {
 		for (let i = 0; i < props.friendObjects.length; ++i)
 		{
-			avatars.push(<li><Avatar name={props.friendObjects[i].name} img={props.friendObjects[i].img} /></li>);
+			avatars.push(<li><Avatar name={props.friendObjects[i].name} img={props.friendObjects[i].img} state={props.friendObjects[i].state} /></li>);
 			// console.log('name: ' + props.friendObjects[i].name + ', img_src: ' + props.friendObjects[i].img);
 		}
 	};
 		
-	const addFriendList = (nickName:any, img:any) => {
-		avatars.push(<li><Avatar name={nickName} img={img} /></li>);
+	const addFriendList = (nickName:any, img:any, state:any) => {
+		avatars.push(<li><Avatar name={nickName} img={img} state={state}/></li>);
 	};
 
 	const onChange = (e:any) => {
