@@ -3,6 +3,7 @@ import Button from "./Button_8px.js";
 import Header from "./Header.js";
 import HomeBall from "../../assets/HomeBall.png";
 
+
 function Home()
 {
 	return (
