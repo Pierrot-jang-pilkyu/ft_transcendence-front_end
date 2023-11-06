@@ -12,6 +12,7 @@ function Tmp()
         })
         .catch((Error)=>{console.log(Error)})
     }, [])
+    console.log(data);
 
     return (
         <div/>
