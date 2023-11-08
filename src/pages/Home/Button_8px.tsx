@@ -1,25 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import styles from "./Button_8px.module.css"
-import { useState } from 'react';
-import axios from 'axios';
-// import React from 'react';
+import {useState} from 'react'
 
-function Button(props:any) {
+  const [data, setData] = useState();
+	const url = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-a52635ac8449682c22179ea5e0431a5774a227ee77023467493b98e1df02b70b&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2FLoading&response_type=code"
 
-	const navigate = useNavigate();
-	const [data, setData] = useState("");
-
-	const handlerButton = () => {
-		// navigate('/Mode')
-		navigate('/Lobby')
-		// const url:string = "/api/auth/login";
-		// axios.get(url)
-		// 	.then((Response)=>{console.log(Response.data);})
-		// 	.catch((Error)=>{console.log(Error);})
-	};
 
 	return (
-		<button className={styles.button} onClick={handlerButton}>{props.name}</button>
+		<a href={url} className={styles.button} >{props.name}</a>
 	);
 }
 
