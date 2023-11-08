@@ -1,0 +1,327 @@
+.background {
+	width: 100vw;
+	height: 100vh;
+	/* max-width: 1920px; */
+	/* aspect-ratio: 1920 / 1080; */
+	background: #285ADA;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 17.71vw 1fr;
+    column-gap: 2.08vw;
+
+    position: relative;
+    width: 55.21vw;
+    height: 76.85vh;
+    top: 12.96vh;
+    left: 22.40vw;
+    /* background: rgba(0, 0, 0, 0.2); */
+}
+
+
+
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* ------------------------------- item 1 ----------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+
+
+
+.item:nth-child(1) {
+    grid-column: 1;
+
+    position: relative;
+    height: 69.72vh;
+    border-radius: 12px;
+    background: #FFF;
+}
+
+.chatlist_title {
+    position: absolute;
+    top: 0%;
+    width: 100%;
+    height: 67.60%;
+    border-radius: 12px;
+    background: #FFF;
+}
+
+.chatlist_title_font {
+    position: relative;
+    top: 2.78vh;
+    left: 1.56vw;
+    color: #000;
+    font-family: Noto Sans;
+    font-size: 2.22vh;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.chatlist {
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    position: absolute;
+    top: 11.02%;
+    left: 8.82%;
+    width: 13.54vw;
+    height: 37vh;
+    height: 37dvh;
+    background: #FFF;
+}
+
+.chatlist::-webkit-scrollbar {
+    display: none;
+}
+
+.chatlist_font {
+    color: #000;
+    font-family: Noto Sans;
+    font-size: 1.67vh;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 1.48vh 0;
+}
+
+.line {
+    position: absolute;
+    top: 67.60%;
+    width: 100%;
+    height: 1px;
+    background: #D9D9D9;
+}
+
+.dmlist_title {
+    position: absolute;
+    width: 100%;
+    height: 32.40%;
+    top: 67.73%;
+    border-radius: 12px;
+    background: #FFF;
+}
+
+.dmlist_title_font {
+    position: relative;
+    top: 2.78vh;
+    left: 1.56vw;
+    color: #000;
+    font-family: Noto Sans;
+    font-size: 2.22vh;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.dmlist {
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    position: absolute;
+    top: 77.29%;
+    left: 8.82%;
+    width: 13.54vw;
+    height: 13.06vh;
+    height: 13.06dvh;
+    background: #FFF;
+}
+
+.dmlist::-webkit-scrollbar {
+    display: none;
+}
+
+
+.dmlist_font {
+    color: #000;
+    font-family: Noto Sans;
+    font-size: 1.67vh;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 1.48vh 0;
+}
+
+
+
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* ------------------------------- item 2 ----------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------- */
+
+
+
+.item:nth-child(2) {
+    grid-column: 2;
+    
+    position: relative;
+    height: 100%;
+    background: #285ADA;
+}
+
+.profiles {
+    position: absolute;
+    top: 0%;
+    width: 100%;
+    height: 5.19vh;
+    border-radius: 12px;
+    background: #FFF;
+}
+
+.chattingroom {
+    position: absolute;
+    top: 9.04%;
+    width: 100%;
+    height: 69.91vh;
+    border-radius: 12px;
+    background: #FFF;
+}
+
+.chattingroom_title {
+    position: absolute;
+    top: 0%;
+    width: 100%;
+    height: 7.69vh;
+    border-radius: 12px;
+    background: #FFF;
+}
+
+.chattingroom_title_font {
+    position: relative;
+    top: 2.22vh;
+    left: 1.56vw;
+    color: #000;
+    font-family: Noto Sans;
+    font-size: 2.22vh;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+input[id="menu"] {
+    display: none;
+}
+
+nav[id="main_nav"] {
+    display: none;
+}
+
+input[id="menu"]:checked + nav[id="main_nav"] {
+    display: block;
+}
+
+.chattingroom_menu_button {
+    position: relative;
+    top: 3.31%;
+    left: 90%;
+    width: 1.67vw;
+    height: 2.96vh;
+    background: rgba(255, 255, 255, 1);
+    z-index: 8;
+    cursor: pointer;
+}
+
+.chattingroom_menu_button:focus {
+    outline: none;
+}
+
+.chattingroom_menu_button_img {
+    position: relative;
+    top: 0%;
+    left: 0%;
+    width: 1.67vw;
+    height: 2.96vh;
+    flex-shrink: 0;
+    z-index: 9;
+}
+
+.chattingroom_menu {
+    width: 7.92vw;
+    height: 9.63vh;
+    position: fixed;
+    top: 25.56vh;
+    left: 68.13vw;
+    border-radius: 8px;
+    border: 1px solid #D9D9D9;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.12);
+    z-index: 10;
+}
+
+nav[id="main_nav"]:not(.chattingroom_menu) {
+    display: none;
+}
+
+.chattingroom_menu_font1 {
+    position: relative;
+    top: 1.85vh;
+    left: 1.04vw;
+    color: #000;
+    font-family: Noto Sans;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    cursor: pointer;
+}
+
+.chattingroom_menu_font2 {
+    position: relative;
+    top: 3.23vh;
+    left: 1.04vw;
+    color: #E36969;
+    font-family: Noto Sans;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    cursor: pointer;
+}
+
+.line1 {
+    position: absolute;
+    top: 11%;
+    width: 100%;
+    height: 1px;
+    background: #D9D9D9;
+}
+
+.chatting {
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    position: absolute;
+    top: 12%;
+    left: 4.41%;
+    width: 32.29vw;
+    height: 52vh;
+    height: 52dvh;
+    background: #FFF;
+}
+
+.chatting::-webkit-scrollbar {
+    display: none;
+}
+
+
+.line2 {
+    position: absolute;
+    top: 89.27%;
+    width: 100%;
+    height: 1px;
+    background: #D9D9D9;
+}

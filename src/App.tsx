@@ -7,6 +7,7 @@ import Myprofile from './pages/Profile/Myprofile';
 import Friendprofile from './pages/Profile/FriendProfile';
 import Game from './pages/Game/Game';
 import Friends from "./pages/Lobby/Friends/Friends";
+import Chatting from './pages/Chatting/Chatting';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
 				<Route path='/Mode' element={<Mode />} />
 				<Route path='/Game' element={<Game />} />
 				<Route path='/Friends' element={<Friends />} />
+				<Route path='/Chatting' element={<Chatting />} />
 			</Routes>
 		</BrowserRouter>
     </div>

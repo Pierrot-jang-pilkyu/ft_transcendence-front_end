@@ -54,8 +54,7 @@ function Menu(props:any)
 	};
 
 	const handlerButtonChatting = () => {
-		// navigate('/Chatting')
-		navigate('/Friends')
+		navigate('/Chatting')
 	};
 
 	return (
