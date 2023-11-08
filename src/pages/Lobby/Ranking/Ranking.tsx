@@ -1,37 +1,48 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import styles from "./Ranking.module.css";
-import UserRanking from './UserRanking';
-import Stroke from "../../../assets/Ranking_Vector(Stroke).png"
+import UserRanking from "./UserRanking";
+import Stroke from "../../../assets/Ranking_Vector(Stroke).png";
 
-function Ranking(props:any) {
+function Ranking(props: any) {
+  const navigate = useNavigate();
 
-	const navigate = useNavigate();
+  const handlerButton = () => {
+    navigate("/Ranking");
+  };
 
-	const handlerButton = () => {
-		navigate('/Lobby')
-	};
-
-    const rankerTable1 = () => {
-        const res = [];
-        for (let i = 0; i < 5; ++i)
-        {
-            const win:string = "Win: " + props.user[i].win; 
-            const lose:string = "Lose: " + props.user[i].lose;
-            res.push(<UserRanking rank={props.user[i].rank} nickname={props.user[i].nickname} win={win} lose={lose} />);
-        }
-        return res;
+  const rankerTable1 = () => {
+    const res = [];
+    for (let i = 0; i < 5; ++i) {
+      const win: string = "Win: " + props.user[i].win;
+      const lose: string = "Lose: " + props.user[i].lose;
+      res.push(
+        <UserRanking
+          rank={props.user[i].rank}
+          nickname={props.user[i].nickname}
+          win={win}
+          lose={lose}
+        />
+      );
     }
+    return res;
+  };
 
-    const rankerTable2 = () => {
-        const res = [];
-        for (let i = 5; i < 10; ++i)
-        {
-            const win:string = "Win: " + props.user[i].win; 
-            const lose:string = "Lose: " + props.user[i].lose;
-            res.push(<UserRanking rank={props.user[i].rank} nickname={props.user[i].nickname} win={win} lose={lose} />);
-        }
-        return res;
+  const rankerTable2 = () => {
+    const res = [];
+    for (let i = 5; i < 10; ++i) {
+      const win: string = "Win: " + props.user[i].win;
+      const lose: string = "Lose: " + props.user[i].lose;
+      res.push(
+        <UserRanking
+          rank={props.user[i].rank}
+          nickname={props.user[i].nickname}
+          win={win}
+          lose={lose}
+        />
+      );
     }
+    return res;
+  };
 
 	return (
 		<div className={`${styles.ranking_table}`}>
