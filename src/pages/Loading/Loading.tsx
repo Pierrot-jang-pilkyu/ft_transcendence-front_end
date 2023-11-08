@@ -21,10 +21,12 @@ function Loading()
 		axios.post('http://localhost:3000/auth/2fa', {
 			code: text,
 		})
-		.then((res)=> {navigate('/Lobby')})
+		.then((res)=> {
+			console.log(res.data.id);
+			navigate('/Lobby', { state: res.data.id});
+		})
 		.catch((error)=>{console.log(error);})
 	}
-
 
 	useEffect(() => {
 		axios.defaults.withCredentials = true;
