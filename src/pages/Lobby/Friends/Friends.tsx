@@ -73,6 +73,12 @@ function Friends()
 						<li><Avatar name="James Dinn" /></li>
 						<li><Avatar name="James Dinn" /></li>
 						<li><Avatar name="James Dinn" /></li>
+						<li><Avatar name="James Dinn" /></li>
+						<li><Avatar name="James Dinn" /></li>
+						<li><Avatar name="James Dinn" /></li>
+						<li><Avatar name="James Dinn" /></li>
+						<li><Avatar name="James Dinn" /></li>
+						<li><Avatar name="James Dinn" /></li>
 					</ul>
 					<div className={styles.input_container}>
 						<div className="input-group">
