@@ -61,7 +61,7 @@ function Menu(props:any)
 	return (
 	<div className={`${styles.buttons}`}>
 		<button className={`${styles.button} ${styles.game}`} onClick={handlerButton}>
-			<img src={GameStart}></img>
+			<img className={styles.gamestart_img} src={GameStart}></img>
 			<div className={`${styles.game_font}`}>Start Game!</div>
 		</button>
 		<button className={`${styles.button} ${styles.chat}`}>

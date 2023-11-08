@@ -12,7 +12,7 @@ function Loading()
 	const [text, setText] = useState();
 
 
-	function onChangeText (event) {
+	function onChangeText (event:any) {
 		setText(event.target.value);
 	}
 
