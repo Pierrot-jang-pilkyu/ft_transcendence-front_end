@@ -21,6 +21,11 @@
 	height: 27vh;
 }
 
+.gamestart_img {
+    position: relative;
+    margin: 3% auto;
+}
+
 .friend {
 	grid-area: friend;
 	width: 27vw;
