@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import styles from "./Canvas.module.css"
 
 function Canvas() {
@@ -6,16 +6,29 @@ function Canvas() {
 		// 
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		canvas.width = 1060;
-		canvas.height = 580;
+		const width = 1060;
+		const height = 580;
+		// 디스플레이 크기 설정 (css 픽셀)
+		canvas.style.width = `${width}px`;
+		canvas.style.height = `${height}px`;
+
+		// 메모리에 실제 크기 설정 (픽셀 밀도를 고려하여 크기 조정)
+		const dpr = window.devicePixelRatio;
+
+		canvas.width =  width * dpr;
+		canvas.height = height * dpr;
+
+		// CSS에서 설정한 크기와 맞춰주기 위한 scale 조정
 
 		const context = canvas.getContext("2d");
+		context.scale(dpr, dpr);
+		context.font = 	"bold 50px sans-serif";
 
 		function drawRect(x, y, w, h, color) {
 			context.fillStyle = color;
 			context.fillRect(x, y, w, h);
 		}
-		
+
 		function drawCircle(x, y, r, color) {
 			context.fillStyle = color;
 			context.beginPath();
@@ -23,6 +36,7 @@ function Canvas() {
 			context.closePath();
 			context.fill();
 		}
+
 		const user = {
 			x : 40,
 			y : canvas.height/2 - 70,
@@ -35,30 +49,35 @@ function Canvas() {
 		const com = {
 			width : 16,
 			height : 140,
-			x : canvas.width - 16 - 40,
-			y : canvas.height/2 - 70,
+			x : width - 16 - 40,
+			y : height/2 - 70,
 			color : "#FFB359",
 			score : 0
 		}
 
 		const ball = {
-			x : canvas.width/2,
-			y : canvas.height/2,
+			x : width/2,
+			y : height/2,
 			radius : 10,
 			speed : 10,
 			vX : 10,
 			vY : 10,
-			color : "white"
+			color : "white",
+			pause: 100,
 		}
 
 		function isHitByWall() {
-			return ball.y + ball.radius > canvas.height
+			return ball.y + ball.radius > height
 				|| ball.y - ball.radius < 0
 		}
 
 		function isOut() {
+			if (ball.x < 0)
+				com.score++;
+			else if (ball.x > width)
+				user.score++;
 			return ball.x < 0
-				|| ball.x > canvas.width
+				|| ball.x > width
 		}
 
 		function isHitBy(player) {
@@ -69,6 +88,8 @@ function Canvas() {
 		}
 
 		function updateBall() { 
+			if (ball.pause-- > 0)
+				return ;
 			ball.x += ball.vX;
 			ball.y += ball.vY;
 			ball.top = ball.y - ball.radius;
@@ -76,7 +97,7 @@ function Canvas() {
 			ball.left = ball.x - ball.radius;
 			ball.right = ball.x + ball.radius;
 
-			const player = (ball.x < canvas.width/2) ? user : com;
+			const player = (ball.x < width/2) ? user : com;
 			if (isHitByWall())
 				ball.vY *= -1;
 			else if (isHitBy(player))
@@ -85,17 +106,18 @@ function Canvas() {
 				const angle = (fPoint / user.height/2) * Math.PI / 4;
 
 				ball.vX = ball.speed * Math.cos(angle);
-				if (ball.x > canvas.width/2)
+				if (ball.x > width/2)
 					ball.vX *= -1;
 				ball.vY = ball.speed * Math.sin(angle);
 				ball.speed += 0.01;
 			}
 			else if (isOut())
 			{
-				ball.x = canvas.width/2;
-				ball.y = canvas.height/2;
+				ball.x = width/2;
+				ball.y = height/2;
+				ball.pause = 100;
+				render();
 			}
-
 		}
 
 		function updatePlayer(p) {
@@ -123,17 +145,31 @@ function Canvas() {
 		}
 
 		function render() {
-			context.clearRect(0, 0, canvas.width, canvas.height)
-			drawRect(0, canvas.height/2 - 1, 1060, 2, "#FFFFFF");
+			context.clearRect(0, 0, width, height)
+			context.fillText(user.score, width/4, height/4);
+			context.fillText(com.score, width/4 * 3 - 50, height/4);
+			drawRect(0, height/2 - 1, 1060, 2, "#FFFFFF");
 			drawRect(user.x, user.y, user.width, user.height, user.color);
 			drawRect(com.x, com.y, com.width, com.height, com.color);
 			drawCircle(ball.x, ball.y, ball.radius, ball.color);
 		}
 
+		function end() {
+			context.font = 	"bold 150px sans-serif";
+			context.clearRect(0, 0, width, height)
+			context.fillText(user.score, width/4, height/3);
+			context.fillText(com.score, width/4 * 3 - 150, height/3);
+		}
+
 		function game() {
 			update();
-			render();
-			requestAnimationFrame(game);
+			if (user.score < 11 && com.score < 11)
+			{
+				render();
+				requestAnimationFrame(game);
+			}
+			else
+				end();
 		}
 
 		requestAnimationFrame(game);
