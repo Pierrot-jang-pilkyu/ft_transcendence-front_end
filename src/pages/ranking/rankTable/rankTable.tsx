@@ -1,5 +1,6 @@
 import styles from "./rankTable.module.css";
 import RankList from "./rankList";
+import { useEffect } from "react";
 
 function rankTable(props: any) {
   return (
