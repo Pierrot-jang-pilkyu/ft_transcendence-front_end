@@ -37,7 +37,7 @@ function Profile(props: any) {
       <div className={`${styles.profile_line}`}></div>
       <img className={`${styles.profile_crown}`} src={Crown} />
       <div className={`${styles.profile_rank}`}>Rank:</div>
-      <div className={`${styles.profile_rank_value}`}>{props.rank}</div>
+      <div className={`${styles.profile_rank_value}`}>{profile == undefined ? null : (profile.gameRecord == null ? "--" : profile.gameRecord.rank)}</div>
       <button className={styles.button} onClick={handlerButton}></button>
     </div>
   );

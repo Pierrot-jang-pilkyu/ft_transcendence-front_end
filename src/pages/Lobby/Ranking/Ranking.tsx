@@ -27,17 +27,27 @@ function Ranking(props: any) {
       return res;
     for (let i = 0; i < 5; ++i) {
       if (ranks[i] == undefined)
-        return res;
+      res.push(
+        <UserRanking
+          rank={i+1}
+          nickname={null}
+          win={null}
+          lose={null}
+        />
+      );
+	else
+	{
       const win: string = "Win: " + ranks[i].win;
       const lose: string = "Lose: " + ranks[i].loss;
       res.push(
         <UserRanking
           rank={i+1}
-          nickname={ranks[i].id}
+          nickname={ranks[i].user.name}
           win={win}
           lose={lose}
         />
       );
+	}
     }
     return res;
   };
@@ -46,19 +56,29 @@ function Ranking(props: any) {
     const res = [];
     if (ranks == undefined)
       return res;
-    for (let i = 5; i < 6; ++i) {
+    for (let i = 5; i < 10; ++i) {
       if (ranks[i] == undefined)
-        return res;
+      res.push(
+        <UserRanking
+          rank={i+1}
+          nickname={null}
+          win={null}
+          lose={null}
+        />
+      );
+	  else
+	  {
       const win: string = "Win: " + ranks[i].win;
       const lose: string = "Lose: " + ranks[i].loss;
       res.push(
         <UserRanking
           rank={i+1}
-          nickname={ranks[i].id}
+          nickname={ranks[i].user.name}
           win={win}
           lose={lose}
         />
       );
+	  }
     }
     return res;
   };
