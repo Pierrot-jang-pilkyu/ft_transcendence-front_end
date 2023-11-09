@@ -28,7 +28,7 @@ function App() {
 				<Route path='/Mode' element={<Mode />} />
 				<Route path='/Game' element={<Game />} />
 				<Route path='/Friends' element={<Friends />} />
-				<Route path='/Chatting' element={<Chatting name="pjang" avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"/>} />
+				<Route path='/Chatting' element={<Chatting pageStart="0" name="pjang" avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"/>} />
 			</Routes>
 		</BrowserRouter>
     </div>

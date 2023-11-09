@@ -1,12 +1,14 @@
 import Header from "../../components/Header";
 import styles from "./Chatting.module.css";
 import Outside from "./Outside";
-import { useEffect, useState } from "react";
+import Avatar from "./Avatar";
+import { useRef, useCallback, useEffect, useState, KeyboardEvent } from "react";
 
 interface User {
     name: string;
 	img: string;
 	state: string;
+    op: boolean;
 }
 
 interface BackLog {
@@ -18,6 +20,7 @@ interface BackLog {
 }
 
 interface ChattingRoom {
+    start: number;
     chatId: string;
     private: boolean;
     users: string[];
@@ -25,16 +28,13 @@ interface ChattingRoom {
     chatLogList:any;
 }
 
-let start = 0;
+let chatListNum = 0;
 
 // Current Chatting Room
-let currentCR:ChattingRoom = { chatId: "Lobby", private: false, users: [], backLogList: [], 
-chatLogList: [<li>
-    <div className={styles.chatting_start}>
-        <div className={styles.chatting_start_font}>Looby</div>
-    </div>
-</li>] };
-
+let currentCR: ChattingRoom = { start: 0,
+    chatId: "Lobby", private: false, users: [], backLogList: [],
+    chatLogList: []
+};
 // chat list
 const publicChatList:ChattingRoom[] = [];
 const clientChatList:ChattingRoom[] = [];
@@ -43,23 +43,19 @@ const dmChatList:ChattingRoom[] = [];
 const viewChattingList:any = [];
 
 function Chatting (props:any) {
-
     const [isOpen, setIsOpen] = useState(true);
     const [chat, setChat] = useState('');
-    const [chatLog, setChatLog] = useState<any>([]);
+    const [chatId, setChatId] = useState('Lobby');
+    const [chatLog, setChatLog] = useState<any>([
+        <li>
+            <div className={styles.chatting_start}>
+                <div className={styles.chatting_start_font}>Looby</div>
+            </div>
+        </li>
+    ]);
 
-    // useEffect( () => {
-
-    //     const closeDropdown = (e:any) => {
-    //         console.log(e);
-    //         setIsOpen(false);
-    //     }
-
-    //     document.body.addEventListener('click', closeDropdown);
-
-    //     return () => document.body.addEventListener('click', closeDropdown);
-
-    // }, []);
+    currentCR.chatId = chatId;
+    currentCR.chatLogList = chatLog;
 
     const outside = () => {
         const toggle: any = document.getElementById("menu");
@@ -73,6 +69,37 @@ function Chatting (props:any) {
         }
     }
 
+    const viewAvatar = () => {
+        const res:any = [];
+        const users:User[] = [];
+
+        if (currentCR.chatId === "Lobby")
+        {
+            res.push(<li><div className={styles.profile_font}>{" \" Carpe Diem ! \" "}</div></li>);
+            return res;
+        }
+        
+        for (let i = 0; i < currentCR.users.length; ++i)
+        // for (let i = 0; i < 1; ++i)
+        {
+            // back쪽에 닉네임 보내기.
+            currentCR.users[i];
+            
+            users.push(
+                { name: currentCR.users[i], img: i === 0? props.avatar : "./src/assets/img_Profile.png", state: "online", op: i === 0 ? true : false }
+                );
+                
+                const profile = document.getElementById("profile");
+                console.log(profile);
+            // 이미지, 방장여부, 상태(온라인, 게임중, 오프라인) 받기
+            res.push(
+                <li><Avatar name={users[i].name} img={users[i].img} state={users[i].state} /></li>
+            );
+        }
+
+        return res;
+    };
+
     // time
     let today:any = new Date();
 
@@ -83,14 +110,14 @@ function Chatting (props:any) {
         {
             res += today.getFullYear() + ".";
             if (today.getMonth() + 1 < 10)
-                res += "0" + today.getMonth() + ".";
-            else res += today.getMonth() + ".";
+                res += "0" + (today.getMonth() + 1) + ".";
+            else res += (today.getMonth() + 1) + ".";
 
             if (today.getDate() + 1 < 10)
                 res += "0" + today.getDate() + " ";
             else res += today.getDate() + " ";
 
-            const day:string[] = [ "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat.", "Sun." ];
+            const day:string[] = [ "", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat.", "Sun." ];
 
             res += day[today.getDay()] + " ";
 
@@ -108,36 +135,44 @@ function Chatting (props:any) {
         return res;
     }
 
-    
-
-    // currentCR.chatId = "Lobby";
-    // currentCR.chatLogList.push(<li>
-    //     <div className={styles.chatting_start}>
-    //         <div className={styles.chatting_start_font}>Looby</div>
-    //     </div>
-    // </li>);
-
-
     let tempCR:ChattingRoom;
 
-    tempCR = { chatId: "test", private: false, users: [ props.name, "test" ], backLogList: [], chatLogList: [] };
+    tempCR = { start: 0, chatId: "test", private: false, users: [ props.name, "test" ], backLogList: [], chatLogList: [] };
 
 
     clientChatList.push(tempCR);
 
     const onChatting = (cr:ChattingRoom) => {
 
-        if (cr.backLogList.length === 0 && start === 0)
+        if (cr.backLogList.length === 0 && cr.start === 0)
         {
-            console.log(2);
-            start = 1;
-            cr.chatLogList.slice(0, cr.chatLogList.length);
+            cr.start = 1;
+            cr.chatLogList.splice(0, cr.chatLogList.length);
             cr.chatLogList = chatLog;
             cr.chatLogList.push(<li>
                 <div className={styles.chatting_start}>
                     <div className={styles.chatting_start_font}>{timeStamp(1)}</div>
                 </div>
                 </li>);
+
+            cr.chatLogList.push(
+                <li>
+                    <div className={`${styles.chat} ${styles.chat_start}`}>
+                        <div className={`${styles.chat_image}`}>
+                            <div className="w-10 rounded-full">
+                                <img className={styles.rounded_avatar} src={"./src/assets/img_Profile.png"} />
+                            </div>
+                        </div>
+                        <div className={`${styles.chat_header}`}>
+                            {"test"}
+                            <time className={`${styles.text_xs} ${styles.opacity_50}`}>{timeStamp(0)}</time>
+                        </div>
+                        <div className={`${styles.chat_bubble}`}>{"Hello"}</div>
+                        <div className={`${styles.chat_footer} ${styles.opacity_50}`}>
+                        </div>
+                    </div>
+                </li>
+            );
         }
 
         for (let i = 0; i < cr.backLogList.length; ++i)
@@ -182,50 +217,18 @@ function Chatting (props:any) {
             }
         }
     };
-    
-    const clickCR:any = (type:string , i:number) => {
-        
-        // const chatListDiv: any = document.getElementById(type + i.toString());
-        // console.log(chatListDiv);
-
-        
-        // document.onclick = function (e: any) {
-        //     if (e.target.id === (type + i.toString())) {
-        //     }
-        // }
-        if (type === "client")
-        {
-            currentCR.backLogList = clientChatList[i].backLogList;
-            currentCR.chatId = clientChatList[i].chatId;
-            currentCR.users = clientChatList[i].users;
-            console.log(start);
-            onChatting(currentCR);
-            console.log(start);
-        }
-        if (type === "public")
-        {
-            currentCR.backLogList = publicChatList[i].backLogList;
-            currentCR.chatId = publicChatList[i].chatId;
-            currentCR.users = publicChatList[i].users;
-            onChatting(currentCR);
-        }
-        if (type === "dm")
-        {
-            currentCR.backLogList = dmChatList[i].backLogList;
-            currentCR.chatId = dmChatList[i].chatId;
-            currentCR.users = dmChatList[i].users;
-            onChatting(currentCR);
-        }
-        // console.log(currentCR.chatId);
-    };
 
     const viewChattingRoomList = () => {
         const res:any = [];
 
+        if (chatListNum > 0)
+            return ;
+
+        chatListNum++;
+        
         for (let i = 0; i < clientChatList.length; ++i)
         {
             viewChattingList.push(<li>
-                {/* <button id={ clientChatList[i].chatId } className={styles.chatlist_font} onClick={ clickCR("client", i) }>{ clientChatList[i].chatId }</button> */}
                 <div id={ clientChatList[i].chatId } className={styles.chatlist_font} >{ clientChatList[i].chatId }</div>
             </li>);
         }
@@ -256,25 +259,24 @@ function Chatting (props:any) {
             //         }
             //     }
             // }
-            console.log(e.target.id);
             
             for (let i = 0; i < clientChatList.length; ++i)
             {
                 if (e.target.id === (clientChatList[i].chatId))
                 {
-                    console.log(1);
+                    currentCR.start = clientChatList[i].start;
                     currentCR.backLogList = clientChatList[i].backLogList;
-                    currentCR.chatId = clientChatList[i].chatId;
+                    setChatId(clientChatList[i].chatId);
                     currentCR.users = clientChatList[i].users;
                     onChatting(currentCR);
                 }
             }
         };
-
+        
         document.body.addEventListener('click', closeDropdown);
-
+        
         return () => document.body.addEventListener('click', closeDropdown);
-
+        
     }, []);
 
     const onChange = (e:any) => {
@@ -288,11 +290,6 @@ function Chatting (props:any) {
 		{
             return '';
 		}
-        
-        console.log(props.name);
-        console.log(props.avatar);
-        console.log(chat);
-        console.log(currentCR.chatLogList);
         
         currentCR.chatLogList.push(
             <li>
@@ -311,10 +308,6 @@ function Chatting (props:any) {
                 </div>
             </div>
         </li>);
-        console.log(props.name);
-        console.log(props.avatar);
-        console.log(chat);
-        console.log(currentCR.chatLogList);
 
         setChatLog(currentCR.chatLogList);
         currentCR.chatLogList = chatLog;
@@ -322,15 +315,11 @@ function Chatting (props:any) {
         setChat('');
 	};
 
-    const viewLog = () => {
-        const res:any = [];
-
-        for (let i = 0; i < currentCR.chatLogList.length; ++i)
+    const activeEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && e.nativeEvent.isComposing === false)
         {
-            res.push(currentCR.chatLogList[i]);
+            onAddButton();
         }
-
-        return res;
     }
 
     const viewRoomMenu = () => {
@@ -371,7 +360,7 @@ function Chatting (props:any) {
             res.push(
                 <div className={`${styles.input_container}`}>
                     <div className="input-group">
-                        <input type="text" placeholder="" className={`${styles.input}`} value={chat} onChange={onChange} />
+                        <input type="text" placeholder="" className={`${styles.input}`} value={chat} onChange={onChange} onKeyDown={activeEnter} />
                         <img className={styles.send_container} src="./src/assets/Mesage_send.svg" onClick={onAddButton} ></img>
                     </div>
                 </div>
@@ -380,6 +369,14 @@ function Chatting (props:any) {
 
         return res;
     };
+
+    const scrollRef = useRef<HTMLDivElement | null>(null);
+    useEffect(() => {
+        if (scrollRef.current?.scrollTop != null)
+        {
+            scrollRef.current.scrollTop = scrollRef.current?.scrollHeight;
+        }
+    });
 
     return (
 		<div className={`${styles.background}`}>
@@ -443,15 +440,13 @@ function Chatting (props:any) {
                     </div>
                 </div>
                 <div className={styles.item}>
-                    {/* {refresh()} */}
-                    <div className={styles.profiles}></div>
+                    <div id="profile" className={styles.profiles}>
+                        { viewAvatar() }
+                    </div>
                     <div className={styles.chattingroom}>
                         <div className={styles.chattingroom_title}>
                             <div className={styles.chattingroom_title_font}>{ currentCR.chatId }</div>
                         </div>
-                        {/* <label className={`${styles.chattingroom_menu_button}`} htmlFor="menu" onClick={ () => setIsOpen( prev => !prev ) }>
-                            <img className={styles.chattingroom_menu_button_img} src="./src/assets/Chattingroommenu.svg" />
-                        </label> */}
                         { viewRoomMenu() }
                         <input id="menu" type="checkbox" />
                         <nav id="main_nav" >
@@ -463,19 +458,13 @@ function Chatting (props:any) {
                             </div>
                         </nav>
                         <div className={styles.line1}></div>
-                        <div className={styles.chatting}>
+                        <div className={styles.chatting} ref={scrollRef} >
                             <ul>
                                 {/* { chatLog } */}
                                 { currentCR.chatLogList }
                             </ul>
                         </div>
                         <div className={styles.line2}></div>
-                        {/* <div className={`${styles.input_container}`}>
-							<div className="input-group">
-								<input type="text" placeholder="" className={`${styles.input}`} value={chat} onChange={onChange} />
-								<img className={styles.send_container} src="./src/assets/Mesage_send.svg" onClick={onAddButton} ></img>
-							</div>
-						</div> */}
                         { viewInput() }
                     </div>
                 </div>
