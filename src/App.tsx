@@ -1,11 +1,10 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home/Home';
-import Loading from './pages/Loading/Loading';
-import Lobby from './pages/Lobby/Lobby';
-import Mode from './pages/Mode/Mode';
-import Myprofile from './pages/Profile/Myprofile';
-import Friendprofile from './pages/Profile/FriendProfile';
-import Game from './pages/Game/Game';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import Lobby from "./pages/Lobby/Lobby";
+import Mode from "./pages/Mode/Mode";
+import Myprofile from "./pages/Profile/Myprofile";
+import Friendprofile from "./pages/Profile/FriendProfile";
+import Game from "./pages/Game/Game";
 import Friends from "./pages/Lobby/Friends/Friends";
 import Chatting from './pages/Chatting/Chatting';
 
