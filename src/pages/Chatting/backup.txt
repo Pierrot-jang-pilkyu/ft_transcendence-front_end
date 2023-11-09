@@ -1,0 +1,32 @@
+<li>
+                                    <div className={`${styles.chat} ${styles.chat_start}`}>
+                                        <div className={`${styles.chat_image}`}>
+                                            <div className="w-10 rounded-full">
+                                                <img className={styles.rounded_avatar} src={props.avatar} />
+                                            </div>
+                                        </div>
+                                        <div className={`${styles.chat_header}`}>
+                                            {props.name}
+                                            <time className={`${styles.text_xs} ${styles.opacity_50}`}>{timeStamp(0)}</time>
+                                        </div>
+                                        <div className={`${styles.chat_bubble}`}>{"asdgasfgasfdas"}</div>
+                                        <div className={`${styles.chat_footer} ${styles.opacity_50}`}>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className={`${styles.chat} ${styles.chat_end}`}>
+                                        <div className={`${styles.chat_image}`}>
+                                            <div className="w-10 rounded-full">
+                                                <img className={styles.rounded_avatar} src={props.avatar} />
+                                            </div>
+                                        </div>
+                                        <div className={`${styles.chat_header}`}>
+                                            {props.name}
+                                            <time className={`${styles.text_xs} ${styles.opacity_50}`}>{timeStamp(0)}</time>
+                                        </div>
+                                        <div className={`${styles.chat_bubble}`}>{"asdfasgdasfsd"}</div>
+                                        <div className={`${styles.chat_footer} ${styles.opacity_50}`}>
+                                        </div>
+                                    </div>
+                                </li>
