@@ -1,5 +1,6 @@
 import styles from "./QRModal.module.css";
-import { useState, useRef, useEffect } from "react";
+import { IdContext } from "../App";
+import { useState, useRef, useEffect, useContext } from "react";
 import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +13,7 @@ function QRModal({ onClose }) {
   const [text, setText] = useState();
   const navigate = useNavigate();
   const [qr, setQr] = useState();
-
+  const [id , setId ] = useContext(IdContext);
   function onChangeText(event) {
     setText(event.target.value);
   }
@@ -24,6 +25,7 @@ function QRModal({ onClose }) {
         code: text,
       })
       .then((res) => {
+        setId(res.data.id);
         navigate("/Lobby");
       })
       .catch((error) => {
