@@ -11,7 +11,7 @@ function Button(props: any) {
   const [data, setData] = useState();
 
   const url =
-    "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-6798a857fa8ededdcc18f1b2b5b4acc4a18f991c6af614a8824427676e35707d&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2F&response_type=code";
+	"https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-a52635ac8449682c22179ea5e0431a5774a227ee77023467493b98e1df02b70b&redirect_uri=http%3A%2F%2Flocalhost%3A5173&response_type=code"
   return (
     // <button className={`${styles.button}`} onClick={props.onOpenModal}>
     //   {props.name}
