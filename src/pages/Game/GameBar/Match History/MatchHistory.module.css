@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1%;
+}
+
+.left {
+  color: #fff;
+  font-size: clamp(10px, 1vw, 200px);
+	font-style: normal;
+	font-family: 'Noto Sans', sans-serif;
+	line-height: normal;
+	font-weight: 700;
+	letter-spacing: 0.2px;
+}
+
+.right {
+  text-align: right;
+  color: #fff;
+  font-size: clamp(10px, 1vw, 200px);
+	font-style: normal;
+	font-family: 'Noto Sans', sans-serif;
+	line-height: normal;
+	font-weight: 700;
+	letter-spacing: 0.2px;
+}

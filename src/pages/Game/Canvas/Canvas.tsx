@@ -6,8 +6,8 @@ function Canvas() {
 		// 
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		const width = 1060;
-		const height = 580;
+		const width = 1131;
+		const height = 619;
 		// 디스플레이 크기 설정 (css 픽셀)
 		canvas.style.width = `${width}px`;
 		canvas.style.height = `${height}px`;
@@ -140,7 +140,7 @@ function Canvas() {
 		}
 
 		function moveCom() {
-			const computerLevel = 0.1;
+			const computerLevel = 0.2;
 			com.y += (ball.y - (com.y + com.height/2)) * computerLevel;
 		}
 
@@ -148,7 +148,7 @@ function Canvas() {
 			context.clearRect(0, 0, width, height)
 			context.fillText(user.score, width/4, height/4);
 			context.fillText(com.score, width/4 * 3 - 50, height/4);
-			drawRect(0, height/2 - 1, 1060, 2, "#FFFFFF");
+			drawRect(0, height/2 - 1, width, 2, "#FFFFFF");
 			drawRect(user.x, user.y, user.width, user.height, user.color);
 			drawRect(com.x, com.y, com.width, com.height, com.color);
 			drawCircle(ball.x, ball.y, ball.radius, ball.color);
