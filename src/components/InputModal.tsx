@@ -7,6 +7,7 @@ import { IdContext } from "../App";
 import QRModal from "./QRModal";
 
 function InputModal({ onClose, code, onOpenModal }) {
+  const [textError, setTextError] = useState(false);
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -27,14 +28,13 @@ function InputModal({ onClose, code, onOpenModal }) {
   }, []);
 
   const [text, setText] = useState();
-  const [id, setId] =  useContext(IdContext);
+  const [id, setId] = useContext(IdContext);
 
   function onChangeText(event) {
     setText(event.target.value);
   }
 
   const navigate = useNavigate();
-
   function onClick() {
     console.log(text);
     axios.defaults.withCredentials = true;
@@ -47,9 +47,19 @@ function InputModal({ onClose, code, onOpenModal }) {
         navigate("/Lobby");
       })
       .catch((error) => {
+        setTextError(true);
+        setTimeout(() => {
+          setTextError(false); // 400ms 후에 다시 false로 설정하여 흔들림 효과 제거
+        }, 400);
         console.log(error);
       });
   }
+
+  const handleOnKeyPress = (e) => {
+    if (e.key === "Enter") {
+      onClick(); // Enter 입력이 되면 클릭 이벤트 실행
+    }
+  };
 
   return (
     <div className="modal" onClick={handleOutsideClick}>
@@ -65,8 +75,11 @@ function InputModal({ onClose, code, onOpenModal }) {
               <input
                 type="text"
                 placeholder="PIN번호 입력해주세요"
-                className={`${styles.input}`}
+                className={`${styles.input} ${
+                  textError ? styles["shake-animation"] : ""
+                }`}
                 onChange={onChangeText}
+                onKeyUp={handleOnKeyPress}
               />
             </div>
             <div className={`${styles.enter}`}>
