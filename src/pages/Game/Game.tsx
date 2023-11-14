@@ -1,15 +1,15 @@
-import Canvas from "./Canvas";
-import Header from "../../components/Header";
+import Header from "./Header/Header";
 import styles from "./Game.module.css";
+import Canvas from "./Canvas/Canvas";
+import GameBar from "./GameBar/GameBar";
 
 function Game()
 {
 	return (
-		<div className={`${styles.background}`}>
+		<div className={`${styles.container}`}>
 			<Header/>
-			<div className={`${styles.canvas}`}>
-				<Canvas/>
-			</div>
+			<Canvas/>
+			<GameBar/>
 		</div>
 	);
 }

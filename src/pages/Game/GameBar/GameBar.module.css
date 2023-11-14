@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    margin-left: 22%;
+    margin-top: 0%;
+    gap:1%;
+}
+
+.chatTmp {
+    width: 18vw;
+    height: 25vh;
+    border-radius: 12px;
+    background: #fff;
+}
