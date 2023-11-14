@@ -13,7 +13,8 @@ function QRModal({ onClose }) {
   const [text, setText] = useState();
   const navigate = useNavigate();
   const [qr, setQr] = useState();
-  const [id , setId ] = useContext(IdContext);
+  const [id, setId] = useContext(IdContext);
+  const [textError, setTextError] = useState(false);
   function onChangeText(event) {
     setText(event.target.value);
   }
@@ -29,9 +30,18 @@ function QRModal({ onClose }) {
         navigate("/Lobby");
       })
       .catch((error) => {
+        setTextError(true);
+        setTimeout(() => {
+          setTextError(false); // 400ms 후에 다시 false로 설정하여 흔들림 효과 제거
+        }, 400);
         console.log(error);
       });
   }
+  const handleOnKeyPress = (e) => {
+    if (e.key === "Enter") {
+      onClick(); // Enter 입력이 되면 클릭 이벤트 실행
+    }
+  };
 
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -84,8 +94,11 @@ function QRModal({ onClose }) {
               <input
                 type="text"
                 placeholder="Type here"
-                className={`${styles.input}`}
+                className={`${styles.input} ${
+                  textError ? styles["shake-animation"] : ""
+                }`}
                 onChange={onChangeText}
+                onKeyUp={handleOnKeyPress}
               />
             </div>
             <div className={`${styles.enter}`}>
