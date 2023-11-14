@@ -30,7 +30,7 @@ function App() {
 			<BrowserRouter>
 				<Routes>
 					<Route path="/" element={<Home />} />
-					{id && (
+					{true && (
 					<>
 							<Route path='/MyProfile' element={<Myprofile />} />
 							<Route path='/FriendProfile' element={<Friendprofile />} />
