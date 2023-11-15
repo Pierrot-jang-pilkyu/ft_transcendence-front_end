@@ -14,6 +14,7 @@
     "browserify-fs": "^1.0.0",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
+    "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",
     "react-list": "^0.8.17",
     "react-router-dom": "^6.17.0",

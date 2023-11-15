@@ -59,7 +59,7 @@ function Canvas() {
 			x : width/2,
 			y : height/2,
 			radius : 10,
-			speed : 10,
+			speed : 30,
 			vX : 10,
 			vY : 10,
 			color : "white",
