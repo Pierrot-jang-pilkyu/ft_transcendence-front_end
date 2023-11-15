@@ -482,6 +482,10 @@ input[id="menu"]:checked + nav[id="main_nav"] {
     --tw-text-opacity: 1;
     /* color: rgb(203 213 225); */
     color: #FFF;
+
+    white-space: normal;
+    text-align: left;
+     word-wrap: break-word;
 }
 .chat_bubble:before {
     position: absolute;
