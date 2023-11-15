@@ -4,10 +4,10 @@ import styles from "./Friends.module.css";
 
 import Avatar from './Avatar';
 
-import SearchFriends from "../../../assets/SearchFriends.svg";
-import FriendsArrow from "../../../assets/FriendsArrow.svg";
-import FriendsAdd from "../../../assets/FriendsAdd.svg";
-import ProfileImg from "../../../assets/img_Profile.png";
+import SearchFriends from "../../../../assets/SearchFriends.svg";
+import FriendsArrow from "../../../../assets/FriendsArrow.svg";
+import FriendsAdd from "../../../../assets/FriendsAdd.svg";
+import ProfileImg from "../../../../assets/img_Profile.png";
 
 function Friends()
 {

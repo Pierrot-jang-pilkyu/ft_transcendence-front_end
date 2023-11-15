@@ -5,7 +5,7 @@ import Mode from "./pages/Mode/Mode";
 import Myprofile from "./pages/Profile/Myprofile";
 import Friendprofile from "./pages/Profile/FriendProfile";
 import Game from "./pages/Game/Game";
-import Friends from "./pages/Lobby/Friends/Friends";
+import Friends from "./pages/Lobby/Menu/Friends/Friends";
 import Chatting from './pages/Chatting/Chatting';
 import { useState, createContext } from "react";
 // import { Navigate } from "react-router-dom";
