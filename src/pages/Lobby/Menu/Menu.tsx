@@ -64,8 +64,8 @@ function Menu(props:any)
 			<div className={`${styles.game_font}`}>Start Game!</div>
 		</button>
 		<button className={`${styles.button} ${styles.chat}`}>
-				<img src={ChattingRoom}/>
-				<div className={`${styles.chat_font}`} onClick={handlerButtonChatting}>Chatting Room</div>
+				<img src={ChattingRoom} className={`${styles.img}`}/>
+				<div className={`${styles.chat_font}`} onClick={handlerButtonChatting}>Chatting<br/>Room</div>
 		</button>
 		<div className="drawer drawer-end">
            	<input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
