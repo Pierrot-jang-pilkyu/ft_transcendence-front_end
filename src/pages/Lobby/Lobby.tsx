@@ -9,13 +9,14 @@ import { useLocation } from "react-router-dom";
 // import Friends from "./Friends/Frends"
 // import HomeBall from "../../assets/HomeBall.png";
 
+
 interface FriendProps {
 	name: string;
 	img: string;
 	state: string;
 }
 
-function Lobby()
+function Lobby(props:any)
 {
 	const [id, setId] = useContext(IdContext);
 
@@ -27,12 +28,12 @@ function Lobby()
 		<div className={`${styles.background}`}>
 			{/* <img className={`${styles.img}`} src={HomeBall}/> */}
 			<Header />
-			<Profile id={id}/>
+			<Profile id={props.id}/>
 			<div className={`${styles.ranking_container}`}>
 				<Ranking />
 			</div>
 			<div className={`${styles.menu_container}`}>
-				<Menu friendObjects={Objects}/>
+				<Menu friendObjects={Objects} id={props.id}/>
 			</div>
 		</div>
 	)
