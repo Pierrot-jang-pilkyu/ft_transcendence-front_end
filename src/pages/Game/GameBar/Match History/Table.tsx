@@ -12,26 +12,6 @@ function Table()
                 />
                 <List
                     winflag={false}
-                    matchtime={"2023.10.12  12:29:21"}  
-                    name={"nickname"}
-                />
-                <List
-                    winflag={true}
-                    matchtime={"2023.10.12  12:29:21"}
-                    name={"nickname"}
-                />
-                <List
-                    winflag={true}
-                    matchtime={"2023.10.12  12:29:21"}
-                    name={"nickname"}
-                />
-                <List
-                    winflag={true}
-                    matchtime={"2023.10.12  12:29:21"}
-                    name={"nickname"}
-                />
-                <List
-                    winflag={false}
                     matchtime={"2023.10.12  12:29:21"}
                     name={"nickname"}
                 />
