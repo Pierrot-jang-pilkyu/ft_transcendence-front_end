@@ -27,7 +27,7 @@ function Lobby()
 		<div className={`${styles.background}`}>
 			{/* <img className={`${styles.img}`} src={HomeBall}/> */}
 			<Header />
-			<Profile id={id}/>
+			<Profile/>
 			<div className={`${styles.ranking_container}`}>
 				<Ranking />
 			</div>
