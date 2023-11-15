@@ -6,8 +6,8 @@ function Canvas() {
 		// 
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		const width = 1131;
-		const height = 619;
+		const width = 1410;
+		const height = 700;
 		// 디스플레이 크기 설정 (css 픽셀)
 		canvas.style.width = `${width}px`;
 		canvas.style.height = `${height}px`;

@@ -14,9 +14,11 @@ function Header()
 	};
 
 	return (
-		<header className={`${styles.header}`}>
+		<header className={`${styles.background}`}>
+			<div className={`${styles.container}`}>
 				<button className={`${styles.home} ${styles.button}`} onClick={handlerButton}>Deer Feer</button>
 				<button className={`${styles.logout} ${styles.button}`} onClick={handlerButtonLogOut}>Logout</button>
+			</div>
 		</header>
 	);
 }
