@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useState  } from 'react';
+import { useState, useEffect, useCallback  } from 'react';
 import styles from "./Menu.module.css";
 import Avatar from '../Friends/Avatar';
 import GameStart from "../../../assets/GameStart.svg";
@@ -8,10 +8,12 @@ import SearchFriends from "../../../assets/SearchFriends.svg";
 import FriendsArrow from "../../../assets/FriendsArrow.svg";
 import FriendsAdd from "../../../assets/FriendsAdd.svg";
 
+import axios from 'axios';
 
 function Menu(props:any)
 {
 	const [nick, setNick] = useState('');
+	const [data, setData] = useState();
 	const avatars:any = [];
 
 	// const avatars = () =>  {
@@ -63,7 +65,7 @@ function Menu(props:any)
 			<img className={styles.gamestart_img} src={GameStart}></img>
 			<div className={`${styles.game_font}`}>Start Game!</div>
 		</button>
-		<button className={`${styles.button} ${styles.chat}`}>
+		<button id="Chatting_Room" className={`${styles.button} ${styles.chat}`}>
 				<img src={ChattingRoom}/>
 				<div className={`${styles.chat_font}`} onClick={handlerButtonChatting}>Chatting Room</div>
 		</button>

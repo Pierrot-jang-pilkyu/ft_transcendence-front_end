@@ -12,10 +12,24 @@ import { useState, createContext } from "react";
  import { useNavigate } from "react-router-dom";
 export const IdContext = createContext();
 
+// Cookie
+import { Cookies } from 'react-cookie';
+
+const cookies = new Cookies();
+
+export const setCookie = (name: string, value: string, options?: any) => {
+ 	return cookies.set(name, value, {...options}); 
+}
+
+export const getCookie = (name: string) => {
+ return cookies.get(name); 
+}
+
 //HERE
 function App() {
 	const [id, setId] = useState();
-	
+
+	const userId = getCookie("user.id");
 
 	// 라우트 가드 함수
   return (
@@ -34,11 +48,11 @@ function App() {
 					<>
 							<Route path='/MyProfile' element={<Myprofile />} />
 							<Route path='/FriendProfile' element={<Friendprofile />} />
-							<Route path='/Lobby' element={<Lobby />} />
+							<Route path='/Lobby' element={<Lobby id={userId}/>} />
 							<Route path='/Mode' element={<Mode />} />
 							<Route path='/Game' element={<Game />} />
 							<Route path='/Friends' element={<Friends />} />
-							<Route path='/Chatting' element={<Chatting pageStart="0" name="pjang" avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"/>} />
+							<Route path='/Chatting' element={<Chatting id={userId} pageStart="0" name="pjang" avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"/>} />
 					</>
 				)}
 				</Routes>

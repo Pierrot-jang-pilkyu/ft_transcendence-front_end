@@ -93,6 +93,19 @@
     cursor: pointer;
 }
 
+.room_add {
+    position: relative;
+    top: 1.7vh;
+    left: 15vw;
+    color: #000;
+    font-family: Noto Sans;
+    font-size: 3.5vh;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    cursor: pointer;
+}
+
 .line {
     position: absolute;
     top: 67.60%;
