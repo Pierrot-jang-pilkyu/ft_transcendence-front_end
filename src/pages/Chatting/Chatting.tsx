@@ -133,46 +133,46 @@ function Chatting (props:any) {
     clientChatList = roomListMe;
     publicChatList = roomListOther;
 
-    useEffect(() => {
-        // axios.get(`http://localhost:3000/users/${props.id}/channels`)
-        {
-            (clientChatList.length === 1) &&
-            (axios.get(`http://localhost:3000/users/${2}/channels/me`)
-            .then((Response)=>{
-                setMe(Response.data);
-                console.log("me");
-                console.log(Response.data);
-                for (let i = 0; i < Response.data.length; ++i)
-                {
-                    console.log(Response.data[i]);
-                    { Response.data[i].public && clientChatList.push({ start: 1, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
-                    { !Response.data[i].public && clientChatList.push({ start: 1, chatId: Response.data[i].id, title: Response.data[i].title, private: true, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
-                }
-                setRoomListMe(clientChatList);
-                clientChatList = roomListMe;
-            })
-            .catch((Error)=>{console.log(Error)}))
-        }
-        {
-            (publicChatList.length === 0) &&    
-            (axios.get(`http://localhost:3000/users/${2}/channels/other`)
-            .then((Response) => {
-                setOther(Response.data);
-                console.log("other");
-                console.log(Response.data);
-                for (let i = 0; i < Response.data.length; ++i)
-                {
-                    console.log(Response.data[i]);
-                    { Response.data[i].public && publicChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
-                    { !Response.data[i].public && publicChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: true, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
-                }
-                setRoomListOther(publicChatList);
-                publicChatList = roomListOther;
-            })
-            .catch((Error)=>{console.log(Error)}))
-        }
+    // useEffect(() => {
+    //     // axios.get(`http://localhost:3000/users/${props.id}/channels`)
+    //     {
+    //         (clientChatList.length === 1) &&
+    //         (axios.get(`http://localhost:3000/users/${2}/channels/me`)
+    //         .then((Response)=>{
+    //             setMe(Response.data);
+    //             console.log("me");
+    //             console.log(Response.data);
+    //             for (let i = 0; i < Response.data.length; ++i)
+    //             {
+    //                 console.log(Response.data[i]);
+    //                 { Response.data[i].public && clientChatList.push({ start: 1, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
+    //                 { !Response.data[i].public && clientChatList.push({ start: 1, chatId: Response.data[i].id, title: Response.data[i].title, private: true, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
+    //             }
+    //             setRoomListMe(clientChatList);
+    //             clientChatList = roomListMe;
+    //         })
+    //         .catch((Error)=>{console.log(Error)}))
+    //     }
+    //     {
+    //         (publicChatList.length === 0) &&    
+    //         (axios.get(`http://localhost:3000/users/${2}/channels/other`)
+    //         .then((Response) => {
+    //             setOther(Response.data);
+    //             console.log("other");
+    //             console.log(Response.data);
+    //             for (let i = 0; i < Response.data.length; ++i)
+    //             {
+    //                 console.log(Response.data[i]);
+    //                 { Response.data[i].public && publicChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
+    //                 { !Response.data[i].public && publicChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: true, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
+    //             }
+    //             setRoomListOther(publicChatList);
+    //             publicChatList = roomListOther;
+    //         })
+    //         .catch((Error)=>{console.log(Error)}))
+    //     }
         
-    }, [])
+    // }, [])
 
     // console.log(clientChatList.length);
     // console.log(roomListMe.length);
@@ -335,10 +335,13 @@ function Chatting (props:any) {
     const viewChattingRoomList = () => {
         let res:any = [];
 
-        if (chatListNum > 0)
-            return ;
+        if (chatListNum === 0)
+        {
+            chatListNum++;
 
-        chatListNum++;
+            return ;
+        }
+
         
         for (let i = 0; i < clientChatList.length; ++i)
         {
@@ -357,9 +360,53 @@ function Chatting (props:any) {
         return res;
     };
 
-    useEffect( () => {
-        setViewRoomList(viewChattingRoomList());
-    }, []);
+
+    useEffect(() => {
+        // axios.get(`http://localhost:3000/users/${props.id}/channels`)
+        if (clientChatList.length === 1)
+        {
+            axios.get(`http://localhost:3000/users/${2}/channels/me`)
+            .then((Response)=>{
+                setMe(Response.data);
+                console.log("me");
+                console.log(Response.data);
+                for (let i = 0; i < Response.data.length; ++i)
+                {
+                    console.log(Response.data[i]);
+                    { Response.data[i].public && clientChatList.push({ start: 1, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
+                    { !Response.data[i].public && clientChatList.push({ start: 1, chatId: Response.data[i].id, title: Response.data[i].title, private: true, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
+                }
+                setRoomListMe(clientChatList);
+                clientChatList = roomListMe;
+                setViewRoomList(viewChattingRoomList());
+            })
+            .catch((Error)=>{console.log(Error)})
+        }
+        if (publicChatList.length === 0)
+        {
+            axios.get(`http://localhost:3000/users/${2}/channels/other`)
+            .then((Response) => {
+                setOther(Response.data);
+                console.log("other");
+                console.log(Response.data);
+                for (let i = 0; i < Response.data.length; ++i)
+                {
+                    console.log(Response.data[i]);
+                    { Response.data[i].public && publicChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
+                    { !Response.data[i].public && publicChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: true, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
+                }
+                setRoomListOther(publicChatList);
+                publicChatList = roomListOther;
+                setViewRoomList(viewChattingRoomList());
+            })
+            .catch((Error)=>{console.log(Error)})
+        }
+        
+    }, [])
+
+    // useEffect( () => {
+    //     setViewRoomList(viewChattingRoomList());
+    // }, []);
 
     useEffect( () => {
 
