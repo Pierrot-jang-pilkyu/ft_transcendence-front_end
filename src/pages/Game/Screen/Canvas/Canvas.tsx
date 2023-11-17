@@ -1,13 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import styles from "./Canvas.module.css"
 
-function Canvas() {
+function Canvas(props) {
 	const canvasRef = useRef(null);
 		// 
 	useEffect(() => {
+		console.log(props.options);
+
 		const canvas = canvasRef.current;
-		const width = 1131;
-		const height = 619;
+		const width = 800; //1410
+		const height = 700;
 		// 디스플레이 크기 설정 (css 픽셀)
 		canvas.style.width = `${width}px`;
 		canvas.style.height = `${height}px`;
@@ -23,6 +25,10 @@ function Canvas() {
 		const context = canvas.getContext("2d");
 		context.scale(dpr, dpr);
 		context.font = 	"bold 50px sans-serif";
+
+		const barSizeRatio = props.options.barSize / 5;
+		const ballSizeRatio = props.options.ballSize / 5;
+		const speedRatio = props.options.speed / 5;
 
 		function drawRect(x, y, w, h, color) {
 			context.fillStyle = color;
@@ -41,14 +47,14 @@ function Canvas() {
 			x : 40,
 			y : canvas.height/2 - 70,
 			width : 16,
-			height : 140,
+			height : 140 * barSizeRatio,
 			color : "#397DFF",
 			score : 0
 		}
 
 		const com = {
 			width : 16,
-			height : 140,
+			height : 140 * barSizeRatio,
 			x : width - 16 - 40,
 			y : height/2 - 70,
 			color : "#FFB359",
@@ -58,10 +64,10 @@ function Canvas() {
 		const ball = {
 			x : width/2,
 			y : height/2,
-			radius : 10,
-			speed : 10,
-			vX : 10,
-			vY : 10,
+			radius : 10 * ballSizeRatio,
+			speed : 20 * speedRatio,
+			vX : 10 * speedRatio * Math.cos(45),
+			vY : 10 * speedRatio * Math.sin(45),
 			color : "white",
 			pause: 100,
 		}
@@ -102,8 +108,8 @@ function Canvas() {
 				ball.vY *= -1;
 			else if (isHitBy(player))
 			{
-				const fPoint = ball.y - (user.y + user.height/2); 
-				const angle = (fPoint / user.height/2) * Math.PI / 4;
+				const fPoint = ball.y - (player.y + player.height/2); 
+				const angle = (fPoint / player.height/2) * Math.PI / 1.5;
 
 				ball.vX = ball.speed * Math.cos(angle);
 				if (ball.x > width/2)
@@ -140,7 +146,7 @@ function Canvas() {
 		}
 
 		function moveCom() {
-			const computerLevel = 0.2;
+			const computerLevel = 0.4;
 			com.y += (ball.y - (com.y + com.height/2)) * computerLevel;
 		}
 

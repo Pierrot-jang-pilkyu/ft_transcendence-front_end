@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./rankList.module.css";
 
-function rankList(props: any) {
+function RankList(props: any) {
   const navigate = useNavigate();
 
   const handlerButton = () => {
@@ -9,19 +9,38 @@ function rankList(props: any) {
   };
   return (
     <div className={`${styles.listcontainer}`}>
-      <text className={`${styles.listnum}`}>{props.num}</text>
+      <text className={`${styles.listnum}`}>{props.rank}</text>
       <div className={`${styles.listnick}`} onClick={handlerButton}>
-        {props.name}
+        {props.nickname}
       </div>
-      <div className={`${styles.scoretable}`}>
-        <text className={`${styles.winnum}`}>{props.winnum}</text>
-        <text className={`${styles.slash}`}>/</text>
-        <text className={`${styles.losenum}`}>{props.losenum}</text>
-        <text className={`${styles.divide}`}>|</text>
-        <text className={`${styles.point}`}>Point:{props.point}</text>
-      </div>
+      <text className={`${styles.winnum}`}>{props.win}</text>
+      <text className={`${styles.slash}`}>{props.win == null ? "" : "/"}</text>
+      <text className={`${styles.losenum}`}>{props.lose}</text>
+      <text className={`${styles.divide}`}>
+        {props.lose == null ? "" : "|"}
+      </text>
+      <text className={`${styles.point}`}>{props.score}</text>
     </div>
   );
+  // return (
+  //   <div className={`${styles.listcontainer}`}>
+  //     <text className={`${styles.listnum}`}>{props.rank}</text>
+  //     <div className={`${styles.listnick}`} onClick={handlerButton}>
+  //       {props.nickname}
+  //     </div>
+  //     <div className={`${styles.scoretable}`}>
+  //       <text className={`${styles.winnum}`}>{props.win}</text>
+  //       <text className={`${styles.slash}`}>
+  //         {props.win == null ? "" : "/"}
+  //       </text>
+  //       <text className={`${styles.losenum}`}>{props.lose}</text>
+  //       <text className={`${styles.divide}`}>
+  //         {props.lose == null ? "" : "|"}
+  //       </text>
+  //       <text className={`${styles.point}`}>{props.score}</text>
+  //     </div>
+  //   </div>
+  // );
 }
 
-export default rankList;
+export default RankList;

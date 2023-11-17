@@ -1,14 +1,15 @@
 .container {
     display: flex;
     flex-direction: row;
+    width: 55%;
+    height: 26%;
     margin-left: 22%;
-    margin-top: 0%;
-    gap:1%;
+    gap:2%;
 }
 
 .chatTmp {
-    width: 18vw;
-    height: 25vh;
+    width: 32%;
+    height: 100%;
     border-radius: 12px;
     background: #fff;
 }
