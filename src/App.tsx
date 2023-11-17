@@ -10,12 +10,34 @@ import Chatting from './pages/Chatting/Chatting';
 import { useState, createContext } from "react";
 // import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import io from 'socket.io-client';
+
 import Ranking from "./pages/Ranking/Ranking";
+
 export const IdContext = createContext();
+
+// Cookie
+import { Cookies } from 'react-cookie';
+
+const cookies = new Cookies();
+
+export const setCookie = (name: string, value: string, options?: any) => {
+ 	return cookies.set(name, value, {...options}); 
+}
+
+export const getCookie = (name: string) => {
+ return cookies.get(name); 
+}
+
+// Socket connet
+
+let socket = io('http://localhost:3000');
 
 //HERE
 function App() {
-  const [id, setId] = useState();
+	const [id, setId] = useState();
+
+	const userId = getCookie("user.id");
 
   // 라우트 가드 함수
   return (
@@ -40,7 +62,7 @@ function App() {
               <>
                 <Route path="/MyProfile" element={<Myprofile />} />
                 <Route path="/FriendProfile" element={<Friendprofile />} />
-                <Route path="/Lobby" element={<Lobby />} />
+                <Route path="/Lobby" element={<Lobby id={userId}/>} />
                 <Route path="/Mode" element={<Mode />} />
                 <Route path="/Game" element={<Game />} />
                 <Route path="/Friends" element={<Friends />} />
@@ -48,6 +70,8 @@ function App() {
                   path="/Chatting"
                   element={
                     <Chatting
+                      socket={socket}
+                      id={userId}
                       pageStart="0"
                       name="pjang"
                       avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"

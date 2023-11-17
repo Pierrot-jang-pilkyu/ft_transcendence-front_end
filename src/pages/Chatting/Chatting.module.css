@@ -83,6 +83,17 @@
 }
 
 .chatlist_font {
+    color: #285ADA;
+    font-family: Noto Sans;
+    font-size: 1.67vh;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin: 1.48vh 0;
+    cursor: pointer;
+}
+
+.chatlist_font_other {
     color: #000;
     font-family: Noto Sans;
     font-size: 1.67vh;
@@ -90,6 +101,19 @@
     font-weight: 500;
     line-height: normal;
     margin: 1.48vh 0;
+    cursor: pointer;
+}
+
+.room_add {
+    position: relative;
+    top: 1.7vh;
+    left: 15vw;
+    color: #000;
+    font-family: Noto Sans;
+    font-size: 3.5vh;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
     cursor: pointer;
 }
 
