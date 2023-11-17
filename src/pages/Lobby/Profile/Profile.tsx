@@ -1,22 +1,26 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Profile.module.css";
 import ProfileImg from "../../../assets/img_Profile.png";
 import Crown from "../../../assets/Lobby_crown.png";
+import { IdContext } from "../../../App";
+import { Cookies } from "react-cookie";
 // import React from 'react';
 
-function Profile(props: any) {
+function Profile() {
   const navigate = useNavigate();
-
+  const cookies = new Cookies();
   const handlerButton = () => {
     navigate("/MyProfile");
   };
 
 	const [profile, setProfile] = useState();
+  const [id, setId] = useContext(IdContext);
 
 	useEffect(()=> {
-    const id = props.id;
-		fetch(`http://localhost:3000/users/players/${id}`, {
+    if (id == undefined)
+      setId(cookies.get("user.id"));
+		  fetch(`http://localhost:3000/users/players/${id}`, {
 			method : "GET",
 		})
 		.then((response)=> response.json())

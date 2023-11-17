@@ -6,7 +6,7 @@ function List(props: any) {
       <div className={props.winflag ? styles.win : styles.lose}>
         {props.winflag ? "Win" : "Lose"}
       </div>
-      <div className={`${styles.matchtext}`}>To</div>
+      <div className={`${styles.matchtext}`}>to</div>
       <div className={`${styles.name}`}>{props.name}</div>
     </div>
   );

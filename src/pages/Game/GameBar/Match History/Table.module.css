@@ -1,12 +1,9 @@
 .background {
     display: flex;
     flex-direction: column;
-    gap: 8%;
-    padding-top: 3.85%;
-    padding-bottom: 2.31%;
-    width: 18vw;
-    height: 22vh;
+    gap: 10%;
+    height: 82%;
+    padding: 8%;
     border-radius: 12px;
     background: #fff;
-  }
-  
+}

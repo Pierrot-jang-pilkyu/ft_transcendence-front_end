@@ -89,12 +89,12 @@ function Ranking(props: any) {
             <div className={`${styles.ranking_top10}`}>Ranking Top 10</div>
             <div className={`${styles.ranking_table_line}`}></div>
             <div className={`${styles.ranking_table_small}`}>
-                {rankerTable1()}
-                {/*<UserRanking rank="1🥇" nickname="first" win="Win: 12345" lose="Lose: 100" />
+                {/* {rankerTable1()} */}
+                <UserRanking rank="1🥇" nickname="first" win="Win: 12345" lose="Lose: 100" />
                 <UserRanking rank="2🥈" nickname="second" win="Win: 12340" lose="Lose: 110" />
                 <UserRanking rank="3🥉" nickname="third" win="Win: 12300" lose="Lose: 120" />
                 <UserRanking rank="4" nickname="fourth" win="Win: 12000" lose="Lose: 130" />
-  <UserRanking rank="5" nickname="fiveth" win="Win: 10000" lose="Lose: 140" />*/}
+  <UserRanking rank="5" nickname="fiveth" win="Win: 10000" lose="Lose: 140" />
             </div>
             <div className={`${styles.ranking_table_small_2}`}>
                 {rankerTable2()}
