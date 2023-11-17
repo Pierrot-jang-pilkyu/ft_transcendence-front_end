@@ -9,7 +9,9 @@ import Friends from "./pages/Lobby/Friends/Friends";
 import Chatting from './pages/Chatting/Chatting';
 import { useState, createContext } from "react";
 // import { Navigate } from "react-router-dom";
- import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import io from 'socket.io-client';
+
 export const IdContext = createContext();
 
 // Cookie
@@ -24,6 +26,10 @@ export const setCookie = (name: string, value: string, options?: any) => {
 export const getCookie = (name: string) => {
  return cookies.get(name); 
 }
+
+// Socket connet
+
+let socket = io('http://localhost:3000');
 
 //HERE
 function App() {
@@ -52,7 +58,7 @@ function App() {
 							<Route path='/Mode' element={<Mode />} />
 							<Route path='/Game' element={<Game />} />
 							<Route path='/Friends' element={<Friends />} />
-							<Route path='/Chatting' element={<Chatting id={userId} pageStart="0" name="pjang" avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"/>} />
+							<Route path='/Chatting' element={<Chatting socket={socket} id={userId} pageStart="0" name="pjang" avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"/>} />
 					</>
 				)}
 				</Routes>

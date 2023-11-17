@@ -6,6 +6,8 @@ import { useRef, useCallback, useEffect, useState, KeyboardEvent } from "react";
 import RoomAddModal from "./RoomAddModal";
 import axios from 'axios';
 
+import TestChatList from "./TestChatList";
+
 interface User {
     name: string;
 	img: string;
@@ -132,47 +134,6 @@ function Chatting (props:any) {
 
     clientChatList = roomListMe;
     publicChatList = roomListOther;
-
-    // useEffect(() => {
-    //     // axios.get(`http://localhost:3000/users/${props.id}/channels`)
-    //     {
-    //         (clientChatList.length === 1) &&
-    //         (axios.get(`http://localhost:3000/users/${2}/channels/me`)
-    //         .then((Response)=>{
-    //             setMe(Response.data);
-    //             console.log("me");
-    //             console.log(Response.data);
-    //             for (let i = 0; i < Response.data.length; ++i)
-    //             {
-    //                 console.log(Response.data[i]);
-    //                 { Response.data[i].public && clientChatList.push({ start: 1, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
-    //                 { !Response.data[i].public && clientChatList.push({ start: 1, chatId: Response.data[i].id, title: Response.data[i].title, private: true, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
-    //             }
-    //             setRoomListMe(clientChatList);
-    //             clientChatList = roomListMe;
-    //         })
-    //         .catch((Error)=>{console.log(Error)}))
-    //     }
-    //     {
-    //         (publicChatList.length === 0) &&    
-    //         (axios.get(`http://localhost:3000/users/${2}/channels/other`)
-    //         .then((Response) => {
-    //             setOther(Response.data);
-    //             console.log("other");
-    //             console.log(Response.data);
-    //             for (let i = 0; i < Response.data.length; ++i)
-    //             {
-    //                 console.log(Response.data[i]);
-    //                 { Response.data[i].public && publicChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
-    //                 { !Response.data[i].public && publicChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: true, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
-    //             }
-    //             setRoomListOther(publicChatList);
-    //             publicChatList = roomListOther;
-    //         })
-    //         .catch((Error)=>{console.log(Error)}))
-    //     }
-        
-    // }, [])
 
     // console.log(clientChatList.length);
     // console.log(roomListMe.length);
@@ -341,7 +302,6 @@ function Chatting (props:any) {
 
             return ;
         }
-
         
         for (let i = 0; i < clientChatList.length; ++i)
         {
@@ -353,13 +313,38 @@ function Chatting (props:any) {
         for (let i = 0; i < publicChatList.length; ++i)
         {
             res.push(<li>
-                <div id={ publicChatList[i].title } className={styles.chatlist_font} >{ publicChatList[i].title }</div>
+                <div id={ publicChatList[i].title } className={styles.chatlist_font_other} >{ publicChatList[i].title }</div>
             </li>);
         }
 
         return res;
     };
 
+    props.socket.on("INFO_CH_LIST", function (responseData:any) { 
+        console.log(responseData);
+
+        clientChatList.splice(0, clientChatList.length);
+        publicChatList.splice(0, publicChatList.length);
+
+        for (let i = 0; i < responseData.length; ++i) {
+            console.log(responseData[i]);
+            { responseData[i].public && clientChatList.push({ start: 1, chatId: responseData[i].id, title: responseData[i].title, private: false, users: [], limits: responseData[i].limit, backLogList: [], chatLogList: [] }) };
+            { !responseData[i].public && clientChatList.push({ start: 1, chatId: responseData[i].id, title: responseData[i].title, private: true, users: [], limits: responseData[i].limit, backLogList: [], chatLogList: [] }) };
+        }
+
+        for (let i = 0; i < responseData.length; ++i) {
+            console.log(responseData[i]);
+            { responseData[i].public && publicChatList.push({ start: 1, chatId: responseData[i].id, title: responseData[i].title, private: false, users: [], limits: responseData[i].limit, backLogList: [], chatLogList: [] }) };
+            { !responseData[i].public && publicChatList.push({ start: 1, chatId: responseData[i].id, title: responseData[i].title, private: true, users: [], limits: responseData[i].limit, backLogList: [], chatLogList: [] }) };
+        }
+
+        setViewRoomList(viewChattingRoomList());
+    });
+
+    function enter() {
+        // userId: props.id
+        props.socket.emit('JOIN', { channelId: currentCR.chatId, userId: 2, password: "" });
+    }
 
     useEffect(() => {
         // axios.get(`http://localhost:3000/users/${props.id}/channels`)
@@ -404,10 +389,6 @@ function Chatting (props:any) {
         
     }, [])
 
-    // useEffect( () => {
-    //     setViewRoomList(viewChattingRoomList());
-    // }, []);
-
     useEffect( () => {
 
         const enterChatRoom = (e:any) => {
@@ -449,8 +430,8 @@ function Chatting (props:any) {
                 {
                     currentCR.start = publicChatList[i].start;
                     setChatTitle(publicChatList[i].title);
-                    currentCR.backLogList = publicChatList[i].backLogList;
                     setChatId(publicChatList[i].chatId);
+                    currentCR.backLogList = publicChatList[i].backLogList;
                     currentCR.users = publicChatList[i].users;
                     onChatting(currentCR);
                 }
