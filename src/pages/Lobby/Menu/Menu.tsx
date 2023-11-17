@@ -9,44 +9,6 @@ import FriendsAdd from "../../../assets/FriendsAdd.svg";
 
 import axios from 'axios';
 
-function Menu(props:any)
-{
-	const [nick, setNick] = useState('');
-	const [data, setData] = useState();
-	const avatars:any = [];
-
-	// const avatars = () =>  {
-	// 	const res:any = [];
-	// 	return res;
-	// };
-
-	const changeAvatar = () => {
-		for (let i = 0; i < props.friendObjects.length; ++i)
-		{
-			avatars.push(<li><Avatar name={props.friendObjects[i].name} img={props.friendObjects[i].img} state={props.friendObjects[i].state} /></li>);
-			// console.log('name: ' + props.friendObjects[i].name + ', img_src: ' + props.friendObjects[i].img);
-		}
-	};
-		
-	const addFriendList = (nickName:any, img:any, state:any) => {
-		avatars.push(<li><Avatar name={nickName} img={img} state={state}/></li>);
-	};
-
-	const onChange = (e:any) => {
-		setNick(e.target.value);
-		// test();
-	};
-
-	const onAddButton = () => {
-		setNick('');
-		if (nick === '')
-		{
-			alert("warning");
-			return '';
-		}
-		// 백엔드 
-	};
-	
 import FriendsList from './Friends/FriendsList';
 
 function Menu(props:any)
