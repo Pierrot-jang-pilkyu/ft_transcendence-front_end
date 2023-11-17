@@ -5,21 +5,21 @@ import Avatar from "./Avatar";
 import { useRef, useCallback, useEffect, useState, KeyboardEvent } from "react";
 import RoomAddModal from "./RoomAddModal";
 import axios from 'axios';
-
+import io from 'socket.io-client';
 import TestChatList from "./TestChatList";
 
 interface User {
     name: string;
 	img: string;
 	state: string;
+	date: string;
     op: boolean;
 }
 
 interface BackLog {
 	name: string;
 	img: string;
-	state: string;
-    chatId: string;
+    date: string;
     chat: string;
 }
 
@@ -28,13 +28,16 @@ interface ChattingRoom {
     chatId: number;
     title: string;
     private: boolean;
-    users: string[];
+    users: User[];
     limits: number;
     backLogList:BackLog[];
     chatLogList:any;
 }
 
 let chatListNum = 0;
+let socketNum = 0;
+
+let logDay:string = "";
 
 // Current Chatting Room
 let currentCR: ChattingRoom = { start: 0,
@@ -47,6 +50,7 @@ let clientChatList:ChattingRoom[] = [];
 let dmChatList:ChattingRoom[] = [];
 
 function Chatting (props:any) {
+    const userId = props.id;
     const [openRoomAddModal, setOpenRoomAddModal] = useState(false);
 
     const handleOpenModal = () => {
@@ -56,6 +60,16 @@ function Chatting (props:any) {
     const handleCloseModal = () => {
         setOpenRoomAddModal(false);
     };
+
+    let socket:any;
+
+    if (socketNum === 0)
+    {
+        socketNum++;
+        // Socket connect
+
+        socket = io('http://localhost:3131');
+    }
 
     // time
     let today:any = new Date();
@@ -88,6 +102,47 @@ function Chatting (props:any) {
         if (today.getMinutes() < 10)
             res += "0" + today.getMinutes();
         else res += today.getMinutes();
+     
+        return res;
+    }
+
+    const timeStamp_this = (flag:any, date:string) => {
+        let res:string = " ";
+        let thisDay:any = new Date(
+            parseInt(date.substring(0, 4)),         // year
+            parseInt(date.substring(5, 7)) - 1,     // month
+            parseInt(date.substring(8, 10)),         // day
+            parseInt(date.substring(11, 13)),        // hours
+            parseInt(date.substring(14, 16)),        // minute
+            parseInt(date.substring(17, 19)),        // seconds
+            parseInt(date.substring(20, 23))         // milliseconds
+            );
+
+        if (flag === 1)
+        {
+            res += thisDay.getFullYear() + ".";
+            if (thisDay.getMonth() + 1 < 10)
+                res += "0" + (thisDay.getMonth() + 1) + ".";
+            else res += (thisDay.getMonth() + 1) + ".";
+
+            if (thisDay.getDate() + 1 < 10)
+                res += "0" + thisDay.getDate() + " ";
+            else res += thisDay.getDate() + " ";
+
+            const day:string[] = [ "", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat.", "Sun." ];
+
+            res += day[thisDay.getDay()] + " ";
+
+            return res;
+        }
+
+        if (thisDay.getHours() < 10)
+            res += "0" + thisDay.getHours() + ":";
+        else res += thisDay.getHours() + ":";
+
+        if (thisDay.getMinutes() < 10)
+            res += "0" + thisDay.getMinutes();
+        else res += thisDay.getMinutes();
      
         return res;
     }
@@ -161,7 +216,6 @@ function Chatting (props:any) {
 
     const viewAvatar = () => {
         const res:any = [];
-        const users:User[] = [];
 
         if (currentCR.chatId === 0)
         {
@@ -172,22 +226,34 @@ function Chatting (props:any) {
         for (let i = 0; i < currentCR.users.length; ++i)
         // for (let i = 0; i < 1; ++i)
         {
-            // back쪽에 닉네임 보내기.
-            currentCR.users[i];
             
-            users.push(
-                { name: currentCR.users[i], img: i === 0? props.avatar : "./src/assets/img_Profile.png", state: "online", op: i === 0 ? true : false }
-                );
+            // users.push(
+            //     { name: currentCR.users[i].name, img: i === 0? props.avatar : "./src/assets/img_Profile.png", state: "online", date: currentCR.users[i].date, op: currentCR.users[i].op }
+            //     );
                 
                 const profile = document.getElementById("profile");
                 console.log(profile);
             // 이미지, 방장여부, 상태(온라인, 게임중, 오프라인) 받기
             res.push(
-                <li><Avatar name={users[i].name} img={users[i].img} state={users[i].state} /></li>
+                <li><Avatar name={currentCR.users[i].name} img={currentCR.users[i].img} state={currentCR.users[i].state} /></li>
             );
         }
 
         return res;
+    };
+
+    const thisDayStamp = (date:string) => {
+        if (logDay === date.substring(0, 10))
+            return ;
+        else
+        {
+            logDay = date.substring(0, 10);
+            currentCR.chatLogList.push(<li>
+                <div className={styles.chatting_start}>
+                    <div className={styles.chatting_start_font}>{timeStamp_this(1, date)}</div>
+                </div>
+                </li>);
+        }
     };
 
     const onChatting = (cr:ChattingRoom) => {
@@ -204,24 +270,24 @@ function Chatting (props:any) {
                 </div>
                 </li>);
 
-            cr.chatLogList.push(
-                <li>
-                    <div className={`${styles.chat} ${styles.chat_start}`}>
-                        <div className={`${styles.chat_image}`}>
-                            <div className="w-10 rounded-full">
-                                <img className={styles.rounded_avatar} src={"./src/assets/img_Profile.png"} />
-                            </div>
-                        </div>
-                        <div className={`${styles.chat_header}`}>
-                            {"test"}
-                            <time className={`${styles.text_xs} ${styles.opacity_50}`}>{timeStamp(0)}</time>
-                        </div>
-                        <div className={`${styles.chat_bubble}`}>{"Hello"}</div>
-                        <div className={`${styles.chat_footer} ${styles.opacity_50}`}>
-                        </div>
-                    </div>
-                </li>
-            );
+            // cr.chatLogList.push(
+            //     <li>
+            //         <div className={`${styles.chat} ${styles.chat_start}`}>
+            //             <div className={`${styles.chat_image}`}>
+            //                 <div className="w-10 rounded-full">
+            //                     <img className={styles.rounded_avatar} src={"./src/assets/img_Profile.png"} />
+            //                 </div>
+            //             </div>
+            //             <div className={`${styles.chat_header}`}>
+            //                 {"test"}
+            //                 <time className={`${styles.text_xs} ${styles.opacity_50}`}>{timeStamp(0)}</time>
+            //             </div>
+            //             <div className={`${styles.chat_bubble}`}>{"Hello"}</div>
+            //             <div className={`${styles.chat_footer} ${styles.opacity_50}`}>
+            //             </div>
+            //         </div>
+            //     </li>
+            // );
         }
         else if (cr.start === -1)
         {
@@ -250,8 +316,10 @@ function Chatting (props:any) {
 
         for (let i = 0; i < cr.backLogList.length; ++i)
         {
-            if (cr.backLogList[i].name === props.name)
+            // if (cr.backLogList[i].name === props.name)
+            if (cr.backLogList[i].name === "bread")
             {
+                thisDayStamp(cr.backLogList[i].date);
                 cr.chatLogList.push(<li>
                     <div className={ `${styles.chat} ${styles.chat_end}` }>
                         <div className={ `${styles.chat_image}` }>
@@ -261,7 +329,7 @@ function Chatting (props:any) {
                         </div>
                         <div className={ `${styles.chat_header}` }>
                             {cr.backLogList[i].name}
-                            <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp(0) }</time>
+                            <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, cr.backLogList[i].date) }</time>
                         </div>
                         <div className={ `${styles.chat_bubble}` }>{cr.backLogList[i].chat}</div>
                         <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
@@ -271,6 +339,7 @@ function Chatting (props:any) {
             }
             else
             {
+                thisDayStamp(cr.backLogList[i].date);
                 cr.chatLogList.push(<li>
                     <div className={ `${styles.chat} ${styles.chat_start}` }>
                         <div className={ `${styles.chat_image}` }>
@@ -280,7 +349,7 @@ function Chatting (props:any) {
                         </div>
                         <div className={ `${styles.chat_header}` }>
                             {cr.backLogList[i].name}
-                            <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp(0) }</time>
+                            <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, cr.backLogList[i].date) }</time>
                         </div>
                         <div className={ `${styles.chat_bubble}` }>{cr.backLogList[i].chat}</div>
                         <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
@@ -293,6 +362,10 @@ function Chatting (props:any) {
 
     const [viewRoomList, setViewRoomList] = useState<any>([]);
 
+    function onChatting1 ()
+    {
+        console.log("!")
+    }
     const viewChattingRoomList = () => {
         let res:any = [];
 
@@ -320,44 +393,31 @@ function Chatting (props:any) {
         return res;
     };
 
-    props.socket.on("INFO_CH_LIST", function (responseData:any) { 
-        console.log(responseData);
+    // useEffect(() => {
 
-        clientChatList.splice(0, clientChatList.length);
-        publicChatList.splice(0, publicChatList.length);
+    // }, [viewRoomList, chatLog]);
 
-        for (let i = 0; i < responseData.length; ++i) {
-            console.log(responseData[i]);
-            { responseData[i].public && clientChatList.push({ start: 1, chatId: responseData[i].id, title: responseData[i].title, private: false, users: [], limits: responseData[i].limit, backLogList: [], chatLogList: [] }) };
-            { !responseData[i].public && clientChatList.push({ start: 1, chatId: responseData[i].id, title: responseData[i].title, private: true, users: [], limits: responseData[i].limit, backLogList: [], chatLogList: [] }) };
-        }
-
-        for (let i = 0; i < responseData.length; ++i) {
-            console.log(responseData[i]);
-            { responseData[i].public && publicChatList.push({ start: 1, chatId: responseData[i].id, title: responseData[i].title, private: false, users: [], limits: responseData[i].limit, backLogList: [], chatLogList: [] }) };
-            { !responseData[i].public && publicChatList.push({ start: 1, chatId: responseData[i].id, title: responseData[i].title, private: true, users: [], limits: responseData[i].limit, backLogList: [], chatLogList: [] }) };
-        }
-
-        setViewRoomList(viewChattingRoomList());
-    });
-
-    function enter() {
-        // userId: props.id
-        props.socket.emit('JOIN', { channelId: currentCR.chatId, userId: 2, password: "" });
+    function enter(chatId:number, userId:number, password:string) {
+        // userId: userId
+        console.log("channelId: " + chatId + ", userId: " + 2 + ", password: " + password);
+        if (chatId === -1)
+            return ;
+        // socket.emit('JOIN', { channelId: chatId, userId: userId, password: password });
+        socket.emit('JOIN', { channelId: chatId, userId: 2, password: password });
     }
 
     useEffect(() => {
-        // axios.get(`http://localhost:3000/users/${props.id}/channels`)
+        // axios.get(`http://localhost:3000/users/${userId}/channels`)
         if (clientChatList.length === 1)
         {
             axios.get(`http://localhost:3000/users/${2}/channels/me`)
             .then((Response)=>{
                 setMe(Response.data);
-                console.log("me");
-                console.log(Response.data);
+                // console.log("me");
+                // console.log(Response.data);
                 for (let i = 0; i < Response.data.length; ++i)
                 {
-                    console.log(Response.data[i]);
+                    // console.log(Response.data[i]);
                     { Response.data[i].public && clientChatList.push({ start: 1, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
                     { !Response.data[i].public && clientChatList.push({ start: 1, chatId: Response.data[i].id, title: Response.data[i].title, private: true, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
                 }
@@ -372,11 +432,11 @@ function Chatting (props:any) {
             axios.get(`http://localhost:3000/users/${2}/channels/other`)
             .then((Response) => {
                 setOther(Response.data);
-                console.log("other");
-                console.log(Response.data);
+                // console.log("other");
+                // console.log(Response.data);
                 for (let i = 0; i < Response.data.length; ++i)
                 {
-                    console.log(Response.data[i]);
+                    // console.log(Response.data[i]);
                     { Response.data[i].public && publicChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
                     { !Response.data[i].public && publicChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: true, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] })};
                 }
@@ -391,7 +451,9 @@ function Chatting (props:any) {
 
     useEffect( () => {
 
+        
         const enterChatRoom = (e:any) => {
+            
             // const chatListDiv: any = [];
 
             // for (let i = 0; i < clientChatList.length; ++i)
@@ -417,10 +479,15 @@ function Chatting (props:any) {
                 {
                     currentCR.start = clientChatList[i].start;
                     setChatTitle(clientChatList[i].title);
-                    currentCR.backLogList = clientChatList[i].backLogList;
                     setChatId(clientChatList[i].chatId);
+                    currentCR.backLogList = clientChatList[i].backLogList;
                     currentCR.users = clientChatList[i].users;
-                    onChatting(currentCR);
+                    if (e.target.id !== "Lobby")
+                        enter(clientChatList[i].chatId, userId, "");
+                    else
+                    {
+                        onChatting(currentCR);
+                    }
                 }
             }
             
@@ -433,9 +500,55 @@ function Chatting (props:any) {
                     setChatId(publicChatList[i].chatId);
                     currentCR.backLogList = publicChatList[i].backLogList;
                     currentCR.users = publicChatList[i].users;
-                    onChatting(currentCR);
+                    if (e.target.id !== "Lobby")
+                        enter(publicChatList[i].chatId, userId, "");
+                    else
+                    {
+                        onChatting(currentCR);
+                    }
                 }
             }
+            socket.on("LOADCHAT", function (responseData:any) {
+                console.log("LOADCHAT");
+                console.log(responseData);
+                
+                for (let i = responseData.length - 1; i > -1; --i)
+                {
+                    currentCR.backLogList.push({ name: responseData[i].user.name, img: responseData[i].user.avatar, date: responseData[i].date, chat: responseData[i].content });
+                }
+        
+                onChatting(currentCR);
+                setChatLog(currentCR.chatLogList);
+                currentCR.chatLogList = chatLog;
+            });
+        
+            socket.on("INFO_CH_LIST", function (responseData:any) { 
+                console.log("INFO_CH_LIST");
+                console.log(responseData);
+        
+                clientChatList.splice(0, clientChatList.length);
+                clientChatList.push(lobby);
+                publicChatList.splice(0, publicChatList.length);
+        
+                for (let i = 0; i < responseData.me.length; ++i) {
+                    // console.log(responseData.me[i]);
+                    { responseData.me[i].public && clientChatList.push({ start: 1, chatId: responseData.me[i].id, title: responseData.me[i].title, private: false, users: [], limits: responseData.me[i].limit, backLogList: [], chatLogList: [] }) };
+                    { !responseData.me[i].public && clientChatList.push({ start: 1, chatId: responseData.me[i].id, title: responseData.me[i].title, private: true, users: [], limits: responseData.me[i].limit, backLogList: [], chatLogList: [] }) };
+                }
+        
+                for (let i = 0; i < responseData.other.length; ++i) {
+                    // console.log(responseData.other[i]);
+                    { responseData.other[i].public && publicChatList.push({ start: 1, chatId: responseData.other[i].id, title: responseData.other[i].title, private: false, users: [], limits: responseData.other[i].limit, backLogList: [], chatLogList: [] }) };
+                    { !responseData.other[i].public && publicChatList.push({ start: 1, chatId: responseData.other[i].id, title: responseData.other[i].title, private: true, users: [], limits: responseData.other[i].limit, backLogList: [], chatLogList: [] }) };
+                }
+        
+                setViewRoomList(viewChattingRoomList());
+            });
+        
+            socket.on("INFO_CH_MEMBER", function (responseData:any) {
+                console.log("INFO_CH_MEMBER");
+                console.log(responseData);
+            });
         };
         
         document.body.addEventListener('click', enterChatRoom);
@@ -616,7 +729,7 @@ function Chatting (props:any) {
                     </div>
                 </div>
             </div>
-            { openRoomAddModal &&  <RoomAddModal onClose={handleCloseModal} id={props.id} />}
+            { openRoomAddModal &&  <RoomAddModal onClose={handleCloseModal} id={userId} />}
 		</div>
 	)
 }
