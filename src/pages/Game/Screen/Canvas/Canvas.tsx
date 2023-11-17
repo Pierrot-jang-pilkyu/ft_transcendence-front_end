@@ -1,12 +1,26 @@
 import React, { useRef, useEffect, useState } from 'react';
 import styles from "./Canvas.module.css"
+import io from "socket.io-client"
+
+const socket = io("http://localhost:3131");
 
 function Canvas(props) {
 	const canvasRef = useRef(null);
+	const [userId, setUserId] = useState(null);
+
+	function enter() {
+		console.log(socket.emit('JOIN', { userId: userId, channelId: 100005 }));
+	}
+
 		// 
 	useEffect(() => {
-		console.log(props.options);
-
+		socket.on("PONG", (data) => {
+			console.log(data);
+			tmp_ball.x = data.ball.x;
+			tmp_ball.y = data.ball.y;
+			tmp_user.y = data.left;
+			tmp_com.y = data.right;
+		});
 		const canvas = canvasRef.current;
 		const width = 800; //1410
 		const height = 700;
@@ -72,6 +86,30 @@ function Canvas(props) {
 			pause: 100,
 		}
 
+		const tmp_ball = {
+			x : 0,
+			y : 0,
+		}
+
+		const tmp_com = {
+			width : 16,
+			height : 140 * barSizeRatio,
+			x : width - 16 - 40,
+			y : height/2 - 70,
+			color : "#FFB359",
+			score : 0
+		}
+
+		const tmp_user = {
+			x : 40,
+			y : canvas.height/2 - 70,
+			width : 16,
+			height : 140 * barSizeRatio,
+			color : "#397DFF",
+			score : 0
+		}
+
+
 		function isHitByWall() {
 			return ball.y + ball.radius > height
 				|| ball.y - ball.radius < 0
@@ -135,8 +173,8 @@ function Canvas(props) {
 
 		function update() {
 			updateBall();
-			updatePlayer(user);
-			updatePlayer(com);
+			updatePlayer(tmp_user);
+			updatePlayer(tmp_com);
 			moveCom();
 		}
 
@@ -152,12 +190,12 @@ function Canvas(props) {
 
 		function render() {
 			context.clearRect(0, 0, width, height)
-			context.fillText(user.score, width/4, height/4);
-			context.fillText(com.score, width/4 * 3 - 50, height/4);
+			// context.fillText(user.score, width/4, height/4);
+			// context.fillText(com.score, width/4 * 3 - 50, height/4);
 			drawRect(0, height/2 - 1, width, 2, "#FFFFFF");
-			drawRect(user.x, user.y, user.width, user.height, user.color);
-			drawRect(com.x, com.y, com.width, com.height, com.color);
-			drawCircle(ball.x, ball.y, ball.radius, ball.color);
+			drawRect(tmp_user.x, tmp_user.y, user.width, user.height, user.color);
+			drawRect(tmp_com.x, tmp_com.y, com.width, com.height, com.color);
+			drawCircle(tmp_ball.x, tmp_ball.y, ball.radius, ball.color);
 		}
 
 		function end() {
@@ -169,20 +207,47 @@ function Canvas(props) {
 
 		function game() {
 			update();
-			if (user.score < 11 && com.score < 11)
-			{
-				render();
-				requestAnimationFrame(game);
-			}
-			else
-				end();
+			// if (user.score < 11 && com.score < 11)
+			// {
+			socket.emit("PING", { channelId: 100005 , game: { ball: { x: ball.x, y: ball.y }, right: com.y, left: user.y }});
+			render();
+			 requestAnimationFrame(game);
+			// }
+			// else
+			// 	end();
 		}
 
 		requestAnimationFrame(game);
 		canvas.addEventListener("mousemove", moveUser);
 	}, []);
+	function onClick1()
+	{
+		setUserId(1);
+	}
+	function onClick2()
+	{
+		setUserId(2);
+	}
+	function onEnter()
+	{
+		enter();
+	}
+
+	function onOn()
+	{
+
+	}
+
 	return (
-		<canvas className={`${styles.canvas}`} ref={canvasRef}></canvas>
+		<div>
+			<canvas className={`${styles.canvas}`} ref={canvasRef}></canvas>
+			<div>
+				<button onClick={onOn}>socketOn</button>
+				<button onClick={onClick1}>1</button>
+				<button onClick={onClick2}>2</button>
+				<button onClick={onEnter}>enter</button>
+			</div>
+		</div>
 	);
 }
 

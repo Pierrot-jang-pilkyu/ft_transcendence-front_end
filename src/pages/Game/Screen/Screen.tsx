@@ -7,16 +7,16 @@ function Screen()
 {
     const [isReady, setReady] = useState(false);
     const [options, setOptions] = useState({
-        speed: 0,
-        barSize: 0,
-        ballSize: 0,    
+        speed: 5,
+        barSize: 5,
+        ballSize: 5,    
     });
-
+    <div className={`${styles.container}`}>
+    {/* {!isReady && <Setting setOptions={setOptions} setReady={setReady}/>} */}
+    {true && <Canvas options={options}/>} 
+</div>
     return (
-        <div className={`${styles.container}`}>
-            {!isReady && <Setting setOptions={setOptions} setReady={setReady}/>}
-            {isReady && <Canvas options={options}/>}     
-        </div>
+        <Canvas options={options}/>
     )
 }
 
