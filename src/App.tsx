@@ -7,6 +7,7 @@ import Friendprofile from "./pages/Profile/FriendProfile";
 import Game from "./pages/Game/Game";
 import Friends from "./pages/Lobby/Menu/Friends/Friends";
 import Chatting from './pages/Chatting/Chatting';
+import Loading from "./pages/Loading/Loading";
 import { useState, createContext } from "react";
 // import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -63,7 +64,7 @@ function App() {
                 <Route path="/MyProfile" element={<Myprofile />} />
                 <Route path="/FriendProfile" element={<Friendprofile />} />
                 <Route path="/Lobby" element={<Lobby id={userId}/>} />
-                <Route path="/Mode" element={<Mode />} />
+                <Route path="/Loading" element={<Loading />} />
                 <Route path="/Game" element={<Game />} />
                 <Route path="/Friends" element={<Friends />} />
                 <Route
