@@ -2,18 +2,19 @@ import React, { useRef, useEffect, useState } from 'react';
 import styles from "./Canvas.module.css"
 import io from "socket.io-client"
 
-const socket = io("http://localhost:3131");
+const socket = io('http://localhost:3131')
 
 function Canvas(props) {
 	const canvasRef = useRef(null);
-	const [userId, setUserId] = useState(null);
-
-	function enter() {
-		console.log(socket.emit('JOIN', { userId: userId, channelId: 100005 }));
-	}
-
-		// 
+	
 	useEffect(() => {
+		let today = new Date(); 
+		let seconds = today.getSeconds();
+		console.log(socket.emit('JOIN', { userId: props.userId, channelId: 100005 }))
+		// socket.emit("READY", { channelId: 100005 , left: props.userId == 1 ? true : false});
+		// socket.on("START", (data) => {
+		// 	requestAnimationFrame(game)
+		// })
 		socket.on("PONG", (data) => {
 			console.log(data);
 			tmp_ball.x = data.ball.x;
@@ -21,8 +22,14 @@ function Canvas(props) {
 			tmp_user.y = data.left;
 			tmp_com.y = data.right;
 		});
+
+		socket.on("VECTOR", (data) => { 
+			ball.vX = data.xv;
+			ball.vY = data.xy;
+		});
+
 		const canvas = canvasRef.current;
-		const width = 800; //1410
+		const width = 800;
 		const height = 700;
 		// 디스플레이 크기 설정 (css 픽셀)
 		canvas.style.width = `${width}px`;
@@ -58,20 +65,11 @@ function Canvas(props) {
 		}
 
 		const user = {
-			x : 40,
-			y : canvas.height/2 - 70,
-			width : 16,
-			height : 140 * barSizeRatio,
-			color : "#397DFF",
-			score : 0
-		}
-
-		const com = {
-			width : 16,
-			height : 140 * barSizeRatio,
-			x : width - 16 - 40,
+			x : props.userId == 1 ? 40 : width - 16 - 40,
 			y : height/2 - 70,
-			color : "#FFB359",
+			width : 16,
+			height : 140 * barSizeRatio,
+			color : props.userId == 1 ? "#397DFF" : "#FFB359",
 			score : 0
 		}
 
@@ -87,8 +85,8 @@ function Canvas(props) {
 		}
 
 		const tmp_ball = {
-			x : 0,
-			y : 0,
+			x : width/2,
+			y : height/2,
 		}
 
 		const tmp_com = {
@@ -102,7 +100,7 @@ function Canvas(props) {
 
 		const tmp_user = {
 			x : 40,
-			y : canvas.height/2 - 70,
+			y : height/2 - 70,
 			width : 16,
 			height : 140 * barSizeRatio,
 			color : "#397DFF",
@@ -116,10 +114,10 @@ function Canvas(props) {
 		}
 
 		function isOut() {
-			if (ball.x < 0)
-				com.score++;
-			else if (ball.x > width)
-				user.score++;
+			// if (ball.x < 0)
+			// 	com.score++;
+			// else if (ball.x > width)
+			// 	user.score++;
 			return ball.x < 0
 				|| ball.x > width
 		}
@@ -141,10 +139,11 @@ function Canvas(props) {
 			ball.left = ball.x - ball.radius;
 			ball.right = ball.x + ball.radius;
 
-			const player = (ball.x < width/2) ? user : com;
+			const player = user;
 			if (isHitByWall())
 				ball.vY *= -1;
-			else if (isHitBy(player))
+			else if ((props.userId == 1 && ball.x < width/2) || (props.userId == 2 && ball.x > width/2)
+				&& isHitBy(player))
 			{
 				const fPoint = ball.y - (player.y + player.height/2); 
 				const angle = (fPoint / player.height/2) * Math.PI / 1.5;
@@ -175,7 +174,6 @@ function Canvas(props) {
 			updateBall();
 			updatePlayer(tmp_user);
 			updatePlayer(tmp_com);
-			moveCom();
 		}
 
 		function moveUser(event) {
@@ -183,10 +181,6 @@ function Canvas(props) {
 			user.y = event.clientY - rect.top - 70;
 		}
 
-		function moveCom() {
-			const computerLevel = 0.4;
-			com.y += (ball.y - (com.y + com.height/2)) * computerLevel;
-		}
 
 		function render() {
 			context.clearRect(0, 0, width, height)
@@ -194,60 +188,33 @@ function Canvas(props) {
 			// context.fillText(com.score, width/4 * 3 - 50, height/4);
 			drawRect(0, height/2 - 1, width, 2, "#FFFFFF");
 			drawRect(tmp_user.x, tmp_user.y, user.width, user.height, user.color);
-			drawRect(tmp_com.x, tmp_com.y, com.width, com.height, com.color);
+			drawRect(tmp_com.x, tmp_com.y, user.width, user.height, tmp_com.color);
 			drawCircle(tmp_ball.x, tmp_ball.y, ball.radius, ball.color);
 		}
 
-		function end() {
-			context.font = 	"bold 150px sans-serif";
-			context.clearRect(0, 0, width, height)
-			context.fillText(user.score, width/4, height/3);
-			context.fillText(com.score, width/4 * 3 - 150, height/3);
-		}
+		// function end() {
+		// 	context.font = 	"bold 150px sans-serif";
+		// 	context.clearRect(0, 0, width, height)
+		// 	context.fillText(user.score, width/4, height/3);
+		// 	context.fillText(com.score, width/4 * 3 - 150, height/3);
+		// }
 
 		function game() {
 			update();
 			// if (user.score < 11 && com.score < 11)
 			// {
-			socket.emit("PING", { channelId: 100005 , game: { ball: { x: ball.x, y: ball.y }, right: com.y, left: user.y }});
+			socket.emit("PING", { channelId: 100005 , game: { ball: { x: ball.x, y: ball.y }, bar: user.y, left: (props.userId == 1 ? true : false) }});
 			render();
-			 requestAnimationFrame(game);
+			requestAnimationFrame(game);
 			// }
 			// else
 			// 	end();
 		}
-
-		requestAnimationFrame(game);
 		canvas.addEventListener("mousemove", moveUser);
 	}, []);
-	function onClick1()
-	{
-		setUserId(1);
-	}
-	function onClick2()
-	{
-		setUserId(2);
-	}
-	function onEnter()
-	{
-		enter();
-	}
-
-	function onOn()
-	{
-
-	}
 
 	return (
-		<div>
-			<canvas className={`${styles.canvas}`} ref={canvasRef}></canvas>
-			<div>
-				<button onClick={onOn}>socketOn</button>
-				<button onClick={onClick1}>1</button>
-				<button onClick={onClick2}>2</button>
-				<button onClick={onEnter}>enter</button>
-			</div>
-		</div>
+		<canvas className={`${styles.canvas}`} ref={canvasRef}></canvas>
 	);
 }
 

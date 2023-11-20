@@ -15,8 +15,8 @@ function Menu(props:any)
 {
 	const navigate = useNavigate();
   const handlerButton = () => {
-    // navigate('/Mode')
-    navigate("/Game");
+    const socket = io('http://localhost:3131');
+    navigate("/Loading");
   };
   const handlerButtonChatting = () => {
     navigate("/Chatting");

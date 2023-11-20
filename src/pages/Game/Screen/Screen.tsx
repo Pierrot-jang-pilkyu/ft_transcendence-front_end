@@ -3,7 +3,7 @@ import Canvas from "./Canvas/Canvas";
 import styles from "./Screen.module.css"
 import { useState } from "react";
 
-function Screen()
+function Screen(props)
 {
     const [isReady, setReady] = useState(false);
     const [options, setOptions] = useState({
@@ -11,12 +11,12 @@ function Screen()
         barSize: 5,
         ballSize: 5,    
     });
-    <div className={`${styles.container}`}>
-    {/* {!isReady && <Setting setOptions={setOptions} setReady={setReady}/>} */}
-    {true && <Canvas options={options}/>} 
-</div>
+
     return (
-        <Canvas options={options}/>
+        <div className={`${styles.container}`}>
+            {!isReady && <Setting setOptions={setOptions} setReady={setReady}/>}
+            {isReady && <Canvas options={options} userId={props.userId}/>} 
+        </div>
     )
 }
 
