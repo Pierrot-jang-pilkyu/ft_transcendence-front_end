@@ -10,11 +10,12 @@ import Chatting from './pages/Chatting/Chatting';
 import { useState, createContext } from "react";
 // import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 
 import Ranking from "./pages/Ranking/Ranking";
 
 export const IdContext = createContext();
+export const IsOpenExcludeGame = createContext();
 
 // Cookie
 import { Cookies } from 'react-cookie';
@@ -31,11 +32,13 @@ export const getCookie = (name: string) => {
 
 // Socket connet
 
-let socket = io('http://localhost:3000');
+// let socket = io('http://localhost:3000');
 
 //HERE
 function App() {
 	const [id, setId] = useState();
+  const [IsOpen, setIsOpen] = useState(false);
+
 
 	const userId = getCookie("user.id");
 
@@ -60,25 +63,28 @@ function App() {
             <Route path="/" element={<Home />} />
             {true && (
               <>
+                <IsOpenExcludeGame.Provider value={[IsOpen, setIsOpen]}>
+
                 <Route path="/MyProfile" element={<Myprofile />} />
                 <Route path="/FriendProfile" element={<Friendprofile />} />
                 <Route path="/Lobby" element={<Lobby id={userId}/>} />
                 <Route path="/Mode" element={<Mode />} />
-                <Route path="/Game" element={<Game />} />
                 <Route path="/Friends" element={<Friends />} />
+                <Route path="/Game" element={<Game />} />
                 <Route
                   path="/Chatting"
                   element={
                     <Chatting
-                      socket={socket}
-                      id={userId}
-                      pageStart="0"
-                      name="pjang"
-                      avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"
+                    // socket={socket}
+                    id={userId}
+                    pageStart="0"
+                    name="pjang"
+                    avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"
                     />
                   }
-                />
+                  />
                 <Route path="/Ranking" element={<Ranking />} />
+                </IsOpenExcludeGame.Provider>
               </>
             )}
           </Routes>

@@ -4,8 +4,9 @@ import Profile from "./Profile/Profile";
 import Ranking from "./Ranking/Ranking";
 import Menu from "./Menu/Menu";
 import { useContext, useEffect, useState } from "react";
-import { IdContext } from "../../App";
+import { IdContext, IsOpenExcludeGame } from "../../App";
 import { useLocation } from "react-router-dom";
+import AddAndAccept from "../../components/AddAndAccept";
 // import Friends from "./Friends/Frends"
 // import HomeBall from "../../assets/HomeBall.png";
 
@@ -18,8 +19,15 @@ interface FriendProps {
 
 function Lobby(props:any)
 {
+	setIsOpen(true);
+	const [modal, setModal] = useState(true);
+	const [IsOpen, setOpen] = useContext(IsOpenExcludeGame);
 	const [id, setId] = useContext(IdContext);
 
+	setOpen(true);
+	const handleModal = () => {
+		setModal(false);
+	};
 	// const Objects = [ { name: "pjang", img: "src/assets/img_Profile.png" },  { name: "sehjang", img: "src/assets/react.svg" }];
 	// const Objects:any = [ { name: "pjang", img: "src/assets/img_Profile.png" },  { name: "sehjang", img: "src/assets/react.svg" }];
 	// const Objects:any[] = [ { name: "pjang", img: "src/assets/img_Profile.png" },  { name: "sehjang", img: "src/assets/react.svg" }];
@@ -35,6 +43,7 @@ function Lobby(props:any)
 			<div className={`${styles.menu_container}`}>
 				<Menu friendObjects={Objects} id={props.id}/>
 			</div>
+			{modal && <AddAndAccept onClose={handleModal}/>}
 		</div>
 	)
 }
