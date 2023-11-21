@@ -7,7 +7,7 @@ import Friendprofile from "./pages/Profile/FriendProfile";
 import Game from "./pages/Game/Game";
 import Friends from "./pages/Lobby/Menu/Friends/Friends";
 import Chatting from './pages/Chatting/Chatting';
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 // import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 // import io from 'socket.io-client';
@@ -19,6 +19,8 @@ export const IsOpenExcludeGame = createContext();
 
 // Cookie
 import { Cookies } from 'react-cookie';
+import ModalPortals from "./hooks/Modal/modal";
+import AddAndAccept from "./components/AddAndAccept";
 
 const cookies = new Cookies();
 
@@ -38,8 +40,35 @@ export const getCookie = (name: string) => {
 function App() {
 	const [id, setId] = useState();
   const [IsOpen, setIsOpen] = useState(false);
+  //modal props설정부분
+  // const [ModalProps, setModalProps] = useState(); //프롭스 설정해주는 부분이 추가되어야함.
+  // const [IsModalOpen, setIsModalOpen] = useState(false);
 
+  // useEffect(() => {
+  //   socket.on('friendsinvite', () => {
+  //     // friendsinvite 이벤트가 발생할 때 subject를 동적으로 추가하여 상태를 변경
+  //     setModalProps((prevOptions) => ({
+  //       ...prevOptions,
+  //       subject: '친추초대',
+  //       accept: '친구 수락하기',
+  //     }));
+  //   });
 
+  //   socket.on('gameinvite', () => {
+  //     // gameinvite 이벤트가 발생할 때 subject를 동적으로 추가하여 상태를 변경
+  //     setModalProps((prevOptions) => ({
+  //       ...prevOptions,
+  //       subject: '게임초대',
+  //       accept: '게임 수락하기',
+  //     }));
+  //   });
+  //   setIsModalOpen(true);
+  // }, [socket]);
+  
+  // const handleModal = () => {
+  //   setIsModalOpen(false);
+  // }
+  //modal부분 끝
 	const userId = getCookie("user.id");
 
   // 라우트 가드 함수
@@ -84,6 +113,9 @@ function App() {
                   }
                   />
                 <Route path="/Ranking" element={<Ranking />} />
+                {/* <ModalPortals>
+                  {IsOpen && (IsModalOpen && <AddAndAccept options={ModalProps} onClose={handleModal}/>)}
+                </ModalPortals> */}
                 </IsOpenExcludeGame.Provider>
               </>
             )}
@@ -93,5 +125,6 @@ function App() {
     </div>
   );
 }
+// }
 
 export default App;
