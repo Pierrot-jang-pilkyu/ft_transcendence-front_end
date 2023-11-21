@@ -32,7 +32,7 @@ export const getCookie = (name: string) => {
 
 // Socket connet
 
-let socket = io('http://localhost:3000');
+// let socket = io('http://localhost:3000');
 
 //HERE
 function App() {
@@ -71,7 +71,7 @@ function App() {
                   path="/Chatting"
                   element={
                     <Chatting
-                      socket={socket}
+                      socket={null}
                       id={userId}
                       pageStart="0"
                       name="pjang"
