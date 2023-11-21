@@ -209,7 +209,7 @@ function Chatting (props:any) {
     const viewAvatar = () => {
         const res:any = [];
 
-        if (currentCR.chatId === 0)
+        if (currentCR.chatId === 0 || currentCR.users.length === 0)
         {
             res.push(<li><div className={styles.profile_font}>{" \" Carpe Diem ! \" "}</div></li>);
             return res;
@@ -484,9 +484,9 @@ function Chatting (props:any) {
 
             function enter(chatId:number, userId:number, password:string) {
                 // userId: userId
-                console.log("channelId: " + chatId + ", userId: " + 2 + ", password: " + password);
-                if (chatId === -1)
+                if (chatId === 0)
                     return ;
+                console.log("channelId: " + chatId + ", userId: " + 2 + ", password: " + password);
                 // socket.emit('JOIN', { channelId: chatId, userId: userId, password: password });
                 socket.emit('JOIN', { channelId: chatId, userId: 2, password: password });
             }
@@ -507,7 +507,7 @@ function Chatting (props:any) {
                     }
                     else
                     {
-                        setChatAvatar(<li><div className={styles.profile_font}>{" \" Carpe Diem ! \" "}</div></li>);
+                        setChatAvatar(viewAvatar());
                         setChatLog(onChatting(currentCR));
                     }
                 }
@@ -529,7 +529,7 @@ function Chatting (props:any) {
                     }
                     else
                     {
-                        setChatAvatar(<li><div className={styles.profile_font}>{" \" Carpe Diem ! \" "}</div></li>);
+                        setChatAvatar(viewAvatar());
                         setChatLog(onChatting(currentCR));
                     }
                 }
