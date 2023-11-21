@@ -7,11 +7,11 @@ function Avatar(props:any) {
     const avatarState = () => {
         const res = [];
         
-        if (props.state === "online")
+        if (props.state == "1")
             res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
-        if (props.state === "offline")
+        if (props.state == "2")
             res.push(<div className={`${styles.avatar_offline}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
-        if (props.state === "playing")
+        if (props.state == "3")
             res.push(<div className={`${styles.avatar_playing}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
         
         return res;

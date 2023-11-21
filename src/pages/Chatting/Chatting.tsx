@@ -5,14 +5,14 @@ import Avatar from "./Avatar";
 import { useRef, useCallback, useEffect, useState, KeyboardEvent } from "react";
 import RoomAddModal from "./RoomAddModal";
 import axios from 'axios';
-import io from 'socket.io-client';
+import socket from "./Socket";
 import TestChatList from "./TestChatList";
 
 interface User {
     name: string;
 	img: string;
 	state: string;
-	date: string;
+	id: string;
     op: boolean;
 }
 
@@ -35,7 +35,8 @@ interface ChattingRoom {
 }
 
 let chatListNum = 0;
-let socketNum = 0;
+
+let socketOnNum = 0;
 
 let logDay:string = "";
 
@@ -60,16 +61,6 @@ function Chatting (props:any) {
     const handleCloseModal = () => {
         setOpenRoomAddModal(false);
     };
-
-    let socket:any;
-
-    if (socketNum === 0)
-    {
-        socketNum++;
-        // Socket connect
-
-        socket = io('http://localhost:3131');
-    }
 
     // time
     let today:any = new Date();
@@ -153,6 +144,7 @@ function Chatting (props:any) {
     const [chat, setChat] = useState('');
     const [chatId, setChatId] = useState<number>(0);
     const [chatTitle, setChatTitle] = useState('Lobby');
+    const [chatAvatar, setChatAvatar] = useState<any>([<li><div className={styles.profile_font}>{" \" Carpe Diem ! \" "}</div></li>]);
     const [chatLog, setChatLog] = useState<any>([
         <li>
             <div className={styles.chatting_start}>
@@ -224,31 +216,25 @@ function Chatting (props:any) {
         }
         
         for (let i = 0; i < currentCR.users.length; ++i)
-        // for (let i = 0; i < 1; ++i)
         {
-            
-            // users.push(
-            //     { name: currentCR.users[i].name, img: i === 0? props.avatar : "./src/assets/img_Profile.png", state: "online", date: currentCR.users[i].date, op: currentCR.users[i].op }
-            //     );
-                
-                const profile = document.getElementById("profile");
-                console.log(profile);
             // 이미지, 방장여부, 상태(온라인, 게임중, 오프라인) 받기
             res.push(
-                <li><Avatar name={currentCR.users[i].name} img={currentCR.users[i].img} state={currentCR.users[i].state} /></li>
+                <li>
+                    <Avatar name={currentCR.users[i].name} img={currentCR.users[i].img} state={currentCR.users[i].state} />
+                </li>
             );
         }
 
         return res;
     };
 
-    const thisDayStamp = (date:string) => {
+    const thisDayStamp = (log:any, date:string) => {
         if (logDay === date.substring(0, 10))
             return ;
         else
         {
             logDay = date.substring(0, 10);
-            currentCR.chatLogList.push(<li>
+            log.push(<li>
                 <div className={styles.chatting_start}>
                     <div className={styles.chatting_start_font}>{timeStamp_this(1, date)}</div>
                 </div>
@@ -258,45 +244,28 @@ function Chatting (props:any) {
 
     const onChatting = (cr:ChattingRoom) => {
 
+        const res:any = [];
+
         cr.chatLogList.splice(0, cr.chatLogList.length);
     
         if (cr.backLogList.length === 0 && cr.start === 0)
         {
             cr.start = 1;
-            cr.chatLogList = chatLog;
-            cr.chatLogList.push(<li>
+            // cr.chatLogList = chatLog;
+            res.push(<li>
                 <div className={styles.chatting_start}>
                     <div className={styles.chatting_start_font}>{timeStamp(1)}</div>
                 </div>
                 </li>);
-
-            // cr.chatLogList.push(
-            //     <li>
-            //         <div className={`${styles.chat} ${styles.chat_start}`}>
-            //             <div className={`${styles.chat_image}`}>
-            //                 <div className="w-10 rounded-full">
-            //                     <img className={styles.rounded_avatar} src={"./src/assets/img_Profile.png"} />
-            //                 </div>
-            //             </div>
-            //             <div className={`${styles.chat_header}`}>
-            //                 {"test"}
-            //                 <time className={`${styles.text_xs} ${styles.opacity_50}`}>{timeStamp(0)}</time>
-            //             </div>
-            //             <div className={`${styles.chat_bubble}`}>{"Hello"}</div>
-            //             <div className={`${styles.chat_footer} ${styles.opacity_50}`}>
-            //             </div>
-            //         </div>
-            //     </li>
-            // );
         }
         else if (cr.start === -1)
         {
-            cr.chatLogList.push(<li>
+            res.push(<li>
                 <div className={styles.chatting_start}>
                     <div className={styles.chatting_start_font}>Looby</div>
                 </div>
             </li>)
-            cr.chatLogList.push(<li>
+            res.push(<li>
                 <div className={`${styles.chat} ${styles.chat_start}`}>
                     <div className={`${styles.chat_image}`}>
                         <div className="w-10 rounded-full">
@@ -319,8 +288,8 @@ function Chatting (props:any) {
             // if (cr.backLogList[i].name === props.name)
             if (cr.backLogList[i].name === "bread")
             {
-                thisDayStamp(cr.backLogList[i].date);
-                cr.chatLogList.push(<li>
+                thisDayStamp(res, cr.backLogList[i].date);
+                res.push(<li>
                     <div className={ `${styles.chat} ${styles.chat_end}` }>
                         <div className={ `${styles.chat_image}` }>
                             <div className="w-10 rounded-full">
@@ -339,8 +308,8 @@ function Chatting (props:any) {
             }
             else
             {
-                thisDayStamp(cr.backLogList[i].date);
-                cr.chatLogList.push(<li>
+                thisDayStamp(res, cr.backLogList[i].date);
+                res.push(<li>
                     <div className={ `${styles.chat} ${styles.chat_start}` }>
                         <div className={ `${styles.chat_image}` }>
                             <div className="w-10 rounded-full">
@@ -358,14 +327,12 @@ function Chatting (props:any) {
                 </li>);
             }
         }
+
+        return res;
     };
 
     const [viewRoomList, setViewRoomList] = useState<any>([]);
 
-    function onChatting1 ()
-    {
-        console.log("!")
-    }
     const viewChattingRoomList = () => {
         let res:any = [];
 
@@ -396,15 +363,6 @@ function Chatting (props:any) {
     // useEffect(() => {
 
     // }, [viewRoomList, chatLog]);
-
-    function enter(chatId:number, userId:number, password:string) {
-        // userId: userId
-        console.log("channelId: " + chatId + ", userId: " + 2 + ", password: " + password);
-        if (chatId === -1)
-            return ;
-        // socket.emit('JOIN', { channelId: chatId, userId: userId, password: password });
-        socket.emit('JOIN', { channelId: chatId, userId: 2, password: password });
-    }
 
     useEffect(() => {
         // axios.get(`http://localhost:3000/users/${userId}/channels`)
@@ -446,47 +404,111 @@ function Chatting (props:any) {
             })
             .catch((Error)=>{console.log(Error)})
         }
+
+        socket.connect();
+        // socket.emit("REGIST", userId);
+        socket.emit("REGIST", 2);
+
+        function onLoadChat (responseData:any) {
+            console.log("LOADCHAT");
+            console.log(responseData);
+            
+            for (let i = responseData.length - 1; i > -1; --i)
+            {
+                currentCR.backLogList.push({ name: responseData[i].user.name, img: responseData[i].user.avatar, date: responseData[i].date, chat: responseData[i].content });
+            }
+    
+            // onChatting(currentCR);
+            setChatLog(onChatting(currentCR));
+            // currentCR.chatLogList = chatLog;
+        }
+
+        function onInfoChList (responseData:any) {
+            console.log("INFO_CH_LIST");
+            console.log(responseData);
+    
+            clientChatList.splice(0, clientChatList.length);
+            clientChatList.push(lobby);
+            publicChatList.splice(0, publicChatList.length);
+    
+            for (let i = 0; i < responseData.me.length; ++i) {
+                // console.log(responseData.me[i]);
+                { responseData.me[i].public && clientChatList.push({ start: 1, chatId: responseData.me[i].id, title: responseData.me[i].title, private: false, users: [], limits: responseData.me[i].limit, backLogList: [], chatLogList: [] }) };
+                { !responseData.me[i].public && clientChatList.push({ start: 1, chatId: responseData.me[i].id, title: responseData.me[i].title, private: true, users: [], limits: responseData.me[i].limit, backLogList: [], chatLogList: [] }) };
+            }
+    
+            for (let i = 0; i < responseData.other.length; ++i) {
+                // console.log(responseData.other[i]);
+                { responseData.other[i].public && publicChatList.push({ start: 1, chatId: responseData.other[i].id, title: responseData.other[i].title, private: false, users: [], limits: responseData.other[i].limit, backLogList: [], chatLogList: [] }) };
+                { !responseData.other[i].public && publicChatList.push({ start: 1, chatId: responseData.other[i].id, title: responseData.other[i].title, private: true, users: [], limits: responseData.other[i].limit, backLogList: [], chatLogList: [] }) };
+            }
+    
+            setViewRoomList(viewChattingRoomList());
+        }
+
+        function onInfoChMem (responseData:any) {
+            console.log("INFO_CH_MEMBER");
+            console.log(responseData);
+
+            // code
+            currentCR.users.splice(0, currentCR.users.length);
+            for (let i = 0; i < responseData.length; ++i) {
+                currentCR.users.push({
+                    name: responseData[i].user.name, 
+                    img: "./src/assets/img_Profile.png", 
+                    state: responseData[i].user.status, 
+                    id: responseData[i].user.id, 
+                    op: responseData[i].op
+                });
+                // console.log(currentCR.users[i]);
+            }
+
+            setChatAvatar(viewAvatar());
+        }
+
+        socket.on("LOADCHAT", onLoadChat);
+        socket.on("INFO_CH_LIST", onInfoChList);
+        socket.on("INFO_CH_MEMBER", onInfoChMem);
+
+        return (() => {
+            socket.disconnect();
+            socket.off("LOADCHAT", onLoadChat);
+            socket.off("INFO_CH_LIST", onInfoChList);
+            socket.off("INFO_CH_MEMBER", onInfoChMem);
+        });
         
     }, [])
 
     useEffect( () => {
-
-        
         const enterChatRoom = (e:any) => {
-            
-            // const chatListDiv: any = [];
 
-            // for (let i = 0; i < clientChatList.length; ++i)
-            // {
-            //     chatListDiv.push(document.getElementById(clientChatList[i].chatId));
-            // }
-
-            // document.onclick = function (e: any) {
-            //     for (let i = 0; i < clientChatList.length; ++i)
-            //     {
-            //         if (e.target.id === (clientChatList[i].chatId)) {
-            //             currentCR.backLogList = clientChatList[i].backLogList;
-            //             currentCR.chatId = clientChatList[i].chatId;
-            //             currentCR.users = clientChatList[i].users;
-            //             onChatting(currentCR);
-            //         }
-            //     }
-            // }
+            function enter(chatId:number, userId:number, password:string) {
+                // userId: userId
+                console.log("channelId: " + chatId + ", userId: " + 2 + ", password: " + password);
+                if (chatId === -1)
+                    return ;
+                // socket.emit('JOIN', { channelId: chatId, userId: userId, password: password });
+                socket.emit('JOIN', { channelId: chatId, userId: 2, password: password });
+            }
             
             for (let i = 0; i < clientChatList.length; ++i)
             {
                 if (e.target.id === (clientChatList[i].title))
                 {
+                    logDay = "";
                     currentCR.start = clientChatList[i].start;
                     setChatTitle(clientChatList[i].title);
                     setChatId(clientChatList[i].chatId);
                     currentCR.backLogList = clientChatList[i].backLogList;
                     currentCR.users = clientChatList[i].users;
                     if (e.target.id !== "Lobby")
+                    {
                         enter(clientChatList[i].chatId, userId, "");
+                    }
                     else
                     {
-                        onChatting(currentCR);
+                        setChatAvatar(<li><div className={styles.profile_font}>{" \" Carpe Diem ! \" "}</div></li>);
+                        setChatLog(onChatting(currentCR));
                     }
                 }
             }
@@ -495,65 +517,30 @@ function Chatting (props:any) {
             {
                 if (e.target.id === (publicChatList[i].title))
                 {
+                    logDay = "";
                     currentCR.start = publicChatList[i].start;
                     setChatTitle(publicChatList[i].title);
                     setChatId(publicChatList[i].chatId);
                     currentCR.backLogList = publicChatList[i].backLogList;
                     currentCR.users = publicChatList[i].users;
                     if (e.target.id !== "Lobby")
-                        enter(publicChatList[i].chatId, userId, "");
+                    {
+                        enter(clientChatList[i].chatId, userId, "");
+                    }
                     else
                     {
-                        onChatting(currentCR);
+                        setChatAvatar(<li><div className={styles.profile_font}>{" \" Carpe Diem ! \" "}</div></li>);
+                        setChatLog(onChatting(currentCR));
                     }
                 }
             }
-            socket.on("LOADCHAT", function (responseData:any) {
-                console.log("LOADCHAT");
-                console.log(responseData);
-                
-                for (let i = responseData.length - 1; i > -1; --i)
-                {
-                    currentCR.backLogList.push({ name: responseData[i].user.name, img: responseData[i].user.avatar, date: responseData[i].date, chat: responseData[i].content });
-                }
-        
-                onChatting(currentCR);
-                setChatLog(currentCR.chatLogList);
-                currentCR.chatLogList = chatLog;
-            });
-        
-            socket.on("INFO_CH_LIST", function (responseData:any) { 
-                console.log("INFO_CH_LIST");
-                console.log(responseData);
-        
-                clientChatList.splice(0, clientChatList.length);
-                clientChatList.push(lobby);
-                publicChatList.splice(0, publicChatList.length);
-        
-                for (let i = 0; i < responseData.me.length; ++i) {
-                    // console.log(responseData.me[i]);
-                    { responseData.me[i].public && clientChatList.push({ start: 1, chatId: responseData.me[i].id, title: responseData.me[i].title, private: false, users: [], limits: responseData.me[i].limit, backLogList: [], chatLogList: [] }) };
-                    { !responseData.me[i].public && clientChatList.push({ start: 1, chatId: responseData.me[i].id, title: responseData.me[i].title, private: true, users: [], limits: responseData.me[i].limit, backLogList: [], chatLogList: [] }) };
-                }
-        
-                for (let i = 0; i < responseData.other.length; ++i) {
-                    // console.log(responseData.other[i]);
-                    { responseData.other[i].public && publicChatList.push({ start: 1, chatId: responseData.other[i].id, title: responseData.other[i].title, private: false, users: [], limits: responseData.other[i].limit, backLogList: [], chatLogList: [] }) };
-                    { !responseData.other[i].public && publicChatList.push({ start: 1, chatId: responseData.other[i].id, title: responseData.other[i].title, private: true, users: [], limits: responseData.other[i].limit, backLogList: [], chatLogList: [] }) };
-                }
-        
-                setViewRoomList(viewChattingRoomList());
-            });
-        
-            socket.on("INFO_CH_MEMBER", function (responseData:any) {
-                console.log("INFO_CH_MEMBER");
-                console.log(responseData);
-            });
         };
         
-        document.body.addEventListener('click', enterChatRoom);
+        document.addEventListener('click', enterChatRoom);
         
-        return () => document.body.addEventListener('click', enterChatRoom);
+        return (() => {
+            document.removeEventListener('click', enterChatRoom)
+        });
         
     }, []);
 
@@ -701,7 +688,7 @@ function Chatting (props:any) {
                 </div>
                 <div className={styles.item}>
                     <div id="profile" className={styles.profiles}>
-                        { viewAvatar() }
+                        { chatAvatar }
                     </div>
                     <div className={styles.chattingroom}>
                         <div className={styles.chattingroom_title}>
@@ -720,8 +707,7 @@ function Chatting (props:any) {
                         <div className={styles.line1}></div>
                         <div className={styles.chatting} ref={scrollRef} >
                             <ul>
-                                {/* { chatLog } */}
-                                { currentCR.chatLogList }
+                                { chatLog }
                             </ul>
                         </div>
                         <div className={styles.line2}></div>
