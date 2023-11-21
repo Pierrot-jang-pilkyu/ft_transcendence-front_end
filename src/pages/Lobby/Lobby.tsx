@@ -19,15 +19,10 @@ interface FriendProps {
 
 function Lobby(props:any)
 {
-	setIsOpen(true);
-	const [modal, setModal] = useState(true);
-	const [IsOpen, setOpen] = useContext(IsOpenExcludeGame);
+	const [IsOpen, setIsOpen] = useContext(IsOpenExcludeGame);
 	const [id, setId] = useContext(IdContext);
 
-	setOpen(true);
-	const handleModal = () => {
-		setModal(false);
-	};
+	setIsOpen(true);
 	// const Objects = [ { name: "pjang", img: "src/assets/img_Profile.png" },  { name: "sehjang", img: "src/assets/react.svg" }];
 	// const Objects:any = [ { name: "pjang", img: "src/assets/img_Profile.png" },  { name: "sehjang", img: "src/assets/react.svg" }];
 	// const Objects:any[] = [ { name: "pjang", img: "src/assets/img_Profile.png" },  { name: "sehjang", img: "src/assets/react.svg" }];
@@ -43,7 +38,6 @@ function Lobby(props:any)
 			<div className={`${styles.menu_container}`}>
 				<Menu friendObjects={Objects} id={props.id}/>
 			</div>
-			{modal && <AddAndAccept onClose={handleModal}/>}
 		</div>
 	)
 }
