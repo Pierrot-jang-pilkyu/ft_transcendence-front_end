@@ -1,32 +1,29 @@
 import React, { useRef, useEffect, useState } from 'react';
 import styles from "./Canvas.module.css"
-import io from "socket.io-client"
-
-const socket = io('http://localhost:3131')
+import socket from '../../Socket';
 
 function Canvas(props) {
 	const canvasRef = useRef(null);
 	
 	useEffect(() => {
-		let today = new Date(); 
-		let seconds = today.getSeconds();
-		console.log(socket.emit('JOIN', { userId: props.userId, channelId: 100005 }))
-		// socket.emit("READY", { channelId: 100005 , left: props.userId == 1 ? true : false});
-		// socket.on("START", (data) => {
-		// 	requestAnimationFrame(game)
-		// })
+		console.log(props)
 		socket.on("PONG", (data) => {
-			console.log(data);
 			tmp_ball.x = data.ball.x;
 			tmp_ball.y = data.ball.y;
-			tmp_user.y = data.left;
-			tmp_com.y = data.right;
+			tmp_user.y = props.isLeft == true ? data.left : data.right;
+			tmp_com.y = props.isLeft == false ? data.left : data.right;
 		});
 
-		socket.on("VECTOR", (data) => { 
+		socket.on("VECTOR", (data) => {
+			ball.x = data.x;
+			ball.y = data.y;
 			ball.vX = data.xv;
-			ball.vY = data.xy;
+			ball.vY = data.yv;
 		});
+
+		socket.on("RECONNECT", () => {
+			socket.emit("HIT", { roomId: props.roomId, x: ball.x, y: ball.y, xv: ball.vX, yv: ball.vY });
+		})
 
 		const canvas = canvasRef.current;
 		const width = 800;
@@ -49,7 +46,7 @@ function Canvas(props) {
 
 		const barSizeRatio = props.options.barSize / 5;
 		const ballSizeRatio = props.options.ballSize / 5;
-		const speedRatio = props.options.speed / 5;
+		const speedRatio = props.options.speed / 10;
 
 		function drawRect(x, y, w, h, color) {
 			context.fillStyle = color;
@@ -65,11 +62,11 @@ function Canvas(props) {
 		}
 
 		const user = {
-			x : props.userId == 1 ? 40 : width - 16 - 40,
+			x : props.isLeft == true ? 40 : width - 16 - 40,
 			y : height/2 - 70,
 			width : 16,
 			height : 140 * barSizeRatio,
-			color : props.userId == 1 ? "#397DFF" : "#FFB359",
+			color : props.isLeft == true ? "#397DFF" : "#FFB359",
 			score : 0
 		}
 
@@ -78,8 +75,10 @@ function Canvas(props) {
 			y : height/2,
 			radius : 10 * ballSizeRatio,
 			speed : 20 * speedRatio,
-			vX : 10 * speedRatio * Math.cos(45),
-			vY : 10 * speedRatio * Math.sin(45),
+			// vX : 10 * speedRatio * Math.cos(45),
+			// vY : 10 * speedRatio * Math.sin(45),
+			vX : 10,
+			vY : 1,
 			color : "white",
 			pause: 100,
 		}
@@ -92,18 +91,18 @@ function Canvas(props) {
 		const tmp_com = {
 			width : 16,
 			height : 140 * barSizeRatio,
-			x : width - 16 - 40,
+			x : props.isLeft == false ? 40 : width - 16 - 40,
 			y : height/2 - 70,
-			color : "#FFB359",
+			color : props.isLeft == false ? "#397DFF" : "#FFB359",
 			score : 0
 		}
 
 		const tmp_user = {
-			x : 40,
+			x : props.isLeft == true ? 40 : width - 16 - 40,
 			y : height/2 - 70,
 			width : 16,
 			height : 140 * barSizeRatio,
-			color : "#397DFF",
+			color : props.isLeft == true ? "#397DFF" : "#FFB359",
 			score : 0
 		}
 
@@ -142,7 +141,7 @@ function Canvas(props) {
 			const player = user;
 			if (isHitByWall())
 				ball.vY *= -1;
-			else if ((props.userId == 1 && ball.x < width/2) || (props.userId == 2 && ball.x > width/2)
+			else if (((props.isLeft == true && ball.x < width/2) || (props.isLeft == false && ball.x > width/2))
 				&& isHitBy(player))
 			{
 				const fPoint = ball.y - (player.y + player.height/2); 
@@ -152,13 +151,15 @@ function Canvas(props) {
 				if (ball.x > width/2)
 					ball.vX *= -1;
 				ball.vY = ball.speed * Math.sin(angle);
-				ball.speed += 0.01;
+				socket.emit("HIT", { roomId: props.roomId, x: ball.x, y: ball.y, xv: ball.vX, yv: ball.vY });
 			}
 			else if (isOut())
 			{
 				ball.x = width/2;
 				ball.y = height/2;
 				ball.pause = 100;
+				ball.vX = 10;
+				ball.vY = 1;
 				render();
 			}
 		}
@@ -172,8 +173,7 @@ function Canvas(props) {
 
 		function update() {
 			updateBall();
-			updatePlayer(tmp_user);
-			updatePlayer(tmp_com);
+			updatePlayer(user);
 		}
 
 		function moveUser(event) {
@@ -187,8 +187,8 @@ function Canvas(props) {
 			// context.fillText(user.score, width/4, height/4);
 			// context.fillText(com.score, width/4 * 3 - 50, height/4);
 			drawRect(0, height/2 - 1, width, 2, "#FFFFFF");
-			drawRect(tmp_user.x, tmp_user.y, user.width, user.height, user.color);
-			drawRect(tmp_com.x, tmp_com.y, user.width, user.height, tmp_com.color);
+			drawRect(tmp_user.x, tmp_user.y, tmp_user.width, tmp_user.height, tmp_user.color);
+			drawRect(tmp_com.x, tmp_com.y, tmp_user.width, tmp_user.height, tmp_com.color);
 			drawCircle(tmp_ball.x, tmp_ball.y, ball.radius, ball.color);
 		}
 
@@ -203,14 +203,26 @@ function Canvas(props) {
 			update();
 			// if (user.score < 11 && com.score < 11)
 			// {
-			socket.emit("PING", { channelId: 100005 , game: { ball: { x: ball.x, y: ball.y }, bar: user.y, left: (props.userId == 1 ? true : false) }});
+			socket.emit("PING", { roomId: props.roomId, ball: { x: ball.x, y: ball.y }, bar: user.y, isLeft: props.isLeft });
 			render();
 			requestAnimationFrame(game);
 			// }
 			// else
 			// 	end();
 		}
+
+		function onVisiblityChange() {
+			if (document.visibilityState == 'visible')
+				socket.emit("RECONNECT", { roomId: props.roomId });
+		}
+
+		requestAnimationFrame(game);
 		canvas.addEventListener("mousemove", moveUser);
+		document.addEventListener("visibilitychange", onVisiblityChange);
+
+		return (()=>{
+			document.removeEventListener("visibilitychange", onVisiblityChange);
+		})
 	}, []);
 
 	return (
