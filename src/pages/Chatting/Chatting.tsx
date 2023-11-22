@@ -650,7 +650,7 @@ function Chatting (props:any) {
         socket.on("INFO_CH_MEMBER", onInfoChMem);
         socket.on("MSG", onMSG);
 
-        // cmd protocall
+        // cmd protocol
         socket.on("KICK", onKick);
         socket.on("BAN", onBan);
         socket.on("BLOCK", onBlock);
@@ -662,7 +662,7 @@ function Chatting (props:any) {
             socket.off("INFO_CH_MEMBER", onInfoChMem);
             socket.off("MSG", onMSG);
             
-            // cmd protocall
+            // cmd protocol
             socket.off("KICK", onKick);
             socket.off("BAN", onBan);
             socket.off("BLOCK", onBlock);
