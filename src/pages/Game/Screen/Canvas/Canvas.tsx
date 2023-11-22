@@ -1,12 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import styles from "./Canvas.module.css"
 import socket from '../../Socket';
+import { useNavigate } from 'react-router-dom';
 
 function Canvas(props) {
 	const canvasRef = useRef(null);
+	const [end, setEnd] = useState(0);
+	const navigate = useNavigate();
 	
 	useEffect(() => {
-		console.log(props)
 		socket.on("PONG", (data) => {
 			tmp_ball.x = data.ball.x;
 			tmp_ball.y = data.ball.y;
@@ -21,8 +23,37 @@ function Canvas(props) {
 			ball.vY = data.yv;
 		});
 
-		socket.on("RECONNECT", () => {
-			socket.emit("HIT", { roomId: props.roomId, x: ball.x, y: ball.y, xv: ball.vX, yv: ball.vY });
+		socket.on("SCORE", (data) => {
+			score.left = data.left;
+			score.right = data.right;
+		})
+
+		socket.on("END", (data) => {
+			cancelAnimationFrame(rafId);
+			if (data.winnerIsLeft === props.isLeft)
+				setEnd(1);
+			else
+				setEnd(2);
+		})
+
+		socket.on("PAUSE", () => {
+			cancelAnimationFrame(rafId);
+			renderPause();
+			socket.emit("SAVE", { ball: { x: ball.x, y: ball.y, xv: ball.vX, yv: ball.vY}, right: props.isLeft == true ? tmp_com.y : tmp_user.y, left: props.isLeft == true ? tmp_user.y : tmp_com.y });
+		})
+		
+		socket.on("RESUME", async (data) => {
+			await (function () {
+				ball.x = data.ball.x;
+				ball.y = data.ball.y;
+				ball.vX = data.ball.xv;
+				ball.vY = data.ball.yv;
+				tmp_ball.x = data.ball.x;
+				tmp_ball.y = data.ball.y;
+				tmp_user.y = props.isLeft == true ? data.left : data.right;
+				tmp_com.y = props.isLeft == false ? data.left : data.right;
+			})
+			rafId = requestAnimationFrame(game);
 		})
 
 		const canvas = canvasRef.current;
@@ -67,7 +98,6 @@ function Canvas(props) {
 			width : 16,
 			height : 140 * barSizeRatio,
 			color : props.isLeft == true ? "#397DFF" : "#FFB359",
-			score : 0
 		}
 
 		const ball = {
@@ -94,7 +124,6 @@ function Canvas(props) {
 			x : props.isLeft == false ? 40 : width - 16 - 40,
 			y : height/2 - 70,
 			color : props.isLeft == false ? "#397DFF" : "#FFB359",
-			score : 0
 		}
 
 		const tmp_user = {
@@ -103,9 +132,12 @@ function Canvas(props) {
 			width : 16,
 			height : 140 * barSizeRatio,
 			color : props.isLeft == true ? "#397DFF" : "#FFB359",
-			score : 0
 		}
 
+		const score = {
+			left: 0,
+			right: 0,
+		}
 
 		function isHitByWall() {
 			return ball.y + ball.radius > height
@@ -113,10 +145,6 @@ function Canvas(props) {
 		}
 
 		function isOut() {
-			// if (ball.x < 0)
-			// 	com.score++;
-			// else if (ball.x > width)
-			// 	user.score++;
 			return ball.x < 0
 				|| ball.x > width
 		}
@@ -155,6 +183,8 @@ function Canvas(props) {
 			}
 			else if (isOut())
 			{
+				if ((props.isLeft == true && ball.x > width) || (props.isLeft == false && ball.x < 0))
+					socket.emit("SCORE", { roomId: props.roomId, isLeft: props.isLeft });
 				ball.x = width/2;
 				ball.y = height/2;
 				ball.pause = 100;
@@ -184,39 +214,35 @@ function Canvas(props) {
 
 		function render() {
 			context.clearRect(0, 0, width, height)
-			// context.fillText(user.score, width/4, height/4);
-			// context.fillText(com.score, width/4 * 3 - 50, height/4);
+			context.fillText(score.left, width/4, height/4);
+			context.fillText(score.right, width/4 * 3 - 50, height/4);
 			drawRect(0, height/2 - 1, width, 2, "#FFFFFF");
 			drawRect(tmp_user.x, tmp_user.y, tmp_user.width, tmp_user.height, tmp_user.color);
 			drawRect(tmp_com.x, tmp_com.y, tmp_user.width, tmp_user.height, tmp_com.color);
 			drawCircle(tmp_ball.x, tmp_ball.y, ball.radius, ball.color);
 		}
 
-		// function end() {
-		// 	context.font = 	"bold 150px sans-serif";
-		// 	context.clearRect(0, 0, width, height)
-		// 	context.fillText(user.score, width/4, height/3);
-		// 	context.fillText(com.score, width/4 * 3 - 150, height/3);
-		// }
+		function renderPause()
+		{
+			context.fillStyle = "rgba(255, 255, 255, 0.6)";
+			context.fillRect(0, 0, width, height);
+		}
 
 		function game() {
 			update();
-			// if (user.score < 11 && com.score < 11)
-			// {
 			socket.emit("PING", { roomId: props.roomId, ball: { x: ball.x, y: ball.y }, bar: user.y, isLeft: props.isLeft });
 			render();
-			requestAnimationFrame(game);
-			// }
-			// else
-			// 	end();
+			rafId = requestAnimationFrame(game);
 		}
 
 		function onVisiblityChange() {
 			if (document.visibilityState == 'visible')
-				socket.emit("RECONNECT", { roomId: props.roomId });
+				socket.emit("RESUME");
+			else
+				socket.emit("PAUSE");
 		}
 
-		requestAnimationFrame(game);
+		let rafId = requestAnimationFrame(game);
 		canvas.addEventListener("mousemove", moveUser);
 		document.addEventListener("visibilitychange", onVisiblityChange);
 
@@ -225,8 +251,17 @@ function Canvas(props) {
 		})
 	}, []);
 
+	useEffect(()=>{
+		if (end)
+			setTimeout(() => {navigate("/Lobby")}, 3000);
+	}, [end])
+
 	return (
-		<canvas className={`${styles.canvas}`} ref={canvasRef}></canvas>
+		<div>
+			{ !end && <canvas className={`${styles.canvas}`} ref={canvasRef}></canvas> }
+			{ end == 1 && <div className={`${styles.end}`}>Win</div>}
+			{ end == 2 && <div className={`${styles.end}`}>Lose</div>}
+		</div>
 	);
 }
 
