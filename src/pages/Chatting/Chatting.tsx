@@ -3,6 +3,7 @@ import styles from "./Chatting.module.css";
 import Outside from "./Outside";
 import Avatar from "./Avatar";
 import { useRef, useCallback, useEffect, useState, KeyboardEvent } from "react";
+import { useLocation } from "react-router-dom";
 import RoomAddModal from "./RoomAddModal";
 import axios from 'axios';
 import socket from "./Socket";
@@ -51,7 +52,10 @@ let clientChatList:ChattingRoom[] = [];
 let dmChatList:ChattingRoom[] = [];
 
 function Chatting (props:any) {
-    const userId = props.id;
+
+    // const userId = props.id;
+    const { state } = useLocation();
+    const userId = state;
     const [openRoomAddModal, setOpenRoomAddModal] = useState(false);
 
     const handleOpenModal = () => {
@@ -61,6 +65,22 @@ function Chatting (props:any) {
     const handleCloseModal = () => {
         setOpenRoomAddModal(false);
     };
+
+    //test
+
+    let testUser:User = { name: 'pjang', img: './src/assets/img_Profile.png', state: "1", id: props.id, op: false };
+
+    switch (userId)
+    {
+        case "1":
+            testUser = { name: 'amanda', img: './src/assets/img_Profile.png', state: "3", id: "1", op: false}
+            break;
+        case "2":
+            testUser = { name: 'bread', img: './src/assets/img_Profile.png', state: "1", id: "2", op: false}
+            break;
+        default:
+            break ;
+    }
 
     // time
     let today:any = new Date();
@@ -75,7 +95,7 @@ function Chatting (props:any) {
                 res += "0" + (today.getMonth() + 1) + ".";
             else res += (today.getMonth() + 1) + ".";
 
-            if (today.getDate() + 1 < 10)
+            if (today.getDate() < 10)
                 res += "0" + today.getDate() + " ";
             else res += today.getDate() + " ";
 
@@ -286,7 +306,7 @@ function Chatting (props:any) {
         for (let i = 0; i < cr.backLogList.length; ++i)
         {
             // if (cr.backLogList[i].name === props.name)
-            if (cr.backLogList[i].name === "bread")
+            if (cr.backLogList[i].name === testUser.name)
             {
                 thisDayStamp(res, cr.backLogList[i].date);
                 res.push(<li>
@@ -332,6 +352,7 @@ function Chatting (props:any) {
     };
 
     const [viewRoomList, setViewRoomList] = useState<any>([]);
+    const [viewDMList, setViewDMList] = useState<any>([]);
 
     const viewChattingRoomList = () => {
         let res:any = [];
@@ -360,6 +381,19 @@ function Chatting (props:any) {
         return res;
     };
 
+    const viewChattingDMList = () => {
+        let res:any = [];
+        
+        for (let i = 0; i < dmChatList.length; ++i)
+        {
+            res.push(<li>
+                <div id={ dmChatList[i].title } className={styles.dmlist_font} >{ dmChatList[i].title }</div>
+            </li>);
+        }
+
+        return res;
+    };
+
     // useEffect(() => {
 
     // }, [viewRoomList, chatLog]);
@@ -368,7 +402,7 @@ function Chatting (props:any) {
         // axios.get(`http://localhost:3000/users/${userId}/channels`)
         if (clientChatList.length === 1)
         {
-            axios.get(`http://localhost:3000/users/${2}/channels/me`)
+            axios.get(`http://localhost:3000/users/${userId}/channels/me`)
             .then((Response)=>{
                 setMe(Response.data);
                 // console.log("me");
@@ -387,7 +421,7 @@ function Chatting (props:any) {
         }
         if (publicChatList.length === 0)
         {
-            axios.get(`http://localhost:3000/users/${2}/channels/other`)
+            axios.get(`http://localhost:3000/users/${userId}/channels/other`)
             .then((Response) => {
                 setOther(Response.data);
                 // console.log("other");
@@ -404,10 +438,26 @@ function Chatting (props:any) {
             })
             .catch((Error)=>{console.log(Error)})
         }
+        if (dmChatList.length === 0)
+        {
+            axios.get(`http://localhost:3000/users/${userId}/channels/dm`)
+            .then((Response) => {
+                setOther(Response.data);
+                // console.log("dm");
+                // console.log(Response.data);
+                for (let i = 0; i < Response.data.length; ++i)
+                {
+                    dmChatList.push({ start: 0, chatId: Response.data[i].id, title: Response.data[i].title, private: false, users: [], limits: Response.data[i].limit, backLogList: [], chatLogList: [] });
+                }
+                setDMList(dmChatList);
+                setViewDMList(viewChattingDMList());
+                // dmChatList = dmList;
+            })
+            .catch((Error)=>{console.log(Error)})
+        }
 
         socket.connect();
-        // socket.emit("REGIST", userId);
-        socket.emit("REGIST", 2);
+        socket.emit("REGIST", userId);
 
         function onLoadChat (responseData:any) {
             console.log("LOADCHAT");
@@ -420,7 +470,7 @@ function Chatting (props:any) {
     
             // onChatting(currentCR);
             setChatLog(onChatting(currentCR));
-            // currentCR.chatLogList = chatLog;
+            currentCR.chatLogList = chatLog;
         }
 
         function onInfoChList (responseData:any) {
@@ -430,6 +480,7 @@ function Chatting (props:any) {
             clientChatList.splice(0, clientChatList.length);
             clientChatList.push(lobby);
             publicChatList.splice(0, publicChatList.length);
+            publicChatList.splice(0, dmChatList.length);
     
             for (let i = 0; i < responseData.me.length; ++i) {
                 // console.log(responseData.me[i]);
@@ -441,6 +492,12 @@ function Chatting (props:any) {
                 // console.log(responseData.other[i]);
                 { responseData.other[i].public && publicChatList.push({ start: 1, chatId: responseData.other[i].id, title: responseData.other[i].title, private: false, users: [], limits: responseData.other[i].limit, backLogList: [], chatLogList: [] }) };
                 { !responseData.other[i].public && publicChatList.push({ start: 1, chatId: responseData.other[i].id, title: responseData.other[i].title, private: true, users: [], limits: responseData.other[i].limit, backLogList: [], chatLogList: [] }) };
+            }
+    
+            for (let i = 0; i < responseData.dm.length; ++i) {
+                // console.log(responseData.dm[i]);
+                { responseData.dm[i].public && dmChatList.push({ start: 1, chatId: responseData.dm[i].id, title: responseData.dm[i].title, private: false, users: [], limits: responseData.dm[i].limit, backLogList: [], chatLogList: [] }) };
+                { !responseData.dm[i].public && dmChatList.push({ start: 1, chatId: responseData.dm[i].id, title: responseData.dm[i].title, private: true, users: [], limits: responseData.dm[i].limit, backLogList: [], chatLogList: [] }) };
             }
     
             setViewRoomList(viewChattingRoomList());
@@ -455,7 +512,7 @@ function Chatting (props:any) {
             for (let i = 0; i < responseData.length; ++i) {
                 currentCR.users.push({
                     name: responseData[i].user.name, 
-                    img: "./src/assets/img_Profile.png", 
+                    img: responseData[i].user.avatar, 
                     state: responseData[i].user.status, 
                     id: responseData[i].user.id, 
                     op: responseData[i].op
@@ -466,15 +523,149 @@ function Chatting (props:any) {
             setChatAvatar(viewAvatar());
         }
 
+        function addChatLog (responseData:any) {
+            const res:any = [currentCR.chatLogList];
+
+            // if (cr.backLogList[i].name === props.name)
+            if (responseData.user.name === testUser.name)
+            {
+                thisDayStamp(res, responseData.user.date);
+                res.push(<li>
+                    <div className={ `${styles.chat} ${styles.chat_end}` }>
+                        <div className={ `${styles.chat_image}` }>
+                            <div className="w-10 rounded-full">
+                                <img className={styles.rounded_avatar} src={responseData.user.avatar} />
+                            </div>
+                        </div>
+                        <div className={ `${styles.chat_header}` }>
+                            {responseData.user.name}
+                            <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                        </div>
+                        <div className={ `${styles.chat_bubble}` }>{responseData.content}</div>
+                        <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
+                        </div>
+                    </div>
+                </li>);
+            }
+            else
+            {
+                thisDayStamp(res, responseData.user.date);
+                res.push(<li>
+                    <div className={ `${styles.chat} ${styles.chat_start}` }>
+                        <div className={ `${styles.chat_image}` }>
+                            <div className="w-10 rounded-full">
+                                <img className={styles.rounded_avatar} src={responseData.user.avatar} />
+                            </div>
+                        </div>
+                        <div className={ `${styles.chat_header}` }>
+                            {responseData.user.name}
+                            <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                        </div>
+                        <div className={ `${styles.chat_bubble}` }>{responseData.content}</div>
+                        <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
+                        </div>
+                    </div>
+                </li>);
+            }
+
+            return res;
+        }
+
+        function onMSG (responseData:any) {
+            // console.log("MSG");
+            // console.log(responseData);
+            
+            setChatLog(addChatLog(responseData));
+        }
+
+        function onKick (responseData:any) {
+            console.log("KICK");
+            console.log(responseData);
+
+            socket.emit("EXIT", { channelId: currentCR.chatId, userId: userId });
+            logDay = "";
+            currentCR.start = clientChatList[0].start;
+            setChatTitle(clientChatList[0].title);
+            setChatId(clientChatList[0].chatId);
+            currentCR.backLogList = clientChatList[0].backLogList;
+            currentCR.users = clientChatList[0].users;
+            setChatAvatar(viewAvatar());
+            setChatLog(onChatting(currentCR));
+        }
+        
+        function onBan (responseData:any) {
+            console.log("BAN");
+            console.log(responseData);
+
+            const thisTime:string = today.getFullYear() + "-" +
+                                (today.getMonth() + 1) + "-" +
+                                (today.getDate()) + "T" +
+                                today.getHours() + ":" +
+                                today.getMinutes() + ":" +
+                                today.getSeconds() + "." +
+                                today.getMilliseconds() + "Z";
+            
+            for (let i = 0; i < responseData.length; ++i)
+            {
+                onMSG({
+                    id: responseData[i].id, 
+                    user: { id: userId, 
+                        name: props.name, 
+                        avatar: props.avatar, 
+                        status: 0, 
+                        date: thisTime },
+                    content: responseData[i].user.name
+                    });
+            }
+        }
+        
+        function onBlock (responseData:any) {
+            console.log("BLOCK");
+            console.log(responseData);
+
+            const thisTime:string = today.getFullYear() + "-" +
+                                (today.getMonth() + 1) + "-" +
+                                (today.getDate()) + "T" +
+                                today.getHours() + ":" +
+                                today.getMinutes() + ":" +
+                                today.getSeconds() + "." +
+                                today.getMilliseconds() + "Z";
+
+            for (let i = 0; i < responseData.length; ++i)
+            {
+                onMSG({
+                    id: responseData[i].id, 
+                    user: { id: userId, 
+                        name: props.name, 
+                        avatar: props.avatar,  
+                        status: 0, 
+                        date: thisTime },
+                    content: responseData[i].user.name
+                    });
+            }
+        }
+
         socket.on("LOADCHAT", onLoadChat);
         socket.on("INFO_CH_LIST", onInfoChList);
         socket.on("INFO_CH_MEMBER", onInfoChMem);
+        socket.on("MSG", onMSG);
 
+        // cmd protocall
+        socket.on("KICK", onKick);
+        socket.on("BAN", onBan);
+        socket.on("BLOCK", onBlock);
+        
         return (() => {
             socket.disconnect();
             socket.off("LOADCHAT", onLoadChat);
             socket.off("INFO_CH_LIST", onInfoChList);
             socket.off("INFO_CH_MEMBER", onInfoChMem);
+            socket.off("MSG", onMSG);
+            
+            // cmd protocall
+            socket.off("KICK", onKick);
+            socket.off("BAN", onBan);
+            socket.off("BLOCK", onBlock);
         });
         
     }, [])
@@ -486,9 +677,8 @@ function Chatting (props:any) {
                 // userId: userId
                 if (chatId === 0)
                     return ;
-                console.log("channelId: " + chatId + ", userId: " + 2 + ", password: " + password);
-                // socket.emit('JOIN', { channelId: chatId, userId: userId, password: password });
-                socket.emit('JOIN', { channelId: chatId, userId: 2, password: password });
+                console.log("channelId: " + chatId + ", userId: " + userId + ", password: " + password);
+                socket.emit('JOIN', { channelId: chatId, userId: userId, password: password });
             }
             
             for (let i = 0; i < clientChatList.length; ++i)
@@ -509,6 +699,7 @@ function Chatting (props:any) {
                     {
                         setChatAvatar(viewAvatar());
                         setChatLog(onChatting(currentCR));
+                        socket.emit('JOIN', { channelId: -1, userId: userId, password: "" });
                     }
                 }
             }
@@ -523,15 +714,21 @@ function Chatting (props:any) {
                     setChatId(publicChatList[i].chatId);
                     currentCR.backLogList = publicChatList[i].backLogList;
                     currentCR.users = publicChatList[i].users;
-                    if (e.target.id !== "Lobby")
-                    {
-                        enter(clientChatList[i].chatId, userId, "");
-                    }
-                    else
-                    {
-                        setChatAvatar(viewAvatar());
-                        setChatLog(onChatting(currentCR));
-                    }
+                    enter(publicChatList[i].chatId, userId, "");
+                }
+            }
+            
+            for (let i = 0; i < dmChatList.length; ++i)
+            {
+                if (e.target.id === (dmChatList[i].title))
+                {
+                    logDay = "";
+                    currentCR.start = dmChatList[i].start;
+                    setChatTitle(dmChatList[i].title);
+                    setChatId(dmChatList[i].chatId);
+                    currentCR.backLogList = dmChatList[i].backLogList;
+                    currentCR.users = dmChatList[i].users;
+                    enter(dmChatList[i].chatId, userId, "");
                 }
             }
         };
@@ -544,6 +741,38 @@ function Chatting (props:any) {
         
     }, []);
 
+    function checkInput (input: string) {
+        if (input[0] === '/')
+        {
+            const cmdLine:string = chat.substring(1).toLowerCase();
+            const cmdList:string[] = cmdLine.split(' ');
+
+            switch (cmdList[0])
+            {
+                case 'kick':
+                    return 1;
+                case 'ban':
+                    return 1;
+                case 'unban':
+                    return 1;
+                case 'mute':
+                    return 1;
+                case 'op':
+                    return 1;
+                case 'block':
+                    return 1;
+                case 'unblock':
+                    return 1;
+                case 'pass':
+                    return 1;
+                default:
+                    return 0;
+            }
+        }
+        else
+            return 0;
+    }
+
     const onChange = (e:any) => {
 		setChat(e.target.value);
 
@@ -551,31 +780,73 @@ function Chatting (props:any) {
 	};
 
 	const onAddButton = () => {
-        if ((chat === '') || currentCR.chatId === 0)
+        if ((chat === ''))
 		{
             return '';
 		}
         
-        currentCR.chatLogList.push(
-            <li>
-            <div className={ `${styles.chat} ${styles.chat_end}` }>
-                <div className={ `${styles.chat_image}` }>
-                    <div className="w-10 rounded-full">
-                        <img className={styles.rounded_avatar} src={props.avatar} />
-                    </div>
-                </div>
-                <div className={ `${styles.chat_header}` }>
-                    {props.name}
-                    <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp(0) }</time>
-                </div>
-                <div className={ `${styles.chat_bubble}` }>{ chat }</div>
-                <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
-                </div>
-            </div>
-        </li>);
+        if (checkInput(chat) !== 0)
+        {
+            const cmdLine:string = chat.substring(1).toLowerCase();
+            const cmdList:string[] = cmdLine.split(' ');
 
-        setChatLog(currentCR.chatLogList);
-        currentCR.chatLogList = chatLog;
+            switch (cmdList[0])
+            {
+                case 'kick':
+                    socket.emit("KICK", { channelId: currentCR.chatId, userId: userId, target: cmdList[1] });
+                    break ;
+                case 'ban':
+                    if (cmdList.length === 2)
+                    {
+                        socket.emit("BAN", { channelId: currentCR.chatId, userId: userId, target: cmdList[1] });
+                    }
+                    else
+                    {
+                        socket.emit("BAN", { channelId: currentCR.chatId, userId: userId, target: "" });
+                    }
+
+                    break ;
+                case 'unban':
+                    socket.emit("UNBAN", { channelId: currentCR.chatId, userId: userId, target: cmdList[1] });
+                    break ;
+                case 'mute':
+                    socket.emit("MUTE", { channelId: currentCR.chatId, userId: userId, target: cmdList[1] });
+                    break ;
+                case 'op':
+                    socket.emit("OP", { channelId: currentCR.chatId, userId: userId, target: cmdList[1] });
+                    break ;
+                case 'block':
+                    if (cmdList.length === 2)
+                    {
+                        socket.emit("BLOCK", { channelId: currentCR.chatId, userId: userId, target: cmdList[1] });
+                    }
+                    else
+                    {
+                        socket.emit("BLOCK", { channelId: currentCR.chatId, userId: userId, target: "" });
+                    }
+                    break ;
+                case 'unblock':
+                    socket.emit("OP", { channelId: currentCR.chatId, userId: userId, target: cmdList[1] });
+                    break ;
+                case 'pass':
+                    if (cmdList.length === 2)
+                    {
+                        socket.emit("PASS", { channelId: currentCR.chatId, userId: userId, target: cmdList[1] });
+                    }
+                    else
+                    {
+                        socket.emit("PASS", { channelId: currentCR.chatId, userId: userId, target: null });
+                    }
+                    break ;
+                default:
+                    break ;
+            }
+        }
+        else
+        {
+            socket.emit("MSG", { channelId: currentCR.chatId, userId: userId, content: chat });
+            // socket.emit("MSG", { channelId: currentCR.chatId, userId: 2, content: chat });
+        }
 
         setChat('');
 	};
@@ -663,26 +934,7 @@ function Chatting (props:any) {
                     </div>
                     <div className={styles.dmlist}>
                         <ul>
-                            <li><div className={styles.dmlist_font}>1</div></li>
-                            <li><div className={styles.dmlist_font}>2</div></li>
-                            <li><div className={styles.dmlist_font}>3</div></li>
-                            <li><div className={styles.dmlist_font}>4</div></li>
-                            <li><div className={styles.dmlist_font}>5</div></li>
-                            <li><div className={styles.dmlist_font}>6</div></li>
-                            <li><div className={styles.dmlist_font}>7</div></li>
-                            <li><div className={styles.dmlist_font}>8</div></li>
-                            <li><div className={styles.dmlist_font}>9</div></li>
-                            <li><div className={styles.dmlist_font}>10</div></li>
-                            <li><div className={styles.dmlist_font}>11</div></li>
-                            <li><div className={styles.dmlist_font}>12</div></li>
-                            <li><div className={styles.dmlist_font}>13</div></li>
-                            <li><div className={styles.dmlist_font}>14</div></li>
-                            <li><div className={styles.dmlist_font}>15</div></li>
-                            <li><div className={styles.dmlist_font}>16</div></li>
-                            <li><div className={styles.dmlist_font}>17</div></li>
-                            <li><div className={styles.dmlist_font}>18</div></li>
-                            <li><div className={styles.dmlist_font}>19</div></li>
-                            <li><div className={styles.dmlist_font}>20</div></li>
+                            { viewDMList }
                         </ul>
                     </div>
                 </div>

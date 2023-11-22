@@ -14,6 +14,8 @@ import io from 'socket.io-client';
 
 import Ranking from "./pages/Ranking/Ranking";
 
+import Loading from "./pages/Chatting/Loading";
+
 export const IdContext = createContext();
 
 // Cookie
@@ -66,6 +68,7 @@ function App() {
                 <Route path="/Mode" element={<Mode />} />
                 <Route path="/Game" element={<Game />} />
                 <Route path="/Friends" element={<Friends />} />
+                <Route path="/Loading" element={<Loading />} />
                 <Route
                   path="/Chatting"
                   element={
