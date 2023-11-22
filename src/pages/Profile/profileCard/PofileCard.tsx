@@ -8,6 +8,7 @@ function ProfileCard(props: any) {
 
   useEffect(() => {
     const id = props.id;
+    console.log(props.id);
     fetch(`http://localhost:3000/users/players/${id}`, {
       method: "GET",
     })
