@@ -14,9 +14,11 @@ import FriendsList from './Friends/FriendsList';
 function Menu(props:any)
 {
 	const navigate = useNavigate();
-  const handlerButton = () => {
+	const id = props.id;
+  	const handlerButton = () => {
     // navigate('/Mode')
-    navigate("/Game");
+    // navigate("/Game");
+	props.socket.emit("REQUEST_FRIEND", { userId: id, target: "jaeywon" });
   };
   const handlerButtonChatting = () => {
     navigate("/Chatting");
