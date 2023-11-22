@@ -19,7 +19,7 @@ function Menu(props:any)
     navigate("/Game");
   };
   const handlerButtonChatting = () => {
-    navigate("/Chatting");
+    navigate("/Loading");
   };
   
 	return (
