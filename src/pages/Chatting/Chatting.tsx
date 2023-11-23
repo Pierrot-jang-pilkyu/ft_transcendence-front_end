@@ -5,6 +5,8 @@ import Avatar from "./Avatar";
 import { useRef, useCallback, useEffect, useState, KeyboardEvent } from "react";
 import { useLocation } from "react-router-dom";
 import RoomAddModal from "./RoomAddModal";
+import EnterPW from "./EnterPW";
+import AlertModal from "./AlertModal";
 import axios from 'axios';
 import socket from "./Socket";
 import TestChatList from "./TestChatList";
@@ -58,12 +60,32 @@ function Chatting (props:any) {
     const userId = state;
     const [openRoomAddModal, setOpenRoomAddModal] = useState(false);
 
-    const handleOpenModal = () => {
+    const handleOpenRoomModal = () => {
         setOpenRoomAddModal(true);
     };
 
-    const handleCloseModal = () => {
+    const handleCloseRoomModal = () => {
         setOpenRoomAddModal(false);
+    };
+
+    const [openPWAddModal, setOpenPWAddModal] = useState(false);
+
+    const handleOpenPWModal = () => {
+        setOpenPWAddModal(true);
+    };
+
+    const handleClosePWModal = () => {
+        setOpenPWAddModal(false);
+    };
+
+    const [openAlertAddModal, setOpenAlertAddModal] = useState(false);
+
+    const handleOpenAlertModal = () => {
+        setOpenAlertAddModal(true);
+    };
+
+    const handleCloseAlertModal = () => {
+        setOpenAlertAddModal(false);
     };
 
     //test
@@ -202,14 +224,6 @@ function Chatting (props:any) {
     clientChatList = roomListMe;
     publicChatList = roomListOther;
 
-    // console.log(clientChatList.length);
-    // console.log(roomListMe.length);
-    // console.log("--------------------");
-    // console.log(publicChatList);
-    // console.log(publicChatList.length);
-    // console.log(roomListOther.length);
-
-
     currentCR.chatId = chatId;
     currentCR.title = chatTitle;
     currentCR.chatLogList = chatLog;
@@ -240,7 +254,7 @@ function Chatting (props:any) {
             // 이미지, 방장여부, 상태(온라인, 게임중, 오프라인) 받기
             res.push(
                 <li>
-                    <Avatar name={currentCR.users[i].name} img={currentCR.users[i].img} state={currentCR.users[i].state} />
+                    <Avatar name={currentCR.users[i].name} img={currentCR.users[i].img} state={currentCR.users[i].state} op={currentCR.users[i].op} />
                 </li>
             );
         }
@@ -347,12 +361,15 @@ function Chatting (props:any) {
                 </li>);
             }
         }
-
+        
         return res;
     };
-
+    
     const [viewRoomList, setViewRoomList] = useState<any>([]);
     const [viewDMList, setViewDMList] = useState<any>([]);
+    const [index, setIndex] = useState<number>(-1);
+    const [content, setContent] = useState("");
+    const [pwFlag, setPWFlag] = useState<boolean>(false);
 
     const viewChattingRoomList = () => {
         let res:any = [];
@@ -367,6 +384,7 @@ function Chatting (props:any) {
         for (let i = 0; i < clientChatList.length; ++i)
         {
             res.push(<li>
+                {/* <div id={ clientChatList[i].title } className={styles.chatlist_font} onClick={handleOpenPWModal} >{ clientChatList[i].title }</div> */}
                 <div id={ clientChatList[i].title } className={styles.chatlist_font} >{ clientChatList[i].title }</div>
             </li>);
         }
@@ -374,7 +392,7 @@ function Chatting (props:any) {
         for (let i = 0; i < publicChatList.length; ++i)
         {
             res.push(<li>
-                <div id={ publicChatList[i].title } className={styles.chatlist_font_other} >{ publicChatList[i].title }</div>
+                <div id={ publicChatList[i].title } className={styles.chatlist_font_other} onClick={handleOpenPWModal} >{ publicChatList[i].title }</div>
             </li>);
         }
 
@@ -387,12 +405,24 @@ function Chatting (props:any) {
         for (let i = 0; i < dmChatList.length; ++i)
         {
             res.push(<li>
-                <div id={ dmChatList[i].title } className={styles.dmlist_font} >{ dmChatList[i].title }</div>
+                <div id={ dmChatList[i].title } className={styles.dmlist_font} onClick={handleOpenPWModal} >{ dmChatList[i].title }</div>
             </li>);
         }
 
         return res;
     };
+
+    function roomAdd (name: string, limits: string, pw: string) {
+        if (2 <= parseInt(limits) && parseInt(limits) <= 10)
+        {
+            socket.emit("HOST", { userId: userId, title: name, password: pw, limit: parseInt(limits)});
+    
+            setChatId(9999999);
+            // currentCR.chatId = chatId;
+            setChatTitle(name);
+            handleCloseRoomModal();
+        }
+    }
 
     // useEffect(() => {
 
@@ -457,7 +487,7 @@ function Chatting (props:any) {
         }
 
         socket.connect();
-        socket.emit("REGIST", userId);
+        socket.emit("REGIST", parseInt(userId));
 
         function onLoadChat (responseData:any) {
             console.log("LOADCHAT");
@@ -507,6 +537,18 @@ function Chatting (props:any) {
             console.log("INFO_CH_MEMBER");
             console.log(responseData);
 
+            if (pwFlag)
+            {
+                setPWFlag(false);
+                handleClosePWModal();
+                logDay = "";
+                currentCR.start = publicChatList[index].start;
+                setChatTitle(publicChatList[index].title);
+                setChatId(publicChatList[index].chatId);
+                currentCR.backLogList = publicChatList[index].backLogList;
+                currentCR.users = publicChatList[index].users;
+            }
+
             // code
             currentCR.users.splice(0, currentCR.users.length);
             for (let i = 0; i < responseData.length; ++i) {
@@ -541,7 +583,7 @@ function Chatting (props:any) {
                             {responseData.user.name}
                             <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
                         </div>
-                        <div className={ `${styles.chat_bubble}` }>{responseData.content}</div>
+                        <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div>
                         <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
                         </div>
                     </div>
@@ -561,12 +603,14 @@ function Chatting (props:any) {
                             {responseData.user.name}
                             <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
                         </div>
-                        <div className={ `${styles.chat_bubble}` }>{responseData.content}</div>
+                        <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div>
                         <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
                         </div>
                     </div>
                 </li>);
             }
+
+            currentCR.chatLogList = res;
 
             return res;
         }
@@ -604,19 +648,23 @@ function Chatting (props:any) {
                                 today.getMinutes() + ":" +
                                 today.getSeconds() + "." +
                                 today.getMilliseconds() + "Z";
+                                
+            let content:string = '  BAN LIST\n------------\n   ';
             
             for (let i = 0; i < responseData.length; ++i)
             {
-                onMSG({
-                    id: responseData[i].id, 
-                    user: { id: userId, 
-                        name: props.name, 
-                        avatar: props.avatar, 
-                        status: 0, 
-                        date: thisTime },
-                    content: responseData[i].user.name
-                    });
+                content += responseData[i].user.name + '\n   ';
             }
+
+            onMSG({
+                id: 1, 
+                user: { id: userId, 
+                    name: testUser.name,
+                    avatar: testUser.img, 
+                    status: 0, 
+                    date: thisTime },
+                content: content
+                });
         }
         
         function onBlock (responseData:any) {
@@ -630,20 +678,138 @@ function Chatting (props:any) {
                                 today.getMinutes() + ":" +
                                 today.getSeconds() + "." +
                                 today.getMilliseconds() + "Z";
-
+                                
+            let content:string = '  BLOCK LIST\n--------------\n    ';
+            
             for (let i = 0; i < responseData.length; ++i)
             {
-                onMSG({
-                    id: responseData[i].id, 
-                    user: { id: userId, 
-                        name: props.name, 
-                        avatar: props.avatar,  
-                        status: 0, 
-                        date: thisTime },
-                    content: responseData[i].user.name
-                    });
+                content += responseData[i].target.name + '\n    ';
+            }
+
+            onMSG({
+                id: 1, 
+                user: { id: userId, 
+                    name: testUser.name,
+                    avatar: testUser.img, 
+                    status: 0, 
+                    date: thisTime },
+                content: content
+                });
+        }
+
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // ------------------------------notice-------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+
+
+        function onNotice(responseData: any) {
+            console.log("NOTICE");
+            console.log(responseData);
+
+            switch (responseData.code) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:
+                    break;
+                case 10:
+                    break;
+                case 11:
+                    break;
+                case 12:
+                    break;
+                case 13:
+                    break;
+                case 14:
+                    break;
+                case 15:
+                    break;
+                case 16:
+                    break;
+                case 17:
+                    break;
+                case 18:
+                    break;
+                case 19:
+                    break;
+                case 20:
+                    break;
+                case 21:
+                    break;
+                case 22:
+                    break;
+                case 23:
+                    break;
+                case 24:
+                    break;
+                case 25:
+                    break;
+                case 26:
+                    break;
+                case 27:
+                    break;
+                case 28:
+                    break;
+                case 29:
+                    break;
+                case 30:
+                    break;
+                case 31:
+                    break;
+                case 32:
+                    break;
+                case 33:
+                    break;
+                case 34:
+                    break;
+                case 35:
+                    break;
+                case 36:
+                    break;
+                case 200:
+                    break;
+                default:
+                    break;
             }
         }
+
+
+    // -------------------------------------------------------------------
+    // -------------------------------------------------------------------
+    // -------------------------------------------------------------------
+    // -------------------------------------------------------------------
+    // -------------------------------------------------------------------
+    // -------------------------------------------------------------------
+    // -------------------------------------------------------------------
+    // -------------------------------------------------------------------
+    // -------------------------------------------------------------------
+
+        // notice
+        socket.on("NOTICE", onNotice);
 
         socket.on("LOADCHAT", onLoadChat);
         socket.on("INFO_CH_LIST", onInfoChList);
@@ -657,6 +823,9 @@ function Chatting (props:any) {
         
         return (() => {
             socket.disconnect();
+            // notice
+            socket.off("NOTICE", onNotice);
+
             socket.off("LOADCHAT", onLoadChat);
             socket.off("INFO_CH_LIST", onInfoChList);
             socket.off("INFO_CH_MEMBER", onInfoChMem);
@@ -670,33 +839,36 @@ function Chatting (props:any) {
         
     }, [])
 
+
+    function enter(chatId:number, userId:number, password:string) {
+        // userId: userId
+        if (chatId === 0)
+            return ;
+        console.log("channelId: " + chatId + ", userId: " + userId + ", password: " + password);
+        socket.emit('JOIN', { channelId: chatId, userId: userId, password: password });
+    }
+
+    function enterRoom (pw: string) {
+        enter(publicChatList[index].chatId, userId, pw);
+    }
+
     useEffect( () => {
         const enterChatRoom = (e:any) => {
-
-            function enter(chatId:number, userId:number, password:string) {
-                // userId: userId
-                if (chatId === 0)
-                    return ;
-                console.log("channelId: " + chatId + ", userId: " + userId + ", password: " + password);
-                socket.emit('JOIN', { channelId: chatId, userId: userId, password: password });
-            }
             
             for (let i = 0; i < clientChatList.length; ++i)
             {
                 if (e.target.id === (clientChatList[i].title))
                 {
                     logDay = "";
-                    currentCR.start = clientChatList[i].start;
                     setChatTitle(clientChatList[i].title);
                     setChatId(clientChatList[i].chatId);
+                    currentCR.start = clientChatList[i].start;
                     currentCR.backLogList = clientChatList[i].backLogList;
                     currentCR.users = clientChatList[i].users;
-                    if (e.target.id !== "Lobby")
-                    {
+                    if (e.target.id !== "Lobby") {
                         enter(clientChatList[i].chatId, userId, "");
                     }
-                    else
-                    {
+                    else {
                         setChatAvatar(viewAvatar());
                         setChatLog(onChatting(currentCR));
                         socket.emit('JOIN', { channelId: -1, userId: userId, password: "" });
@@ -708,13 +880,22 @@ function Chatting (props:any) {
             {
                 if (e.target.id === (publicChatList[i].title))
                 {
-                    logDay = "";
-                    currentCR.start = publicChatList[i].start;
-                    setChatTitle(publicChatList[i].title);
-                    setChatId(publicChatList[i].chatId);
-                    currentCR.backLogList = publicChatList[i].backLogList;
-                    currentCR.users = publicChatList[i].users;
-                    enter(publicChatList[i].chatId, userId, "");
+                    if (publicChatList[i].private)
+                    {
+                        setIndex(i);
+                        setPWFlag(true);
+                        handleOpenPWModal();
+                    }
+                    else
+                    {
+                        logDay = "";
+                        currentCR.start = publicChatList[i].start;
+                        setChatTitle(publicChatList[i].title);
+                        setChatId(publicChatList[i].chatId);
+                        currentCR.backLogList = publicChatList[i].backLogList;
+                        currentCR.users = publicChatList[i].users;
+                        enter(publicChatList[i].chatId, userId, "");
+                    }
                 }
             }
             
@@ -927,7 +1108,7 @@ function Chatting (props:any) {
                             { viewRoomList }
                         </ul>
                     </div>
-                    <div className={styles.room_add} onClick={handleOpenModal} >+</div>
+                    <div className={styles.room_add} onClick={handleOpenRoomModal} >+</div>
                     <div className={styles.line}></div>
                     <div className={styles.dmlist_title}>
                         <div className={styles.dmlist_title_font}>DM List</div>
@@ -967,7 +1148,9 @@ function Chatting (props:any) {
                     </div>
                 </div>
             </div>
-            { openRoomAddModal &&  <RoomAddModal onClose={handleCloseModal} id={userId} />}
+            { openRoomAddModal &&  <RoomAddModal onClose={handleCloseRoomModal} roomAdd={roomAdd} id={userId} />}
+            { openPWAddModal &&  <EnterPW onClose={handleClosePWModal} onEnter={enterRoom} id={userId} />}
+            { openAlertAddModal &&  <AlertModal onClose={handleCloseAlertModal} content={content} />}
 		</div>
 	)
 }
