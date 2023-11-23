@@ -19,6 +19,7 @@ function Avatar(props:any) {
 
     return (
         <div className={`${styles.friend_container}`}>
+            { props.op && <img className={styles.op_crown} src="./src/assets/Chat_Avatar_crown.png" /> }
             {avatarState()}
         </div>
     );

@@ -1,10 +1,10 @@
-import styles from "./RoomAddModal.module.css";
+import styles from "./EnterPW.module.css";
 import React from "react";
 import axios from "axios";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function RoomAddModal({ onClose, roomAdd, id }) {
+function EnterPW({ onClose, onEnter, id }) {
   const [textError, setTextError] = useState(false);
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -16,16 +16,11 @@ function RoomAddModal({ onClose, roomAdd, id }) {
     
   }, []);
 
-  const [name, setName] = useState("");
-  const [limits, setLimits] = useState<string>("");
-  const [pw, setPw] = useState("");
+  const [name, setName] = useState();
+  const [pw, setPw] = useState();
 
   function onChangeName(event) {
     setName(event.target.value);
-  }
-
-  function onChangeLimits(event) {
-    setLimits(event.target.value);
   }
 
   function onChangePw(event) {
@@ -33,21 +28,10 @@ function RoomAddModal({ onClose, roomAdd, id }) {
   }
 
   const navigate = useNavigate();
-
   function onClick() {
-    console.log(name);
-    console.log(limits);
     console.log(pw);
     
-    if (!(2 <= parseInt(limits) && parseInt(limits) <= 10))
-    {
-      setTextError(true);
-      setTimeout(() => {
-        setTextError(false); // 400ms 후에 다시 false로 설정하여 흔들림 효과 제거
-      }, 400);
-    }
-
-    roomAdd(name, limits, pw);
+    onEnter(pw);
   }
 
   const handleOnKeyPress = (e) => {
@@ -62,32 +46,10 @@ function RoomAddModal({ onClose, roomAdd, id }) {
         <div className={`${styles.popup_wrap}`}>
           <div className={`${styles.popup}`}>
             <div>
-              <span className={`${styles.logo}`}>방 생성</span>
+              <span className={`${styles.logo}`}>방 입장</span>
             </div>
             <div className={`${styles.logoline}`} />
             <div className={`${styles.close}`} onClick={onClose}></div>
-            <div className={`${styles.inputcontainer_name}`}>
-              <input
-                type="text"
-                placeholder="방이름을 입력해주세요."
-                className={`${styles.input} ${
-                  textError ? styles["shake-animation"] : ""
-                }`}
-                onChange={onChangeName}
-                onKeyUp={handleOnKeyPress}
-              />
-            </div>
-            <div className={`${styles.inputcontainer_limits}`}>
-              <input
-                type="text"
-                placeholder="인원제한(2-10)을 입력해주세요."
-                className={`${styles.input} ${
-                  textError ? styles["shake-animation"] : ""
-                }`}
-                onChange={onChangeLimits}
-                onKeyUp={handleOnKeyPress}
-              />
-            </div>
             <div className={`${styles.inputcontainer_pw}`}>
               <input
                 type="text"
@@ -101,7 +63,7 @@ function RoomAddModal({ onClose, roomAdd, id }) {
             </div>
             <div className={`${styles.enter}`}>
               <button className={`${styles.btn}`} onClick={onClick}>
-                생성
+                입장
               </button>
             </div>
           </div>
@@ -110,4 +72,4 @@ function RoomAddModal({ onClose, roomAdd, id }) {
     </div>
   );
 }
-export default RoomAddModal;
+export default EnterPW;

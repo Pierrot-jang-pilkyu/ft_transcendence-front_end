@@ -14,14 +14,14 @@ import FriendsList from './Friends/FriendsList';
 function Menu(props:any)
 {
 	const navigate = useNavigate();
-  const handlerButton = () => {
-    // navigate('/Mode')
-    navigate("/Game");
-  };
-  const handlerButtonChatting = () => {
-    navigate("/Loading");
-  };
-  
+	const handlerButton = () => {
+		// navigate('/Mode')
+		navigate("/Game");
+	};
+	const handlerButtonChatting = () => {
+		navigate("/Loading");
+	};
+
 	return (
 	<div className={`${styles.container}`}>
 		<button className={`${styles.button} ${styles.game}`} onClick={handlerButton}>
