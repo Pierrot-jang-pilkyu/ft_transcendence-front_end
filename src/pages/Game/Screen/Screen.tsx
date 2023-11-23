@@ -2,7 +2,7 @@ import Setting from "./Setting/Setting"
 import Canvas from "./Canvas/Canvas";
 import styles from "./Screen.module.css"
 import { useEffect, useState } from "react";
-import socket from "../Socket";
+import socket from "../Utils";
 
 function Screen(props)
 {
