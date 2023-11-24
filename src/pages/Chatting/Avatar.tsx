@@ -19,8 +19,13 @@ function Avatar(props:any) {
 
     return (
         <div className={`${styles.friend_container}`}>
-            { props.op && <img className={styles.op_crown} src="./src/assets/Chat_Avatar_crown.png" /> }
-            {avatarState()}
+            {/* <div className="tooltip" data-tip="hello">
+                <button className="btn">Hover me</button>
+            </div> */}
+            <div className="tooltip" data-tip="hello">
+                {props.op && <img className={styles.op_crown} src="./src/assets/Chat_Avatar_crown.png" />}
+                {avatarState()}
+            </div>
         </div>
     );
   }

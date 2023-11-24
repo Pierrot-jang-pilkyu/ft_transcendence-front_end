@@ -386,6 +386,21 @@ input[id="menu"]:checked + nav[id="main_nav"] {
     transform: translate(-50%, -50%);
 }
 
+.chatting_notice_font {
+    color: #FFF;
+    font-family: Anton;
+    font-size: 1vh;
+    font-style: normal;
+    font-weight: 100;
+    line-height: normal;
+
+    position: absolute;
+    
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 
 /* -------------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------------- */
