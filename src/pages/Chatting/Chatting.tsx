@@ -183,6 +183,8 @@ function Chatting (props:any) {
     const announce:string
     = "명령어";
 
+    const [menuChecked, setMenuChecked] = useState(false);
+
     const [chat, setChat] = useState('');
     const [chatId, setChatId] = useState<number>(0);
     const [chatTitle, setChatTitle] = useState('Lobby');
@@ -227,18 +229,6 @@ function Chatting (props:any) {
     currentCR.chatId = chatId;
     currentCR.title = chatTitle;
     currentCR.chatLogList = chatLog;
-
-    const outside = () => {
-        const toggle: any = document.getElementById("menu");
-        const menu: any = document.getElementById("main_nav");
-
-        document.onclick = function (e: any) {
-            if (e.target.id !== "toggle" && e.target.id !== "menu") {
-                toggle.classList.remove("active");
-                menu.classList.remove("active");
-            }
-        }
-    }
 
     const viewAvatar = () => {
         const res:any = [];
@@ -361,6 +351,8 @@ function Chatting (props:any) {
                 </li>);
             }
         }
+
+        console.log(res);
         
         return res;
     };
@@ -370,6 +362,9 @@ function Chatting (props:any) {
     const [index, setIndex] = useState<number>(-1);
     const [content, setContent] = useState("");
     const [pwFlag, setPWFlag] = useState<boolean>(false);
+
+    let pwFlag2: boolean = false;
+    let index2: number = -1;
 
     const viewChattingRoomList = () => {
         let res:any = [];
@@ -392,7 +387,7 @@ function Chatting (props:any) {
         for (let i = 0; i < publicChatList.length; ++i)
         {
             res.push(<li>
-                <div id={ publicChatList[i].title } className={styles.chatlist_font_other} onClick={handleOpenPWModal} >{ publicChatList[i].title }</div>
+                <div id={ publicChatList[i].title } className={styles.chatlist_font_other} >{ publicChatList[i].title }</div>
             </li>);
         }
 
@@ -405,7 +400,7 @@ function Chatting (props:any) {
         for (let i = 0; i < dmChatList.length; ++i)
         {
             res.push(<li>
-                <div id={ dmChatList[i].title } className={styles.dmlist_font} onClick={handleOpenPWModal} >{ dmChatList[i].title }</div>
+                <div id={ dmChatList[i].title } className={styles.dmlist_font} >{ dmChatList[i].title }</div>
             </li>);
         }
 
@@ -416,11 +411,6 @@ function Chatting (props:any) {
         if (2 <= parseInt(limits) && parseInt(limits) <= 10)
         {
             socket.emit("HOST", { userId: userId, title: name, password: pw, limit: parseInt(limits)});
-    
-            setChatId(9999999);
-            // currentCR.chatId = chatId;
-            setChatTitle(name);
-            handleCloseRoomModal();
         }
     }
 
@@ -536,18 +526,6 @@ function Chatting (props:any) {
         function onInfoChMem (responseData:any) {
             console.log("INFO_CH_MEMBER");
             console.log(responseData);
-
-            if (pwFlag)
-            {
-                setPWFlag(false);
-                handleClosePWModal();
-                logDay = "";
-                currentCR.start = publicChatList[index].start;
-                setChatTitle(publicChatList[index].title);
-                setChatId(publicChatList[index].chatId);
-                currentCR.backLogList = publicChatList[index].backLogList;
-                currentCR.users = publicChatList[index].users;
-            }
 
             // code
             currentCR.users.splice(0, currentCR.users.length);
@@ -707,109 +685,224 @@ function Chatting (props:any) {
         // -------------------------------------------------------------------
         // -------------------------------------------------------------------
 
+        function onNoticeChatMSG (content: string) {
+            const res:any = [currentCR.chatLogList];
+
+            res.push(<li>
+                <div className={styles.chatting_start}>
+                    <div className={styles.chatting_notice_font}>{content}</div>
+                </div>
+                </li>);
+
+            currentCR.chatLogList = res;
+
+            return res;
+        }
 
         function onNotice(responseData: any) {
             console.log("NOTICE");
             console.log(responseData);
 
+            const thisTime:string = today.getFullYear() + "-" +
+                                (today.getMonth() + 1) + "-" +
+                                (today.getDate()) + "T" +
+                                today.getHours() + ":" +
+                                today.getMinutes() + ":" +
+                                today.getSeconds() + "." +
+                                today.getMilliseconds() + "Z";
+
             switch (responseData.code) {
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
+                case 1: // 1	JOIN	DB에 channel id 가 없을 경우	존재하지 않는 channel입니다.
                     setContent(responseData.content);
                     handleOpenAlertModal();
                     setTimeout(() => {
                         handleCloseAlertModal();
                       }, 1000);
                     break;
-                case 4:
+                case 2: // 2	JOIN	유저가 해당 채팅방에 밴리스트에 등록 되었을 경우	해당 channel의 ban list에 등록 되어있어 입장이 불가합니다.
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
                     break;
-                case 5:
+                case 3: // 3	JOIN	채팅방 비밀번호가 일치하지 않을 경우	비밀번호가 일치하지 않습니다.
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
                     break;
-                case 6:
+                case 4: // 4	JOIN	채팅방 인원이 가득 찼을 경우	방이 가득 찼습니다.
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
                     break;
-                case 7:
+                case 5: // 5	JOIN	채팅방 입장	유저님이 채팅방에 입장하셨습니다.
+                    console.log(pwFlag2);
+                    if (pwFlag2)
+                    {
+                        console.log("진입했다.");
+                        pwFlag2 = false;
+                        console.log(pwFlag2);
+                        handleClosePWModal();
+                        logDay = "";
+                        currentCR.start = publicChatList[index2].start;
+                        setChatTitle(publicChatList[index2].title);
+                        setChatId(publicChatList[index2].chatId);
+                        currentCR.backLogList = publicChatList[index2].backLogList;
+                        currentCR.users = publicChatList[index2].users;
+                        setTimeout(() => {
+                            setChatLog(<li>
+                                <div className={styles.chatting_start}>
+                                    <div className={styles.chatting_notice_font}>{responseData.content}</div>
+                                </div>
+                                </li>)
+                          }, 100);
+                    }
+                    else
+                        setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 8:
+                case 6: // 6	QUIT	채팅방 퇴장	유저님이 채팅방에서 퇴장하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 9:
+                case 7: // 7	EXIT	채팅방 강퇴	유저님이 채팅방에서 강퇴되었습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 10:
+                case 8: // 8	KICK, BAN, UNBAN, MUTE, PASS, OP	OP 권한이 없을 경우	OP 권한이 필요합니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 11:
+                case 9: // 9	KICK, OP	유저가 채널 맴버가 아닌경우	채널 맴버가 아닙니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 12:
+                case 10: // 10	KICK	강퇴 명령어 성공	성공적으로 강퇴하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 13:
+                case 11: // 11	BAN, UNBAN, BLOCK, UNBLOCK, MUTE, INVITE, REQUEST_FRIEND	유저가 존재하지 않을 경우	존재하지 않는 유저입니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 14:
+                case 12: // 12	BAN	유저가 이미 밴 리스트에 존재 할 경우	이미 밴 목록에 추가된 유저입니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 15:
+                case 13: // 13	BAN	밴 명령어 성공	성공적으로 밴 리스트에 추가하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 16:
+                case 14: // 14	UNBAN	유저가 밴 리스트에 존재 하지 않을 경우	밴 목록에 해당하는 유저가 없습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 17:
+                case 15: // 15	UNBAN	언밴 명령어 성공	밴 목록에서 제거하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 18:
+                case 16: // 16	BLOCK	유저가 이미 차단 리스트에 존재 할 경우	이미 차단 목록에 추가된 유저입니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 19:
+                case 17: // 17	BLOCK	블락 명령어 성공	차단 목록에 추가하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 20:
+                case 18: // 18	UNBLOCK	유저가 차단 리스트에 존재 하지 않을 경우	차단 목록에 해당하는 유저가 없습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 21:
+                case 19: // 19	UNBLOCK	언블락 명령어 성공	차단 목록에서 제거하였습니다
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 22:
+                case 20: // 20	MUTE	유저가 이미 뮤트 상태 인 경우	이미 채팅 금지된 유저입니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 23:
+                case 21: // 21	MUTE	뮤트 명령어 성공	해당 유저를 1분간 채팅 금지합니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 24:
+                case 22: // 22	PASS	PASS 명령어 성공	비밀번호가 성공적으로 변경되었습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 25:
+                case 23: // 23	INVITE, ACCEPT_GAME	유저가 게임 중 인 경우	해당 유저는 이미 게임중 입니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 26:
+                case 24: // 24	INVITE, ACCEPT_GAME	유저가 오프라인 인 경우	해당 유저는 접속중이 아닙니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 27:
+                case 25: // 25	INViTE	INVITE 명령어 성공	게임초대 메시지를 전송하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 28:
+                case 26: // 26	ACCEPT_GAME	ACCEPT_GAME 명령어 성공	요청을 수락 하였습니다.
+                    // code
+                    // code
+                    // code
+                    // code
+                    // code
+                    // code
+                    // code
                     break;
-                case 29:
+                case 27: // 27	REFUSE_GAME	REFUSE_GAME 명령어 성공	요청을 거절 하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 30:
+                case 28: // 28	REFUSE_GAME	게임 초대를 거절 당했을 경우	유저님이 게임초대를 거절 하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 31:
+                case 29: // 29	REQUEST_FRIEND	이미 친구 요청한 유저 일 경우	이미 친구 요청한 유저입니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 32:
+                case 30: // 30	REQUEST_FRIEND	이미 친구 관계일 경우	이미 친구 관계입니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 33:
+                case 31: // 31	REQUEST_FRIEND	REQUEST_FRIEND 명령어 성공	유저님에게 친구 요청하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 34:
+                case 32: // 32	ACCEPT_FRIEND	친구 관계가 되었을 경우	유저님과 친구가 되었습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 35:
+                case 33: // 33	REFUSE_FRIEND	REFUSE_FRIEND 명령어 성공	요청을 거절 하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 36:
+                case 34: // 34	REFUSE_FRIEND	친구 요청잉 거절 당했을 경우	유저님이 친구요청을 거절 하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                case 200:
+                case 35: // 35	MSG	내가 뮤트 상태 일 경우	채팅 금지로 인하여 일정 시간동안 채팅이 금지됩니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
                     break;
-                default:
+                case 36: // 36	OP	OP 명령어 성공	유저님에게 OP 권한을 부여 하였습니다.
+                    setChatLog(onNoticeChatMSG(responseData.content));
+                    break;
+                case 37: // 37	KICK	KICK당한 쪽	chat_title에서 강퇴 되었습니다.
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
+                    break;
+                case 200: // 200	DB로 접근하는 모든 프로토콜	예기치 못한 DB 오류	DB Error
+                    setChatLog(onNoticeChatMSG(responseData.content));
+                    break;
+                default: // 그 외
                     break;
             }
         }
 
 
-    // -------------------------------------------------------------------
-    // -------------------------------------------------------------------
-    // -------------------------------------------------------------------
-    // -------------------------------------------------------------------
-    // -------------------------------------------------------------------
-    // -------------------------------------------------------------------
-    // -------------------------------------------------------------------
-    // -------------------------------------------------------------------
-    // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // -------------------------------------------------------------------
+
+        function onHost (responseData:any) {
+            console.log("HOST");
+            console.log(responseData);
+
+            setChatId(responseData.channelId);
+            setChatTitle(responseData.title);
+            handleCloseRoomModal();
+        }
 
         // notice
         socket.on("NOTICE", onNotice);
+        
+        socket.on("HOST", onHost);
 
         socket.on("LOADCHAT", onLoadChat);
         socket.on("INFO_CH_LIST", onInfoChList);
@@ -826,6 +919,8 @@ function Chatting (props:any) {
             // notice
             socket.off("NOTICE", onNotice);
 
+            socket.off("HOST", onNotice);
+            
             socket.off("LOADCHAT", onLoadChat);
             socket.off("INFO_CH_LIST", onInfoChList);
             socket.off("INFO_CH_MEMBER", onInfoChMem);
@@ -844,6 +939,8 @@ function Chatting (props:any) {
         // userId: userId
         if (chatId === 0)
             return ;
+        
+        console.log(pwFlag);
         console.log("channelId: " + chatId + ", userId: " + userId + ", password: " + password);
         socket.emit('JOIN', { channelId: chatId, userId: userId, password: password });
     }
@@ -853,7 +950,12 @@ function Chatting (props:any) {
     }
 
     useEffect( () => {
-        const enterChatRoom = (e:any) => {
+        const clickEvent = (e:any) => {
+
+            if (e.target.id !== "main_nav" && e.target.id !== "menu")
+            {
+                setMenuChecked(false);
+            }
             
             for (let i = 0; i < clientChatList.length; ++i)
             {
@@ -883,7 +985,9 @@ function Chatting (props:any) {
                     if (publicChatList[i].private)
                     {
                         setIndex(i);
+                        index2 = i;
                         setPWFlag(true);
+                        pwFlag2 = true;
                         handleOpenPWModal();
                     }
                     else
@@ -914,13 +1018,29 @@ function Chatting (props:any) {
             }
         };
         
-        document.addEventListener('click', enterChatRoom);
+        document.addEventListener('click', clickEvent);
         
         return (() => {
-            document.removeEventListener('click', enterChatRoom)
+            document.removeEventListener('click', clickEvent)
         });
         
     }, []);
+
+    function clickQuit () {
+        socket.emit("QUIT", { channelId: chatId, userId: userId });
+
+        setMenuChecked(false);
+
+        logDay = "";
+        setChatTitle(clientChatList[0].title);
+        setChatId(clientChatList[0].chatId);
+        currentCR.start = clientChatList[0].start;
+        currentCR.backLogList = clientChatList[0].backLogList;
+        currentCR.users = clientChatList[0].users;
+        setChatAvatar(viewAvatar());
+        setChatLog(onChatting(currentCR));
+        socket.emit('JOIN', { channelId: -1, userId: userId, password: "" });
+    }
 
     function checkInput (input: string) {
         if (input[0] === '/')
@@ -970,6 +1090,8 @@ function Chatting (props:any) {
         {
             const cmdLine:string = chat.substring(1).toLowerCase();
             const cmdList:string[] = cmdLine.split(' ');
+
+            console.log(currentCR.chatId);
 
             switch (cmdList[0])
             {
@@ -1038,6 +1160,10 @@ function Chatting (props:any) {
             onAddButton();
         }
     }
+
+    const checkHandler = ({ target } : any) => {
+        setMenuChecked(!menuChecked);
+    };
 
     const viewRoomMenu = () => {
         const res:any = [];
@@ -1128,12 +1254,12 @@ function Chatting (props:any) {
                             <div className={styles.chattingroom_title_font}>{ currentCR.title }</div>
                         </div>
                         { viewRoomMenu() }
-                        <input id="menu" type="checkbox" />
+                        <input id="menu" type="checkbox" checked={menuChecked} onChange={checkHandler} />
                         <nav id="main_nav" >
                             <div className={`${styles.chattingroom_menu}`}>
                                 <ul>
                                     <li><div className={styles.chattingroom_menu_font1}>방이름 편집</div></li>
-                                    <li><div className={styles.chattingroom_menu_font2}>채팅방 나가기</div></li>
+                                    <li><div className={styles.chattingroom_menu_font2} onClick={clickQuit} >채팅방 나가기</div></li>
                                 </ul>
                             </div>
                         </nav>

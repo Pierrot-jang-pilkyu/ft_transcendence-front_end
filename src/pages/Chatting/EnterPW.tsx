@@ -16,12 +16,7 @@ function EnterPW({ onClose, onEnter, id }) {
     
   }, []);
 
-  const [name, setName] = useState();
   const [pw, setPw] = useState();
-
-  function onChangeName(event) {
-    setName(event.target.value);
-  }
 
   function onChangePw(event) {
     setPw(event.target.value);
