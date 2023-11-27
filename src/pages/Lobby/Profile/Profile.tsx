@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./Profile.module.css";
 import ProfileImg from "../../../assets/img_Profile.png";
 import Crown from "../../../assets/Lobby_crown.png";
@@ -10,6 +10,7 @@ import { Cookies } from "react-cookie";
 function Profile() {
   const navigate = useNavigate();
   // const cookies = new Cookies();
+  const { state } = useLocation();
   const handlerButton = () => {
     navigate("/MyProfile");
   };
@@ -17,14 +18,14 @@ function Profile() {
   const [profile, setProfile] = useState();
   const [id, setId] = useContext(IdContext);
 
-  // useEffect(() => {
-  //   if (id == undefined) setId(cookies.get("user.id"));
-  //   fetch(`http://localhost:3000/users/players/${id}`, {
-  //     method: "GET",
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => setProfile(data));
-  // }, [profile]);
+  useEffect(() => {
+    if (id == undefined) setId(parseInt(state));
+    fetch(`http://localhost:3000/users/players/${id}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => setProfile(data));
+  }, [profile]);
 
   return (
     <div className={`${styles.profile_container}`}>

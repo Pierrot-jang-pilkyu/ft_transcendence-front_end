@@ -19,7 +19,7 @@ function Menu(props: any) {
     // navigate("/Game");
     console.log(state);
     console.log("Click");
-    socket.emit("REQUEST_FRIEND", { userId: parseInt(state), target: "2" });
+    socket.emit("REQUEST_FRIEND", { userId: parseInt(state), target: "frank" });
   };
   const handlerButtonChatting = () => {
     navigate("/Chatting");
@@ -40,7 +40,7 @@ function Menu(props: any) {
           Chatting Room
         </div>
       </button>
-      {/* <FriendsList friendObjects={props.friendObjects} /> */}
+      <FriendsList friendObjects={props.friendObjects} />
     </div>
   );
 }
