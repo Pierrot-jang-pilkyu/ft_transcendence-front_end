@@ -36,7 +36,7 @@ function Lobby(props: any) {
     <div className={`${styles.background}`}>
       {/* <img className={`${styles.img}`} src={HomeBall}/> */}
       <Header />
-      <Profile id={props.id} />
+      {/* <Profile id={props.id} /> */}
       <div className={`${styles.ranking_container}`}>
         <Ranking />
       </div>
