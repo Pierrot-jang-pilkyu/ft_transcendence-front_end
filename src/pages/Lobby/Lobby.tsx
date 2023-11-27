@@ -29,14 +29,12 @@ function Lobby(props: any) {
     },
     { name: "sehjang", img: "src/assets/react.svg", state: "playing" },
   ];
-  console.log("HERE");
-  console.log(state);
-  console.log(socket);
+  socket.on("REQUEST_FRIEND", (data) => console.log("I GOTTTTTT"));
   return (
     <div className={`${styles.background}`}>
       {/* <img className={`${styles.img}`} src={HomeBall}/> */}
       <Header />
-      {/* <Profile id={props.id} /> */}
+      <Profile id={props.id} />
       <div className={`${styles.ranking_container}`}>
         <Ranking />
       </div>

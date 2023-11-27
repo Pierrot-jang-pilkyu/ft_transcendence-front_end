@@ -24,12 +24,8 @@ function AfterLogin({ userId }) {
     console.log("SOOOOOOOCKETIIIID");
     if (state) {
       socket.emit("REGIST", parseInt(state));
-      console.log(state);
-      console.log(socket);
     }
   }, [state]);
-  console.log(state);
-  // socket.connect();
   let modalContent;
   useEffect(() => {
     const handleFriendRequest = (data) => {
@@ -41,8 +37,6 @@ function AfterLogin({ userId }) {
           onClose={setModalOpen}
         />
       );
-      console.log("testetstets");
-      console.log(data.name);
       setModalOpen(true);
     };
     const handleGameRequest = (data) => {
@@ -52,18 +46,20 @@ function AfterLogin({ userId }) {
       );
       setModalOpen(true);
     };
-    console.log("before get socket");
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
-    console.log(modalOpen);
-    console.log("aftergetsocket");
     socket.on("INVITE", (data) => handleGameRequest(data));
+    socket.on("NOTICE", (data) => {
+      console.log("datatattatat");
+      console.log(data.code);
+      console.log(data.name);
+    });
   }, [socket]);
   return (
     <div>
       <Routes>
         <Route path="/" element={<Loading />} />
-        {/* <Route path="/MyProfile" element={<Myprofile />} />
-        <Route path="/FriendProfile" element={<Friendprofile />} /> */}
+        <Route path="/MyProfile" element={<Myprofile />} />
+        {/* <Route path="/FriendProfile" element={<Friendprofile />} /> */}
         <Route path="/Lobby" element={<Lobby id={id} />} />
         <Route path="/Loading" element={<Loading />} />
         {/* <Route path="/Game" element={<Game />} /> */}
