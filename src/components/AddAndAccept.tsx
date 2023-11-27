@@ -1,11 +1,12 @@
 import styles from "./AddAndAccept.module.css";
+import socket from "../hooks/socket/socket";
 
-function AddAndAccept({ socket, modalType, onClose, data }) {
+function AddAndAccept({ type, onClose, data }) {
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      if (modalType === "REQUEST_FRIEND") {
+      if (type === "REQUEST_FRIEND") {
         handleFriendClose();
-      } else if (modalType === "INVITE") {
+      } else if (type === "INVITE") {
         handleGameClose();
       }
     }
@@ -28,7 +29,7 @@ function AddAndAccept({ socket, modalType, onClose, data }) {
     onClose();
   };
 
-  if (modalType === "REQUEST_FRIEND") {
+  if (type === "REQUEST_FRIEND") {
     modalContent = (
       <div>
         <div className={`${styles.logo}`}>친구 초대요청</div>
@@ -56,7 +57,7 @@ function AddAndAccept({ socket, modalType, onClose, data }) {
         </div>
       </div>
     );
-  } else if (modalType === "INVITE") {
+  } else if (type === "INVITE") {
     modalContent = (
       <div>
         <div className={`${styles.logo}`}>게임 초대요청</div>

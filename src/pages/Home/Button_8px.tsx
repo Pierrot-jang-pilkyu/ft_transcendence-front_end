@@ -6,7 +6,7 @@ function Button(props: any) {
   const navigate = useNavigate();
 
   const handlerButton = () => {
-    navigate("/AfterLogin");
+    navigate("/Loading");
   };
   const [data, setData] = useState();
 

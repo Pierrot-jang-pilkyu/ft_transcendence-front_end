@@ -8,6 +8,8 @@ import AfterLogin from "./pages/AfterLogin";
 import Lobby from "./pages/Lobby/Lobby";
 import Loading from "./pages/Loading";
 
+import socket from "./hooks/socket/socket";
+
 export const IdContext = createContext();
 
 // Cookie
@@ -25,14 +27,14 @@ export const getCookie = (name: string) => {
 
 // Socket connet
 
-// let socket = io('http://localhost:3000');
+// let socket = io("http://localhost:3000");
 
 //HERE
 function App() {
   const [id, setId] = useState();
 
   const userId = getCookie("user.id");
-
+  // socket.emit("REGIST", userId);
   // 라우트 가드 함수
   return (
     <div>
@@ -49,8 +51,14 @@ function App() {
         rel="stylesheet"
       />
       <IdContext.Provider value={[id, setId]}>
-        {false && <Home />}
-        {true && <AfterLogin />}
+        <BrowserRouter>
+          {false && (
+            <Routes>
+              <Route index path="/" element={<Home />} />
+            </Routes>
+          )}
+          {true && <AfterLogin userId={userId} />}
+        </BrowserRouter>
       </IdContext.Provider>
     </div>
   );

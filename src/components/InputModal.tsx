@@ -44,7 +44,7 @@ function InputModal({ onClose, code, onOpenModal }) {
       })
       .then((res) => {
         setId(res.data.id);
-        navigate("/AfterLogin/Lobby");
+        navigate("/Loading");
       })
       .catch((error) => {
         setTextError(true);

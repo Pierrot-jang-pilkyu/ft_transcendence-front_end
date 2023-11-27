@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Friendprofile from "./Profile/FriendProfile";
 import Myprofile from "./Profile/Myprofile";
@@ -12,20 +12,62 @@ import Loading from "./Loading";
 import { useState } from "react";
 import { useContext } from "react";
 import { IdContext } from "../App";
+import { useLocation } from "react-router-dom";
+import socket from "../hooks/socket/socket";
+import ModalAccept from "../components/AddAndAccept";
 
-function AfterLogin() {
+function AfterLogin({ userId }) {
+  const { state } = useLocation();
   const [id, setId] = useContext(IdContext);
-  console.log(id);
+  const [modalOpen, setModalOpen] = useState(false);
+  useEffect(() => {
+    console.log("SOOOOOOOCKETIIIID");
+    if (state) {
+      socket.emit("REGIST", parseInt(state));
+      console.log(state);
+      console.log(socket);
+    }
+  }, [state]);
+  console.log(state);
+  // socket.connect();
+  let modalContent;
+  useEffect(() => {
+    const handleFriendRequest = (data) => {
+      // data.avatar를 사용하여 원하는 동작 수행
+      modalContent = (
+        <ModalAccept
+          type={"REQUEST_FRIEND"}
+          data={data}
+          onClose={setModalOpen}
+        />
+      );
+      console.log("testetstets");
+      console.log(data.name);
+      setModalOpen(true);
+    };
+    const handleGameRequest = (data) => {
+      // data.avatar를 사용하여 원하는 동작 수행
+      modalContent = (
+        <ModalAccept type={"INVITE"} data={data} onClose={setModalOpen} />
+      );
+      setModalOpen(true);
+    };
+    console.log("before get socket");
+    socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
+    console.log(modalOpen);
+    console.log("aftergetsocket");
+    socket.on("INVITE", (data) => handleGameRequest(data));
+  }, [socket]);
   return (
-    <BrowserRouter>
+    <div>
       <Routes>
-        <Route index path="/" element={<Loading />} />
-        <Route path="/MyProfile" element={<Myprofile />} />
-        <Route path="/FriendProfile" element={<Friendprofile />} />
+        <Route path="/" element={<Loading />} />
+        {/* <Route path="/MyProfile" element={<Myprofile />} />
+        <Route path="/FriendProfile" element={<Friendprofile />} /> */}
         <Route path="/Lobby" element={<Lobby id={id} />} />
         <Route path="/Loading" element={<Loading />} />
-        <Route path="/Game" element={<Game />} />
-        <Route path="/Friends" element={<Friends />} />
+        {/* <Route path="/Game" element={<Game />} /> */}
+        {/* <Route path="/Friends" element={<Friends />} /> */}
         {/* <Route
         path="/Chatting"
         element={
@@ -40,7 +82,8 @@ function AfterLogin() {
         {/* /> */}
         <Route path="/Ranking" element={<Ranking />} />
       </Routes>
-    </BrowserRouter>
+      {false && modalContent}
+    </div>
   );
 }
 
