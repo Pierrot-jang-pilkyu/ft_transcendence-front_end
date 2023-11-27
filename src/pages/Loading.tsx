@@ -7,6 +7,7 @@ function Loading() {
 
   function onChangeId(e) {
     setUserId(e.target.value);
+    console.log(e.target.value);
   }
 
   function enter() {
