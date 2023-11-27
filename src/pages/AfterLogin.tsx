@@ -20,39 +20,38 @@ function AfterLogin({ userId }) {
   const { state } = useLocation();
   const [id, setId] = useContext(IdContext);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<React.ReactNode | null>(
+    null
+  );
   useEffect(() => {
-    console.log("SOOOOOOOCKETIIIID");
     if (state) {
       socket.emit("REGIST", parseInt(state));
     }
   }, [state]);
-  let modalContent;
   useEffect(() => {
     const handleFriendRequest = (data) => {
       // data.avatar를 사용하여 원하는 동작 수행
-      modalContent = (
+      setModalContent(
         <ModalAccept
           type={"REQUEST_FRIEND"}
           data={data}
-          onClose={setModalOpen}
+          onClose={() => setModalOpen(false)}
         />
       );
       setModalOpen(true);
     };
     const handleGameRequest = (data) => {
       // data.avatar를 사용하여 원하는 동작 수행
-      modalContent = (
-        <ModalAccept type={"INVITE"} data={data} onClose={setModalOpen} />
+      setModalContent(
+        <ModalAccept
+          type={"INVITE"}
+          data={data}
+          onClose={() => setModalOpen(false)}
+        />
       );
-      setModalOpen(true);
     };
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
     socket.on("INVITE", (data) => handleGameRequest(data));
-    socket.on("NOTICE", (data) => {
-      console.log("datatattatat");
-      console.log(data.code);
-      console.log(data.name);
-    });
   }, [socket]);
   return (
     <div>
@@ -78,7 +77,7 @@ function AfterLogin({ userId }) {
         {/* /> */}
         <Route path="/Ranking" element={<Ranking />} />
       </Routes>
-      {false && modalContent}
+      {modalOpen && modalContent}
     </div>
   );
 }

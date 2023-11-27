@@ -37,9 +37,9 @@ function AddAndAccept({ type, onClose, data }) {
         <div className={`${styles.avatar_container}`}>
           <img
             className={`${styles.avatar_image}`}
-            src={data == undefined ? null : data.avatar}
+            src={data == undefined ? null : data.send.avatar}
           ></img>
-          <div className={`${styles.avatar_name}`}>{data.name}</div>
+          <div className={`${styles.avatar_name}`}>{data.send.name}</div>
         </div>
         <div className={`${styles.button_container}`}>
           <button
@@ -48,12 +48,12 @@ function AddAndAccept({ type, onClose, data }) {
           >
             취소
           </button>
-          <div
+          <button
             className={`${styles.button_accept}`}
             onClick={handleFriendAccept}
           >
             친구 수락하기
-          </div>
+          </button>
         </div>
       </div>
     );

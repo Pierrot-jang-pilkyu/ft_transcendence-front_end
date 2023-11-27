@@ -29,7 +29,7 @@ function Lobby(props: any) {
     },
     { name: "sehjang", img: "src/assets/react.svg", state: "playing" },
   ];
-  socket.on("REQUEST_FRIEND", (data) => console.log("I GOTTTTTT"));
+  // socket.on("REQUEST_FRIEND", (data) => console.log("I GOTTTTTT"));
   return (
     <div className={`${styles.background}`}>
       {/* <img className={`${styles.img}`} src={HomeBall}/> */}
