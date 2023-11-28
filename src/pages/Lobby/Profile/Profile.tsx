@@ -14,7 +14,6 @@ function Profile() {
   const handlerButton = () => {
     navigate("/MyProfile");
   };
-
   const [profile, setProfile] = useState();
   const [id, setId] = useContext(IdContext);
 
