@@ -5,6 +5,14 @@ import { useState, useEffect } from "react";
 
 function ProfileCard(props: any) {
   const [profile, setProfile] = useState();
+  const [editFlag, setEditFlag] = useState(false);
+  useEffect(() => {
+    if (props.flag === 1) {
+      setEditFlag(true);
+    } else {
+      setEditFlag(false);
+    }
+  }, [props.flag]);
 
   useEffect(() => {
     const id = props.id;
@@ -27,7 +35,12 @@ function ProfileCard(props: any) {
           src={profile == undefined ? null : profile.avatar}
         />
         <div>
-          <img src={editprofile} alt="" className={styles.edit} />
+          <img
+            className={styles.edit}
+            src={editFlag ? editprofile : undefined}
+            alt=""
+            onClick={props.onOpenModal}
+          />
         </div>
         <div className={`${styles.profilename}`}>
           {profile == undefined ? null : profile.name}
