@@ -27,7 +27,7 @@ function QRModal({ onClose }) {
       })
       .then((res) => {
         setId(res.data.id);
-        navigate("/Lobby");
+        navigate("/Loading");
       })
       .catch((error) => {
         setTextError(true);
