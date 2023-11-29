@@ -30,3 +30,101 @@
                                         </div>
                                     </div>
                                 </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // const onChatting = (cr:ChattingRoom) => {
+
+    //     cr.chatLogList.splice(0, cr.chatLogList.length);
+    
+    //     if (cr.backLogList.length === 0 && cr.start === 0)
+    //     {
+    //         cr.start = 1;
+    //         cr.chatLogList = chatLog;
+    //         cr.chatLogList.push(<li>
+    //             <div className={styles.chatting_start}>
+    //                 <div className={styles.chatting_start_font}>{timeStamp(1)}</div>
+    //             </div>
+    //             </li>);
+    //     }
+    //     else if (cr.start === -1)
+    //     {
+    //         cr.chatLogList.push(<li>
+    //             <div className={styles.chatting_start}>
+    //                 <div className={styles.chatting_start_font}>Looby</div>
+    //             </div>
+    //         </li>)
+    //         cr.chatLogList.push(<li>
+    //             <div className={`${styles.chat} ${styles.chat_start}`}>
+    //                 <div className={`${styles.chat_image}`}>
+    //                     <div className="w-10 rounded-full">
+    //                         <img className={styles.rounded_avatar} src={"./src/assets/img_Profile.png"} />
+    //                     </div>
+    //                 </div>
+    //                 <div className={`${styles.chat_header}`}>
+    //                     {"Admin"}
+    //                     <time className={`${styles.text_xs} ${styles.opacity_50}`}>{timeStamp(0)}</time>
+    //                 </div>
+    //                 <div className={`${styles.chat_bubble}`}>{announce}</div>
+    //                 <div className={`${styles.chat_footer} ${styles.opacity_50}`}>
+    //                 </div>
+    //             </div>
+    //         </li>)
+    //     }
+
+    //     for (let i = 0; i < cr.backLogList.length; ++i)
+    //     {
+    //         // if (cr.backLogList[i].name === props.name)
+    //         if (cr.backLogList[i].name === "bread")
+    //         {
+    //             thisDayStamp(cr.backLogList[i].date);
+    //             cr.chatLogList.push(<li>
+    //                 <div className={ `${styles.chat} ${styles.chat_end}` }>
+    //                     <div className={ `${styles.chat_image}` }>
+    //                         <div className="w-10 rounded-full">
+    //                             <img className={styles.rounded_avatar} src={cr.backLogList[i].img} />
+    //                         </div>
+    //                     </div>
+    //                     <div className={ `${styles.chat_header}` }>
+    //                         {cr.backLogList[i].name}
+    //                         <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, cr.backLogList[i].date) }</time>
+    //                     </div>
+    //                     <div className={ `${styles.chat_bubble}` }>{cr.backLogList[i].chat}</div>
+    //                     <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
+    //                     </div>
+    //                 </div>
+    //             </li>);
+    //         }
+    //         else
+    //         {
+    //             thisDayStamp(cr.backLogList[i].date);
+    //             cr.chatLogList.push(<li>
+    //                 <div className={ `${styles.chat} ${styles.chat_start}` }>
+    //                     <div className={ `${styles.chat_image}` }>
+    //                         <div className="w-10 rounded-full">
+    //                             <img className={styles.rounded_avatar} src={cr.backLogList[i].img} />
+    //                         </div>
+    //                     </div>
+    //                     <div className={ `${styles.chat_header}` }>
+    //                         {cr.backLogList[i].name}
+    //                         <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, cr.backLogList[i].date) }</time>
+    //                     </div>
+    //                     <div className={ `${styles.chat_bubble}` }>{cr.backLogList[i].chat}</div>
+    //                     <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
+    //                     </div>
+    //                 </div>
+    //             </li>);
+    //         }
+    //     }
+    // };

@@ -18,6 +18,8 @@ import Loading from "./pages/Loading";
 
 import socket from "./hooks/socket/socket";
 
+import Loading from "./pages/Chatting/Loading";
+
 export const IdContext = createContext();
 
 // Cookie
