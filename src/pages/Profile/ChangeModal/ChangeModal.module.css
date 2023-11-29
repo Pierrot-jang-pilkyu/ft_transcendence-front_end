@@ -170,14 +170,15 @@
   transition: border-color 0.2s;
 }
 
-.form__field::placeholder {
+/* .form__field::placeholder {
   color: transparent;
-}
+} */
 
 .form__field:placeholder-shown ~ .form__label {
   font-size: 17px;
   cursor: text;
   top: 20px;
+  color: transparent;
 }
 
 .form__label {

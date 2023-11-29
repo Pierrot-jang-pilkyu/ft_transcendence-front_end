@@ -1,11 +1,15 @@
 import styles from "./ProfileCard.module.css";
 import editprofile from "./Edit Profile.png";
 import crown from "./crown.png";
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { IdContext } from "../../../App";
 
 function ProfileCard(props: any) {
   const [profile, setProfile] = useState();
   const [editFlag, setEditFlag] = useState(false);
+  const { state } = useLocation();
+  const [id, setId] = useContext(IdContext);
   useEffect(() => {
     if (props.flag === 1) {
       setEditFlag(true);
@@ -15,7 +19,8 @@ function ProfileCard(props: any) {
   }, [props.flag]);
 
   useEffect(() => {
-    const id = props.id;
+    console.log(id);
+    setId(parseInt(state));
     fetch(`http://localhost:3000/users/players/${id}`, {
       method: "GET",
     })
@@ -24,7 +29,8 @@ function ProfileCard(props: any) {
       .catch((error) => {
         console.log("FAILED");
       });
-  }, [profile]);
+    console.log(id);
+  }, [id]);
 
   return (
     <div className={`${styles.profile}`}>

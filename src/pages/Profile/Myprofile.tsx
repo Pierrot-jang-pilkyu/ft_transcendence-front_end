@@ -23,7 +23,7 @@ function Myprofile(props: any) {
         <ProfileCard id={id} onOpenModal={handleOpenChangeModal} flag={1} />
         <MatchHistory />
       </div>
-      {nickModal && <ChangeModal onClose={handleCloseChangeModal} />}
+      {nickModal && <ChangeModal id={id} onClose={handleCloseChangeModal} />}
     </div>
   );
 }
