@@ -234,8 +234,10 @@ li {
     background: #FFF;
 
     overflow-x: scroll;
+    overflow-y: hidden;
     overscroll-behavior: contain;
     scrollbar-width: none;
+    white-space: nowrap;
 
     /* display: grid;
     grid-template-columns: repeat(auto-fill, minmax(5vh, auto));
@@ -315,7 +317,7 @@ input[id="menu"]:checked + nav[id="main_nav"] {
 
 .chattingroom_menu {
     width: 7.92vw;
-    height: 9.63vh;
+    height: 7vh;
     position: fixed;
     top: 25.56vh;
     left: 68.13vw;
@@ -341,7 +343,7 @@ input[id="menu"]:checked + nav[id="main_nav"] {
 
 .chattingroom_menu_font2 {
     position: relative;
-    top: 3.23vh;
+    top: 2.5vh;
     left: 1.04vw;
     color: #E36969;
     font-family: Noto Sans;
@@ -525,7 +527,7 @@ input[id="menu"]:checked + nav[id="main_nav"] {
 
     white-space: normal;
     text-align: left;
-     word-wrap: break-word;
+    word-wrap: break-word;
 }
 .chat_bubble:before {
     position: absolute;

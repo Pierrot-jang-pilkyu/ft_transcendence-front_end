@@ -10,6 +10,8 @@
     left: 50%;
 
     list-style-type: none;
+
+    /* transform: rotate(90deg); */
 }
 
 .friend_container:focus {
