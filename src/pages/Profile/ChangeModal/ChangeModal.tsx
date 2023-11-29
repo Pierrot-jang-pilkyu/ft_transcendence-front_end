@@ -7,6 +7,10 @@ function ChangeModal({ onClose, id }) {
   const [profile, setProfile] = useState();
   const { state } = useLocation();
   const [image, setImage] = useState(undefined as string | undefined);
+  const [userName, setUserName] = useState<string | undefined>(profile?.name);
+  const [originalImage, setOriginalImage] = useState<string | undefined>(
+    profile?.avatar
+  );
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       console.log("Here");
@@ -17,18 +21,31 @@ function ChangeModal({ onClose, id }) {
     onClose();
   };
   useEffect(() => {
-    if (id == undefined) id = { state };
-    fetch(`http://localhost:3000/users/players/${id}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => setProfile(data));
-  }, [profile]);
+    const fetchData = async () => {
+      try {
+        let response = await fetch(
+          `http://localhost:3000/users/players/${id}`,
+          {
+            method: "GET",
+          }
+        );
 
-  const [userName, setUserName] = useState<string | undefined>(profile?.name);
-  const [originalImage, setOriginalImage] = useState<string | undefined>(
-    profile?.avatar
-  );
+        if (!response.ok) {
+          throw new Error("네트워크 응답이 올바르지 않습니다");
+        }
+
+        let data = await response.json();
+        setProfile(data);
+        setOriginalImage(data.avatar);
+      } catch (error) {
+        console.error("데이터를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    if (id == undefined) id = { state };
+    fetchData();
+  }, [id]);
+
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
@@ -52,11 +69,10 @@ function ChangeModal({ onClose, id }) {
   const handleConfirm = () => {
     const selectedImage: string = image || originalImage || "";
     sendToServer(selectedImage, userName);
+    onClose();
   };
 
   const sendToServer = (imageUrl: string, username: string) => {
-    console.log("Sending to server:", imageUrl);
-    console.log("----------------- Name", username);
     socket.emit("UPDATE", { name: username, avatar: imageUrl });
   };
   function onChangeName(e) {

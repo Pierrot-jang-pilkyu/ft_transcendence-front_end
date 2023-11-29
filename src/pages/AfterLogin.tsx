@@ -53,6 +53,7 @@ function AfterLogin({ userId }) {
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
     socket.on("INVITE", (data) => handleGameRequest(data));
   }, [socket]);
+  socket.on("NOTICE", (data) => console.log(data.code));
   return (
     <div>
       <Routes>
