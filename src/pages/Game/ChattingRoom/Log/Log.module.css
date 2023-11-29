@@ -1,0 +1,47 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    gap: 10px;
+
+    overflow-y: auto;
+
+    width: 742px;
+    height: 230px;
+    background: #fff;
+
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.container::-webkit-scrollbar{
+    display:none;
+}
+
+.user {
+    display: inline-block;
+    width: max-content;
+    max-width: 100%;
+    min-height: 54.5px;
+    word-break: break-all;
+    border-radius: 8px;
+    padding: 15px;
+    margin-left: auto;
+    color: #fff;
+    background-color: #285ADA;
+}
+
+.opposite {
+    display: inline-block;
+    width: max-content;
+    max-width: 100%;
+    min-height: 54.5px;
+    word-break: break-all;
+    border-radius: 8px;
+    padding: 15px;
+    color: #000;
+    background-color: #EBEBEB;
+}

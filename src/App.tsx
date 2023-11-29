@@ -1,5 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home/Home";
+import Lobby from "./pages/Lobby/Lobby";
+import Mode from "./pages/Mode/Mode";
+import Myprofile from "./pages/Profile/Myprofile";
+import Friendprofile from "./pages/Profile/FriendProfile";
+import Game from "./pages/Game/Game";
+import Friends from "./pages/Lobby/Menu/Friends/Friends";
+import Chatting from './pages/Chatting/Chatting';
+import Loading from "./pages/Loading/Loading";
 import { useState, createContext } from "react";
 // import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -26,9 +34,6 @@ export const getCookie = (name: string) => {
 };
 
 // Socket connet
-
-// let socket = io("http://localhost:3000");
-
 //HERE
 function App() {
   const [id, setId] = useState();
