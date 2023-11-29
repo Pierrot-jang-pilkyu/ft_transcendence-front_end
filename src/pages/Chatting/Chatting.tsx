@@ -4,6 +4,7 @@ import Outside from "./Outside";
 import Avatar from "./Avatar";
 import { useRef, useCallback, useEffect, useState, KeyboardEvent } from "react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import RoomAddModal from "./RoomAddModal";
 import EnterPW from "./EnterPW";
 import AlertModal from "./AlertModal";
@@ -57,6 +58,7 @@ function Chatting (props:any) {
 
     // const userId = props.id;
     const { state } = useLocation();
+    const navigate = useNavigate();
     const userId = state;
     const [openRoomAddModal, setOpenRoomAddModal] = useState(false);
 
@@ -99,6 +101,12 @@ function Chatting (props:any) {
             break;
         case "2":
             testUser = { name: 'bread', img: './src/assets/img_Profile.png', state: "1", id: "2", op: false}
+            break;
+        case "3":
+            testUser = { name: 'calla', img: './src/assets/img_Profile.png', state: "1", id: "2", op: false}
+            break;
+        case "4":
+            testUser = { name: 'dan', img: './src/assets/img_Profile.png', state: "1", id: "2", op: false}
             break;
         default:
             break ;
@@ -543,49 +551,98 @@ function Chatting (props:any) {
             setChatAvatar(viewAvatar());
         }
 
-        function addChatLog (responseData:any) {
+        function addChatLog (responseData:any, flag: number) {
             const res:any = [currentCR.chatLogList];
 
-            // if (cr.backLogList[i].name === props.name)
-            if (responseData.user.name === testUser.name)
+            if (flag === 0)
             {
-                thisDayStamp(res, responseData.user.date);
-                res.push(<li>
-                    <div className={ `${styles.chat} ${styles.chat_end}` }>
-                        <div className={ `${styles.chat_image}` }>
-                            <div className="w-10 rounded-full">
-                                <img className={styles.rounded_avatar} src={responseData.user.avatar} />
+                // if (cr.backLogList[i].name === props.name)
+                if (responseData.user.name === testUser.name)
+                {
+                    thisDayStamp(res, responseData.user.date);
+                    res.push(<li>
+                        <div className={ `${styles.chat} ${styles.chat_end}` }>
+                            <div className={ `${styles.chat_image}` }>
+                                <div className="w-10 rounded-full">
+                                    <img className={styles.rounded_avatar} src={responseData.user.avatar} />
+                                </div>
+                            </div>
+                            <div className={ `${styles.chat_header}` }>
+                                {responseData.user.name}
+                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                            </div>
+                            {/* <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div> */}
+                            <div className={ `${styles.chat_bubble}` }>{responseData.content}</div>
+                            <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
                             </div>
                         </div>
-                        <div className={ `${styles.chat_header}` }>
-                            {responseData.user.name}
-                            <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                    </li>);
+                }
+                else
+                {
+                    thisDayStamp(res, responseData.user.date);
+                    res.push(<li>
+                        <div className={ `${styles.chat} ${styles.chat_start}` }>
+                            <div className={ `${styles.chat_image}` }>
+                                <div className="w-10 rounded-full">
+                                    <img className={styles.rounded_avatar} src={responseData.user.avatar} />
+                                </div>
+                            </div>
+                            <div className={ `${styles.chat_header}` }>
+                                {responseData.user.name}
+                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                            </div>
+                            {/* <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div> */}
+                            <div className={ `${styles.chat_bubble}` }>{responseData.content}</div>
+                            <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
+                            </div>
                         </div>
-                        <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div>
-                        <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
-                        </div>
-                    </div>
-                </li>);
+                    </li>);
+                }
             }
-            else
+            else if (flag === 1)
             {
-                thisDayStamp(res, responseData.user.date);
-                res.push(<li>
-                    <div className={ `${styles.chat} ${styles.chat_start}` }>
-                        <div className={ `${styles.chat_image}` }>
-                            <div className="w-10 rounded-full">
-                                <img className={styles.rounded_avatar} src={responseData.user.avatar} />
+                // if (cr.backLogList[i].name === props.name)
+                if (responseData.user.name === testUser.name)
+                {
+                    thisDayStamp(res, responseData.user.date);
+                    res.push(<li>
+                        <div className={ `${styles.chat} ${styles.chat_end}` }>
+                            <div className={ `${styles.chat_image}` }>
+                                <div className="w-10 rounded-full">
+                                    <img className={styles.rounded_avatar} src={responseData.user.avatar} />
+                                </div>
+                            </div>
+                            <div className={ `${styles.chat_header}` }>
+                                {responseData.user.name}
+                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                            </div>
+                            <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div>
+                            <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
                             </div>
                         </div>
-                        <div className={ `${styles.chat_header}` }>
-                            {responseData.user.name}
-                            <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                    </li>);
+                }
+                else
+                {
+                    thisDayStamp(res, responseData.user.date);
+                    res.push(<li>
+                        <div className={ `${styles.chat} ${styles.chat_start}` }>
+                            <div className={ `${styles.chat_image}` }>
+                                <div className="w-10 rounded-full">
+                                    <img className={styles.rounded_avatar} src={responseData.user.avatar} />
+                                </div>
+                            </div>
+                            <div className={ `${styles.chat_header}` }>
+                                {responseData.user.name}
+                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                            </div>
+                            <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div>
+                            <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
+                            </div>
                         </div>
-                        <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div>
-                        <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
-                        </div>
-                    </div>
-                </li>);
+                    </li>);
+                }
             }
 
             currentCR.chatLogList = res;
@@ -597,7 +654,14 @@ function Chatting (props:any) {
             // console.log("MSG");
             // console.log(responseData);
             
-            setChatLog(addChatLog(responseData));
+            setChatLog(addChatLog(responseData, 0));
+        }
+
+        function onList (responseData:any) {
+            // console.log("MSG");
+            // console.log(responseData);
+            
+            setChatLog(addChatLog(responseData, 1));
         }
 
         function onKick (responseData:any) {
@@ -634,7 +698,7 @@ function Chatting (props:any) {
                 content += responseData[i].user.name + '\n   ';
             }
 
-            onMSG({
+            onList({
                 id: 1, 
                 user: { id: userId, 
                     name: testUser.name,
@@ -664,7 +728,7 @@ function Chatting (props:any) {
                 content += responseData[i].target.name + '\n    ';
             }
 
-            onMSG({
+            onList({
                 id: 1, 
                 user: { id: userId, 
                     name: testUser.name,
@@ -826,13 +890,11 @@ function Chatting (props:any) {
                     setChatLog(onNoticeChatMSG(responseData.content));
                     break;
                 case 26: // 26	ACCEPT_GAME	ACCEPT_GAME 명령어 성공	요청을 수락 하였습니다.
-                    // code
-                    // code
-                    // code
-                    // code
-                    // code
-                    // code
-                    // code
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
                     break;
                 case 27: // 27	REFUSE_GAME	REFUSE_GAME 명령어 성공	요청을 거절 하였습니다.
                     setChatLog(onNoticeChatMSG(responseData.content));
@@ -853,7 +915,11 @@ function Chatting (props:any) {
                     setChatLog(onNoticeChatMSG(responseData.content));
                     break;
                 case 33: // 33	REFUSE_FRIEND	REFUSE_FRIEND 명령어 성공	요청을 거절 하였습니다.
-                    setChatLog(onNoticeChatMSG(responseData.content));
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
                     break;
                 case 34: // 34	REFUSE_FRIEND	친구 요청잉 거절 당했을 경우	유저님이 친구요청을 거절 하였습니다.
                     setChatLog(onNoticeChatMSG(responseData.content));
@@ -871,8 +937,26 @@ function Chatting (props:any) {
                         handleCloseAlertModal();
                       }, 1000);
                     break;
+                case 38: // 38	UPDATE	update 성공	성공적으로 변경 되었습니다.
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
+                    break;
+                case 39: // 39	UPDATE, HOST	이름이 중복 될 경우	중복된 이름입니다.
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
+                    break;
                 case 200: // 200	DB로 접근하는 모든 프로토콜	예기치 못한 DB 오류	DB Error
-                    setChatLog(onNoticeChatMSG(responseData.content));
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
                     break;
                 default: // 그 외
                     break;
@@ -899,6 +983,27 @@ function Chatting (props:any) {
             handleCloseRoomModal();
         }
 
+        function onRequestFriend (responseData:any) {
+            console.log("REQUEST_FRIEND");
+            console.log(responseData);
+
+            socket.emit("REFUSE_FRIEND", responseData);
+        }
+
+        function onInvite (responseData:any) {
+            console.log("INVITE");
+            console.log(responseData);
+
+            socket.emit("ACCEPT_GAME", responseData);
+        }
+
+        function onJoinGame (responseData:any) {
+            console.log("JOIN_GAME");
+            console.log(responseData);
+
+            navigate("/Game", {state: { userId: userId, roomId: responseData.roomId }});
+        }
+
         // notice
         socket.on("NOTICE", onNotice);
         
@@ -913,12 +1018,19 @@ function Chatting (props:any) {
         socket.on("KICK", onKick);
         socket.on("BAN", onBan);
         socket.on("BLOCK", onBlock);
+
+        // // cmd invite game, friend
+        socket.on("REQUEST_FRIEND", onRequestFriend);
+        socket.on("INVITE", onInvite);
+
+        // join game
+        socket.on("JOIN_GAME", onJoinGame);
         
         return (() => {
             socket.disconnect();
             // notice
             socket.off("NOTICE", onNotice);
-
+            
             socket.off("HOST", onNotice);
             
             socket.off("LOADCHAT", onLoadChat);
@@ -930,6 +1042,13 @@ function Chatting (props:any) {
             socket.off("KICK", onKick);
             socket.off("BAN", onBan);
             socket.off("BLOCK", onBlock);
+            
+            // // cmd invite game, friend
+            socket.off("REQUEST_FRIEND", onRequestFriend);
+            socket.off("INVITE", onInvite);
+            
+            // join game
+            socket.off("JOIN_GAME", onJoinGame);
         });
         
     }, [])
@@ -1066,6 +1185,12 @@ function Chatting (props:any) {
                     return 1;
                 case 'pass':
                     return 1;
+                case 'pass':
+                    return 1;
+                case 'request_friend':
+                    return 1;
+                case 'invite':
+                    return 1;
                 default:
                     return 0;
             }
@@ -1086,12 +1211,13 @@ function Chatting (props:any) {
             return '';
 		}
         
-        if (checkInput(chat) !== 0)
+        let i = 0;
+        if ((i = checkInput(chat)) !== 0)
         {
             const cmdLine:string = chat.substring(1).toLowerCase();
             const cmdList:string[] = cmdLine.split(' ');
 
-            console.log(currentCR.chatId);
+            // console.log(currentCR.chatId);
 
             switch (cmdList[0])
             {
@@ -1129,7 +1255,7 @@ function Chatting (props:any) {
                     }
                     break ;
                 case 'unblock':
-                    socket.emit("OP", { channelId: currentCR.chatId, userId: userId, target: cmdList[1] });
+                    socket.emit("UNBLOCK", { channelId: currentCR.chatId, userId: userId, target: cmdList[1] });
                     break ;
                 case 'pass':
                     if (cmdList.length === 2)
@@ -1140,6 +1266,20 @@ function Chatting (props:any) {
                     {
                         socket.emit("PASS", { channelId: currentCR.chatId, userId: userId, target: null });
                     }
+                    break ;
+                case 'request_friend':
+                    if (cmdList.length === 1)
+                    {
+                        break ;
+                    }
+                    socket.emit("REQUEST_FRIEND", { userId: userId, target: cmdList[1] });
+                    break ;
+                case 'invite':
+                    if (cmdList.length === 1)
+                    {
+                        break ;
+                    }
+                    socket.emit("INVITE", { userId: userId, target: cmdList[1] });
                     break ;
                 default:
                     break ;
@@ -1258,7 +1398,6 @@ function Chatting (props:any) {
                         <nav id="main_nav" >
                             <div className={`${styles.chattingroom_menu}`}>
                                 <ul>
-                                    <li><div className={styles.chattingroom_menu_font1}>방이름 편집</div></li>
                                     <li><div className={styles.chattingroom_menu_font2} onClick={clickQuit} >채팅방 나가기</div></li>
                                 </ul>
                             </div>
