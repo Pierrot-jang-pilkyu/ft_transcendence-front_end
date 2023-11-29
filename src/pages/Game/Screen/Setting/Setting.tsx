@@ -16,6 +16,7 @@ function Setting(props)
             barSize: barSize,
         });
         props.setReady(true);
+        
     }
 
     return (

@@ -980,6 +980,7 @@ function Chatting (props:any) {
 
             setChatId(responseData.channelId);
             setChatTitle(responseData.title);
+            currentCR.backLogList.splice(0, currentCR.backLogList.length);
             handleCloseRoomModal();
         }
 
