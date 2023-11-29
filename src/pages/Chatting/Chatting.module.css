@@ -165,13 +165,14 @@
 
 
 .dmlist_font {
-    color: #000;
+    color: #285ADA;
     font-family: Noto Sans;
     font-size: 1.67vh;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 700;
     line-height: normal;
     margin: 1.48vh 0;
+    cursor: pointer;
 }
 
 
@@ -233,8 +234,10 @@ li {
     background: #FFF;
 
     overflow-x: scroll;
+    overflow-y: hidden;
     overscroll-behavior: contain;
     scrollbar-width: none;
+    white-space: nowrap;
 
     /* display: grid;
     grid-template-columns: repeat(auto-fill, minmax(5vh, auto));
@@ -314,7 +317,7 @@ input[id="menu"]:checked + nav[id="main_nav"] {
 
 .chattingroom_menu {
     width: 7.92vw;
-    height: 9.63vh;
+    height: 7vh;
     position: fixed;
     top: 25.56vh;
     left: 68.13vw;
@@ -340,7 +343,7 @@ input[id="menu"]:checked + nav[id="main_nav"] {
 
 .chattingroom_menu_font2 {
     position: relative;
-    top: 3.23vh;
+    top: 2.5vh;
     left: 1.04vw;
     color: #E36969;
     font-family: Noto Sans;
@@ -374,6 +377,21 @@ input[id="menu"]:checked + nav[id="main_nav"] {
     color: #FFF;
     font-family: Anton;
     font-size: 1.85vh;
+    font-style: normal;
+    font-weight: 100;
+    line-height: normal;
+
+    position: absolute;
+    
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.chatting_notice_font {
+    color: #FFF;
+    font-family: Anton;
+    font-size: 1vh;
     font-style: normal;
     font-weight: 100;
     line-height: normal;
@@ -509,7 +527,7 @@ input[id="menu"]:checked + nav[id="main_nav"] {
 
     white-space: normal;
     text-align: left;
-     word-wrap: break-word;
+    word-wrap: break-word;
 }
 .chat_bubble:before {
     position: absolute;
@@ -652,7 +670,8 @@ input[id="menu"]:checked + nav[id="main_nav"] {
     /* border-radius: 12px; */
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
-    background: rgba(0, 0, 0, 0.2);
+    /* background: rgba(0, 0, 0, 0.2); */
+    background: #FFF;
 }
 
 

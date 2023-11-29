@@ -16,7 +16,7 @@
     position: absolute;
     width: 100%;
     max-width: 20.8333vw;
-    height: 30%;
+    height: 12%;
     border-radius: 12px;
     overflow: hidden;
     background-color: #fff;
@@ -25,29 +25,32 @@
   
   .logo {
     position: absolute;
-    left: 15%;
+    left: 10%;
     top: 5%;
     color: #353535;
     font-family: "Noto Sans", sans-serif;
-    font-size: 2.22vh;
+    font-size: 1.7vh;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
   }
-  .inputcontainer_name {
+
+  .content_font {
     position: absolute;
-    top: 37%;
     left: 15%;
+    top: 50%;
+    color: #E36969;
+    font-family: "Anton", sans-serif;
+    font-size: 1.7vh;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
   }
-  .inputcontainer_limits {
-    position: absolute;
-    top: 52.5%;
-    left: 15%;
-  }
+
   .inputcontainer_pw {
     position: absolute;
-    top: 67.5%;
-    left: 15%;
+    top: 50%;
+    left: 10%;
   }
   
   .qr {
@@ -74,8 +77,8 @@
   
   .enter {
     position: absolute;
-    right: 10%;
-    top: 67.5%;
+    right: 15%;
+    top: 50%;
     width: 16.3%;
     height: 20%;
   }

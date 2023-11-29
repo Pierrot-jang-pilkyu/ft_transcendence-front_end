@@ -7,19 +7,27 @@ function Avatar(props:any) {
     const avatarState = () => {
         const res = [];
         
-        if (props.state === "online")
+        if (props.state == "0")
             res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
-        if (props.state === "offline")
-            res.push(<div className={`${styles.avatar_offline}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
-        if (props.state === "playing")
+        if (props.state == "1")
+            res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
+        if (props.state == "2")
             res.push(<div className={`${styles.avatar_playing}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
+        if (props.state == "3")
+            res.push(<div className={`${styles.avatar_offline}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
         
         return res;
     };
 
     return (
         <div className={`${styles.friend_container}`}>
-            {avatarState()}
+            {/* <div className="tooltip" data-tip="hello">
+                <button className="btn">Hover me</button>
+            </div> */}
+            <div className="tooltip" data-tip="hello">
+                {props.op && <img className={styles.op_crown} src="./src/assets/Chat_Avatar_crown.png" />}
+                {avatarState()}
+            </div>
         </div>
     );
   }

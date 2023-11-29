@@ -10,6 +10,8 @@
     left: 50%;
 
     list-style-type: none;
+
+    /* transform: rotate(90deg); */
 }
 
 .friend_container:focus {
@@ -47,6 +49,8 @@
     height: 3.5vh;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
+
+    cursor: pointer;
 }
 
 .avatar_online {
@@ -119,4 +123,14 @@
 
 .rounded-full {
     border-radius: 50%;
+}
+
+.op_crown {
+    position: absolute;
+    left: 0vw;
+    top: -0.2vh;
+    width: 20px;
+    height: 18px;
+    padding-left: 5%;
+    z-index: 2;
 }
