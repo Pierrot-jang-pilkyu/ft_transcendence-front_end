@@ -6,19 +6,14 @@ import Myprofile from "./pages/Profile/Myprofile";
 import Friendprofile from "./pages/Profile/FriendProfile";
 import Game from "./pages/Game/Game";
 import Friends from "./pages/Lobby/Menu/Friends/Friends";
-import Chatting from './pages/Chatting/Chatting';
+import Chatting from "./pages/Chatting/Chatting";
 import Loading from "./pages/Loading/Loading";
 import { useState, createContext } from "react";
 // import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import AfterLogin from "./pages/AfterLogin";
 
-import Lobby from "./pages/Lobby/Lobby";
-import Loading from "./pages/Loading";
-
 import socket from "./hooks/socket/socket";
-
-import Loading from "./pages/Chatting/Loading";
 
 export const IdContext = createContext();
 

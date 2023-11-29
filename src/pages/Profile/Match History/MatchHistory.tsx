@@ -1,11 +1,11 @@
 import styles from "./MatchHistory.module.css";
 import HistoryTable from "./Table";
 
-function MatchHistory() {
+function MatchHistory(props: any) {
   return (
     <div className={`${styles.Historycontainer}`}>
       <div className={`${styles.Historytitle}`}>Match History</div>
-      <HistoryTable/>
+      <HistoryTable id={props.id} />
     </div>
   );
 }
