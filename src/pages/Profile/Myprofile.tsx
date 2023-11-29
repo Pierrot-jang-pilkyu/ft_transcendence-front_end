@@ -21,7 +21,7 @@ function Myprofile(props: any) {
       <Header />
       <div className={`${styles.Allcontainer}`}>
         <ProfileCard id={id} onOpenModal={handleOpenChangeModal} flag={1} />
-        <MatchHistory />
+        <MatchHistory id={id} />
       </div>
       {nickModal && <ChangeModal id={id} onClose={handleCloseChangeModal} />}
     </div>
