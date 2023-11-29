@@ -13,12 +13,8 @@ import { useState, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AfterLogin from "./pages/AfterLogin";
 
-import Lobby from "./pages/Lobby/Lobby";
-import Loading from "./pages/Loading";
-
 import socket from "./hooks/socket/socket";
 
-import Loading from "./pages/Chatting/Loading";
 
 export const IdContext = createContext();
 
