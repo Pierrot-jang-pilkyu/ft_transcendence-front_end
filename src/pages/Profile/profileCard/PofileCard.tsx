@@ -1,13 +1,25 @@
 import styles from "./ProfileCard.module.css";
 import editprofile from "./Edit Profile.png";
 import crown from "./crown.png";
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { IdContext } from "../../../App";
 
 function ProfileCard(props: any) {
   const [profile, setProfile] = useState();
+  const [editFlag, setEditFlag] = useState(false);
+  const { state } = useLocation();
+  const [id, setId] = useContext(IdContext);
+  useEffect(() => {
+    if (props.flag === 1) {
+      setEditFlag(true);
+    } else {
+      setEditFlag(false);
+    }
+  }, [props.flag]);
 
   useEffect(() => {
-    const id = props.id;
+    if (id === undefined) setId(parseInt(state));
     fetch(`http://localhost:3000/users/players/${id}`, {
       method: "GET",
     })
@@ -16,7 +28,8 @@ function ProfileCard(props: any) {
       .catch((error) => {
         console.log("FAILED");
       });
-  }, [profile]);
+    console.log(id);
+  }, [id]);
 
   return (
     <div className={`${styles.profile}`}>
@@ -27,7 +40,12 @@ function ProfileCard(props: any) {
           src={profile == undefined ? null : profile.avatar}
         />
         <div>
-          <img src={editprofile} alt="" className={styles.edit} />
+          <img
+            className={styles.edit}
+            src={editFlag ? editprofile : undefined}
+            alt=""
+            onClick={props.onOpenModal}
+          />
         </div>
         <div className={`${styles.profilename}`}>
           {profile == undefined ? null : profile.name}

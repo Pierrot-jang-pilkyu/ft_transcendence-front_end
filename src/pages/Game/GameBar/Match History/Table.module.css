@@ -1,9 +1,0 @@
-.background {
-    display: flex;
-    flex-direction: column;
-    gap: 10%;
-    height: 82%;
-    padding: 8%;
-    border-radius: 12px;
-    background: #fff;
-}
