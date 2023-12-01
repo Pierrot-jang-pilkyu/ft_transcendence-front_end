@@ -7,7 +7,7 @@ import { IdContext } from "../../../App";
 import { Cookies } from "react-cookie";
 // import React from 'react';
 
-function Profile() {
+function Profile(props: any) {
   const navigate = useNavigate();
   // const cookies = new Cookies();
   const { state } = useLocation();
@@ -18,9 +18,8 @@ function Profile() {
   const [id, setId] = useContext(IdContext);
 
   useEffect(() => {
-    console.log(state);
     if (id == undefined) setId(parseInt(state));
-    fetch(`http://localhost:3000/users/players/${id}`, {
+    fetch(`http://localhost:3000/users/players/${state}`, {
       method: "GET",
     })
       .then((response) => response.json())

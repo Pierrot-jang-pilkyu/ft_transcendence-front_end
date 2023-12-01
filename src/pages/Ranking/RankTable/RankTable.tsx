@@ -12,7 +12,6 @@ function RankTable(props: any) {
       .then((response) => response.json())
       .then((data) => setRanks(data));
   }, []);
-
   const rankerTable1 = () => {
     const res = [];
     if (ranks == undefined) return res;
@@ -25,6 +24,7 @@ function RankTable(props: any) {
         const win: string = ranks[i].win;
         const lose: string = ranks[i].loss;
         const score: string = "Point: " + ranks[i].score;
+        const id: number = ranks[i].user.id;
         res.push(
           <RankList
             rank={i + 1}
@@ -32,6 +32,7 @@ function RankTable(props: any) {
             win={win}
             lose={lose}
             score={score}
+            id={id}
           />
         );
       }

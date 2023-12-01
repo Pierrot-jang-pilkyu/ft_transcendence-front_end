@@ -99,7 +99,7 @@
   height: 5.49%;
   bottom: 66.67%;
   left: 59.41%;
-  flex-shrink: 0;
+  /* flex-shrink: 0; */
 }
 
 .photo {
@@ -108,7 +108,7 @@
   flex-shrink: 0;
   /* aspect-ratio: 1 / 1; */
   border-radius: 50%;
-  background-color: burlywood;
+  /* background-color: burlywood; */
   /* border: 1px solid #fff; */
   position: relative;
   margin: 0 auto;

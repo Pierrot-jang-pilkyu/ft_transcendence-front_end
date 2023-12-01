@@ -24,12 +24,11 @@ function Lobby(props: any) {
   useEffect(() => {
     socket.connect();
 
-    socket.emit("REGIST", parseInt(id));
-    
-    return (() => {
+    socket.emit("REGIST", parseInt(state));
+
+    return () => {
       socket.disconnect();
-    }
-    );
+    };
   }, []);
 
   const Objects: FriendProps[] = [

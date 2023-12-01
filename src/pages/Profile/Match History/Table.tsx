@@ -11,24 +11,25 @@ interface History {
 }
 
 function HistoryTable(props: any) {
-  const [id, setId] = useContext(IdContext);
+  // const [id, setId] = useContext(IdContext);
   const [history, setHistory] = useState<History[]>([]);
   let HistoryList: History[] = [];
   useEffect(() => {
-    axios.get(`http://localhost:3000/games/historys/${id}`).then((Response) => {
-      console.log("Here:", Response.data);
-      for (let i = 0; i < Response.data.length; ++i) {
-        {
-          Response.data[i] &&
-            HistoryList.push({
-              winflag: Response.data[i].result,
-              matchtime: Response.data[i].date,
-              name: Response.data[i].opponent.name,
-            });
+    axios
+      .get(`http://localhost:3000/games/historys/${props.id}`)
+      .then((Response) => {
+        for (let i = 0; i < Response.data.length; ++i) {
+          {
+            Response.data[i] &&
+              HistoryList.push({
+                winflag: Response.data[i].result,
+                matchtime: Response.data[i].date,
+                name: Response.data[i].opponent.name,
+              });
+          }
         }
-      }
-      setHistory(HistoryList);
-    });
+        setHistory(HistoryList);
+      });
   }, []);
 
   return (

@@ -11,23 +11,22 @@ function Myprofile(props: any) {
   const [nickModal, setNickModal] = useState(false);
   const [id, setId] = useContext(IdContext);
 
+  useEffect(() => {
+    socket.connect();
+
+    socket.emit("REGIST", parseInt(id));
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   const handleOpenChangeModal = () => {
     setNickModal(true);
   };
   const handleCloseChangeModal = () => {
     setNickModal(false);
   };
-
-  useEffect(() => {
-    socket.connect();
-
-    socket.emit("REGIST", parseInt(id));
-    
-    return (() => {
-      socket.disconnect();
-    }
-    );
-  }, []);
 
   return (
     <div className={`${styles.background}`}>

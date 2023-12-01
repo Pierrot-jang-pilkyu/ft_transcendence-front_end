@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Friendprofile from "./Profile/FriendProfile";
+import FriendProfile from "./Profile/FriendProfile";
 import Myprofile from "./Profile/Myprofile";
 import Lobby from "./Lobby/Lobby";
 import Chatting from "./Chatting/Chatting";
@@ -56,11 +56,11 @@ function AfterLogin({ userId }) {
       setModalOpen(true);
     };
 
-    function onJoinGame (responseData:any) {
+    function onJoinGame(responseData: any) {
       console.log("JOIN_GAME");
       console.log(responseData);
 
-      navigate("/Game", {state: { userId: id, roomId: responseData.roomId }});
+      navigate("/Game", { state: { userId: id, roomId: responseData.roomId } });
     }
 
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
@@ -75,22 +75,22 @@ function AfterLogin({ userId }) {
       <Routes>
         <Route path="/" element={<Loading />} />
         <Route path="/MyProfile" element={<Myprofile />} />
-        {/* <Route path="/FriendProfile" element={<Friendprofile />} /> */}
+        <Route path="/FriendProfile/:id" element={<FriendProfile />} />
         <Route path="/Lobby" element={<Lobby id={id} />} />
         <Route path="/Loading" element={<Loading />} />
         <Route path="/Game" element={<Game />} />
         {/* <Route path="/Friends" element={<Friends />} /> */}
         <Route
-        path="/Chatting"
-        element={
-          <Chatting
-            socket={null}
-            id={userId}
-            pageStart="0"
-            name="pjang"
-            avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"
-          />
-        }
+          path="/Chatting"
+          element={
+            <Chatting
+              socket={null}
+              id={userId}
+              pageStart="0"
+              name="pjang"
+              avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"
+            />
+          }
         />
         <Route path="/Ranking" element={<Ranking />} />
       </Routes>
