@@ -1,15 +1,19 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 import styles from "./Gaming.module.css"
-import { socket } from '../Utils';
+import { GameContext, socket } from '../Utils';
 import { useNavigate } from 'react-router-dom';
 
-function Gaming({room}) {
+function Gaming() {
 	const canvasRef = useRef(null);
 	const [end, setEnd] = useState(0);
 	const navigate = useNavigate();
-	const { roomId, left, right, score, option, GameInfo, stop, isLeft} = room;
+	const [game, setGame] = useContext(GameContext);
+	const roomId = game.room.roomId;
+	const option = game.room.option;
+	const isLeft = game.isLeft;
 
 	useEffect(() => {
+		let turn = 1;
 		const canvas = canvasRef.current;
 		const width = 800;
 		const height = 700;
@@ -34,11 +38,11 @@ function Gaming({room}) {
 		const speedRatio = option.speed / 10;
 
 		function right() {
-			return props.isLeft == true ? tmp_com.y : tmp_user.y
+			return isLeft == true ? tmp_com.y : tmp_user.y
 		}
 
 		function left() {
-			return props.isLeft == true ? tmp_com.y : tmp_user.y
+			return isLeft == true ? tmp_com.y : tmp_user.y
 		}
 
 		function drawRect(x, y, w, h, color) {
@@ -55,11 +59,11 @@ function Gaming({room}) {
 		}
 
 		const user = {
-			x : props.isLeft == true ? 40 : width - 16 - 40,
+			x : isLeft == true ? 40 : width - 16 - 40,
 			y : height/2 - 70,
 			width : 16,
 			height : 140 * barSizeRatio,
-			color : props.isLeft == true ? "#397DFF" : "#FFB359",
+			color : isLeft == true ? "#397DFF" : "#FFB359",
 		}
 
 		const ball = {
@@ -69,8 +73,8 @@ function Gaming({room}) {
 			speed : 20 * speedRatio,
 			// vX : 10 * speedRatio * Math.cos(45),
 			// vY : 10 * speedRatio * Math.sin(45),
-			vX : 10,
-			vY : 1,
+			vX : 20 * speedRatio,
+			vY : 0,
 			color : "white",
 			pause: 100,
 		}
@@ -83,17 +87,17 @@ function Gaming({room}) {
 		const tmp_com = {
 			width : 16,
 			height : 140 * barSizeRatio,
-			x : props.isLeft == false ? 40 : width - 16 - 40,
+			x : isLeft == false ? 40 : width - 16 - 40,
 			y : height/2 - 70,
-			color : props.isLeft == false ? "#397DFF" : "#FFB359",
+			color : isLeft == false ? "#397DFF" : "#FFB359",
 		}
 
 		const tmp_user = {
-			x : props.isLeft == true ? 40 : width - 16 - 40,
+			x : isLeft == true ? 40 : width - 16 - 40,
 			y : height/2 - 70,
 			width : 16,
 			height : 140 * barSizeRatio,
-			color : props.isLeft == true ? "#397DFF" : "#FFB359",
+			color : isLeft == true ? "#397DFF" : "#FFB359",
 		}
 
 		const score = {
@@ -131,7 +135,7 @@ function Gaming({room}) {
 			const player = user;
 			if (isHitByWall())
 				ball.vY *= -1;
-			else if (((props.isLeft == true && ball.x < width/2) || (props.isLeft == false && ball.x > width/2))
+			else if (((isLeft == true && ball.x < width/2) || (isLeft == false && ball.x > width/2))
 				&& isHitBy(player))
 			{
 				const fPoint = ball.y - (player.y + player.height/2); 
@@ -141,17 +145,18 @@ function Gaming({room}) {
 				if (ball.x > width/2)
 					ball.vX *= -1;
 				ball.vY = ball.speed * Math.sin(angle);
-				socket.emit("HIT", { roomId: roomId, x: ball.x, y: ball.y, xv: ball.vX, yv: ball.vY });
+				socket.emit("HIT", { x: ball.x, y: ball.y, xv: ball.vX, yv: ball.vY });
 			}
 			else if (isOut())
 			{
-				if ((props.isLeft == true && ball.x > width) || (props.isLeft == false && ball.x < 0))
-					socket.emit("SCORE", { roomId: roomId, isLeft: props.isLeft });
+				if ((isLeft == true && ball.x > width) || (isLeft == false && ball.x < 0))
+					socket.emit("SCORE", { roomId: roomId, isLeft: isLeft });
 				ball.x = width/2;
 				ball.y = height/2;
 				ball.pause = 100;
-				ball.vX = 10;
-				ball.vY = 1;
+				turn *= -1;
+				ball.vX = 20 * speedRatio * turn;
+				ball.vY = 0;
 				render();
 			}
 		}
@@ -192,7 +197,7 @@ function Gaming({room}) {
 
 		function game() {
 			update();
-			socket.emit("PING", { roomId: roomId, ball: { x: ball.x, y: ball.y }, bar: user.y, isLeft: props.isLeft });
+			socket.emit("PING", { roomId: roomId, ball: { x: ball.x, y: ball.y }, bar: user.y, isLeft: isLeft });
 			render();
 			rafId = requestAnimationFrame(game);
 		}
@@ -213,8 +218,8 @@ function Gaming({room}) {
 		socket.on("PONG", (data) => {
 			tmp_ball.x = data.ball.x;
 			tmp_ball.y = data.ball.y;
-			tmp_user.y = props.isLeft == true ? data.left : data.right;
-			tmp_com.y = props.isLeft == false ? data.left : data.right;
+			tmp_user.y = isLeft == true ? data.left : data.right;
+			tmp_com.y = isLeft == false ? data.left : data.right;
 		});
 
 		socket.on("VECTOR", (data) => {
@@ -231,7 +236,7 @@ function Gaming({room}) {
 
 		socket.on("END", (data) => {
 			cancelAnimationFrame(rafId);
-			if (data.winnerIsLeft === props.isLeft)
+			if (data.winnerIsLeft === isLeft)
 				setEnd(1);
 			else
 				setEnd(2);
@@ -240,7 +245,7 @@ function Gaming({room}) {
 		socket.on("PAUSE", () => {
 			cancelAnimationFrame(rafId);
 			renderPause();
-			socket.emit("SAVE", { ball: { x: ball.x, y: ball.y, xv: ball.vX, yv: ball.vY}, right: props.isLeft == true ? tmp_com.y : tmp_user.y, left: props.isLeft == true ? tmp_user.y : tmp_com.y });
+			socket.emit("SAVE", { ball: { x: ball.x, y: ball.y, xv: ball.vX, yv: ball.vY}, right: isLeft == true ? tmp_com.y : tmp_user.y, left: isLeft == true ? tmp_user.y : tmp_com.y });
 		})
 		
 		socket.on("RESUME", async (data) => {
@@ -251,8 +256,8 @@ function Gaming({room}) {
 				ball.vY = data.ball.yv;
 				tmp_ball.x = data.ball.x;
 				tmp_ball.y = data.ball.y;
-				tmp_user.y = props.isLeft == true ? data.left : data.right;
-				tmp_com.y = props.isLeft == false ? data.left : data.right;
+				tmp_user.y = isLeft == true ? data.left : data.right;
+				tmp_com.y = isLeft == false ? data.left : data.right;
 			})
 			rafId = requestAnimationFrame(game);
 		})
@@ -261,16 +266,16 @@ function Gaming({room}) {
 		})
 	}, []);
 
-	useEffect(()=>{
-		if (end)
-			setTimeout(() => {navigate("/Lobby")}, 3000);
-	}, [end])
+	function clickButton() {
+		navigate("/Lobby");
+	}
 
 	return (
 		<div>
 			{ !end && <canvas className={`${styles.canvas}`} ref={canvasRef}></canvas> }
 			{ end == 1 && <div className={`${styles.end}`}>Win</div>}
 			{ end == 2 && <div className={`${styles.end}`}>Lose</div>}
+			{ end != 0 && <button>lobby</button>}
 		</div>
 	);
 }

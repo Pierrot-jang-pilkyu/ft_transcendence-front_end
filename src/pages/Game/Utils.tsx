@@ -1,13 +1,39 @@
+import { createContext } from "react";
 import { io } from "socket.io-client";
 
 export const socket = io("localhost:3131/games", {
     autoConnect: false
 });
 
-export enum Status {
-	Loading,
-	Setting,
-	Gaming,
+export interface Player {
+	id: number,
+	name: string,
+	status: number,
+	avatar: string
 }
 
-export const room = {};
+export interface PingPongPlayer {
+	player: Player,
+	isReady: boolean,
+	isPause: boolean,
+	pause: number
+}
+
+export interface GameInfo {
+	ball: { x: number, xv: number, y: number, yv: number}
+	right: number,
+	left: number
+}
+
+export interface GameRoom {
+	roomId: string,
+	left: PingPongPlayer,
+	right: PingPongPlayer;  
+	score: { left: number, right: number },
+	option: { speed: number, ballSize: number, barSize: number },
+	gameInfo: GameInfo
+	stop: boolean
+	start: boolean
+}
+
+export const GameContext = createContext(null);

@@ -6,23 +6,28 @@ import Setting from "./Setting/Setting";
 import Gaming from "./Gaming/Gaming";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { socket, Status } from "./Utils"
+import { socket, GameRoom, GameContext } from "./Utils"
 
 
 function Game()
 {
-	const userId:number = useLocation().state;
-	const [status, setStatus] = useState(Status.Loading);
-	const [room, setRoom] = useState(null);
+	const userId = useLocation().state.userId;
+	const roomId:string = useLocation().state.roomId;
+	const [game, setGame] = useState( { room: { roomId: roomId, start: null }, isLeft: null });
 
 	function onBeforeUnload (event:any) {
-		event.preventDefault();
-		socket.emit("PAUSE");
+		if (game.room.start != null)
+		{
+			event.preventDefault();
+			socket.emit("PAUSE");
+		}
 		event.returnValue = true;
 	};
 
 	useEffect(()=>{
-		socket.connect();
+		socket.connect()
+		socket.emit("REGIST", parseInt(userId));
+		console.log(userId);
 		window.addEventListener("beforeunload", onBeforeUnload);
 
 		return (()=>{
@@ -31,14 +36,20 @@ function Game()
 		});
 	}, [])
 
+	useEffect(()=>{
+		console.log(game);
+	}, [game]);
+
 	return (
-		<div className={`${styles.container}`}>
-			<Header/>
-			{ status == Status.Loading && <Loading setRoom={setRoom} setStatus={setStatus} userId={userId} /> }
-			{ status == Status.Setting && <Setting setRoom={setRoom} setStatus={setStatus}/> }
-			{ status == Status.Gaming && <Gaming room={room}/> }
-			{/* { status != Status.Loading  && <ChattingRoom opposite={}/> } */}
-		</div>
+		<GameContext.Provider value={[game, setGame] as any}>
+			<div className={`${styles.container}`}>
+				<Header/>
+				{ game.room.start == null && <Loading /> }
+				{ game.room.start == false && <Setting /> }
+				{ game.room.start == true && <Gaming /> }
+				{/* { status != Status.Loading  && <ChattingRoom opposite={}/> } */}
+			</div>
+		</GameContext.Provider>
 	);
 }
 
