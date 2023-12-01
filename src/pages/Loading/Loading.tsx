@@ -13,7 +13,7 @@ function Loading()
     } 
 
     function enter() {
-        navigate("/Game", {state: userId});
+        navigate("/Game", {state: {userId: userId, roomId: null }});
     }
 
     return (

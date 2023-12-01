@@ -3,12 +3,12 @@ import styles from "./Option.module.css"
 function Option(props)
 {
     function onLeft() {
-        if (props.value > 1)
+        if (props.clickable && props.value > 1)
             props.setValue(props.value - 1);
     }
 
     function onRight() {
-        if (props.value < 9)
+        if (props.clickable && props.value < 9)
             props.setValue(props.value + 1);
     }
 
