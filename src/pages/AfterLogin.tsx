@@ -15,9 +15,11 @@ import { IdContext } from "../App";
 import { useLocation } from "react-router-dom";
 import socket from "../hooks/socket/socket";
 import ModalAccept from "../components/AddAndAccept";
+import { useNavigate } from "react-router-dom";
 
 function AfterLogin({ userId }) {
   const { state } = useLocation();
+  const navigate = useNavigate();
   const [id, setId] = useContext(IdContext);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode | null>(
@@ -36,6 +38,7 @@ function AfterLogin({ userId }) {
           type={"REQUEST_FRIEND"}
           data={data}
           onClose={() => setModalOpen(false)}
+          socket={socket}
         />
       );
       setModalOpen(true);
@@ -47,11 +50,24 @@ function AfterLogin({ userId }) {
           type={"INVITE"}
           data={data}
           onClose={() => setModalOpen(false)}
+          socket={socket}
         />
       );
+      setModalOpen(true);
     };
+
+    function onJoinGame (responseData:any) {
+      console.log("JOIN_GAME");
+      console.log(responseData);
+
+      navigate("/Game", {state: { userId: id, roomId: responseData.roomId }});
+    }
+
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
     socket.on("INVITE", (data) => handleGameRequest(data));
+
+    // join game
+    socket.on("JOIN_GAME", onJoinGame);
   }, [socket]);
   socket.on("NOTICE", (data) => console.log(data.code));
   return (
@@ -62,20 +78,20 @@ function AfterLogin({ userId }) {
         {/* <Route path="/FriendProfile" element={<Friendprofile />} /> */}
         <Route path="/Lobby" element={<Lobby id={id} />} />
         <Route path="/Loading" element={<Loading />} />
-        {/* <Route path="/Game" element={<Game />} /> */}
+        <Route path="/Game" element={<Game />} />
         {/* <Route path="/Friends" element={<Friends />} /> */}
-        {/* <Route
+        <Route
         path="/Chatting"
         element={
-          <Chattings
+          <Chatting
             socket={null}
             id={userId}
             pageStart="0"
             name="pjang"
             avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"
           />
-        } */}
-        {/* /> */}
+        }
+        />
         <Route path="/Ranking" element={<Ranking />} />
       </Routes>
       {modalOpen && modalContent}

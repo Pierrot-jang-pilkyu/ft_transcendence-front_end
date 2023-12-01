@@ -2,7 +2,7 @@ import Header from "../../components/Header";
 import styles from "./Chatting.module.css";
 import Outside from "./Outside";
 import Avatar from "./Avatar";
-import { useRef, useCallback, useEffect, useState, KeyboardEvent } from "react";
+import { useContext, useRef, useCallback, useEffect, useState, KeyboardEvent } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import RoomAddModal from "./RoomAddModal";
@@ -11,6 +11,8 @@ import AlertModal from "./AlertModal";
 import axios from 'axios';
 import socket from "./Socket";
 import TestChatList from "./TestChatList";
+import { IdContext } from "../../App";
+import ModalAccept from "../../components/AddAndAccept";
 
 interface User {
     name: string;
@@ -54,13 +56,32 @@ let publicChatList:ChattingRoom[] = [];
 let clientChatList:ChattingRoom[] = [];
 let dmChatList:ChattingRoom[] = [];
 
+// Cookie
+import { Cookies } from "react-cookie";
+
+const cookies = new Cookies();
+
+export const setCookie = (name: string, value: string, options?: any) => {
+  return cookies.set(name, value, { ...options });
+};
+
+export const getCookie = (name: string) => {
+  return cookies.get(name);
+};
+
 function Chatting (props:any) {
 
-    // const userId = props.id;
-    const { state } = useLocation();
+    // const userId:number = parseInt(getCookie("user.id"));
+    const [id, setId] = useContext(IdContext);
+    const userId:number = id;
+    // const { state } = useLocation();
     const navigate = useNavigate();
-    const userId = state;
+    // const userId = state;
     const [openRoomAddModal, setOpenRoomAddModal] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalContent, setModalContent] = useState<React.ReactNode | null>(
+        null
+    );
 
     const handleOpenRoomModal = () => {
         setOpenRoomAddModal(true);
@@ -96,16 +117,16 @@ function Chatting (props:any) {
 
     switch (userId)
     {
-        case "1":
+        case 1:
             testUser = { name: 'amanda', img: './src/assets/img_Profile.png', state: "3", id: "1", op: false}
             break;
-        case "2":
+        case 2:
             testUser = { name: 'bread', img: './src/assets/img_Profile.png', state: "1", id: "2", op: false}
             break;
-        case "3":
+        case 3:
             testUser = { name: 'calla', img: './src/assets/img_Profile.png', state: "1", id: "2", op: false}
             break;
-        case "4":
+        case 4:
             testUser = { name: 'dan', img: './src/assets/img_Profile.png', state: "1", id: "2", op: false}
             break;
         default:
@@ -897,7 +918,11 @@ function Chatting (props:any) {
                       }, 1000);
                     break;
                 case 27: // 27	REFUSE_GAME	REFUSE_GAME 명령어 성공	요청을 거절 하였습니다.
-                    setChatLog(onNoticeChatMSG(responseData.content));
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
                     break;
                 case 28: // 28	REFUSE_GAME	게임 초대를 거절 당했을 경우	유저님이 게임초대를 거절 하였습니다.
                     setChatLog(onNoticeChatMSG(responseData.content));
@@ -912,7 +937,11 @@ function Chatting (props:any) {
                     setChatLog(onNoticeChatMSG(responseData.content));
                     break;
                 case 32: // 32	ACCEPT_FRIEND	친구 관계가 되었을 경우	유저님과 친구가 되었습니다.
-                    setChatLog(onNoticeChatMSG(responseData.content));
+                    setContent(responseData.content);
+                    handleOpenAlertModal();
+                    setTimeout(() => {
+                        handleCloseAlertModal();
+                      }, 1000);
                     break;
                 case 33: // 33	REFUSE_FRIEND	REFUSE_FRIEND 명령어 성공	요청을 거절 하였습니다.
                     setContent(responseData.content);
@@ -988,14 +1017,32 @@ function Chatting (props:any) {
             console.log("REQUEST_FRIEND");
             console.log(responseData);
 
-            socket.emit("REFUSE_FRIEND", responseData);
+            // data.avatar를 사용하여 원하는 동작 수행
+            setModalContent(
+                <ModalAccept
+                    type={"REQUEST_FRIEND"}
+                    data={responseData}
+                    onClose={() => setModalOpen(false)}
+                    socket={socket}
+                />
+            );
+            setModalOpen(true);
         }
 
         function onInvite (responseData:any) {
             console.log("INVITE");
             console.log(responseData);
 
-            socket.emit("ACCEPT_GAME", responseData);
+            // data.avatar를 사용하여 원하는 동작 수행
+            setModalContent(
+                <ModalAccept
+                    type={"INVITE"}
+                    data={responseData}
+                    onClose={() => setModalOpen(false)}
+                    socket={socket}
+                />
+            );
+            setModalOpen(true);
         }
 
         function onJoinGame (responseData:any) {
@@ -1417,6 +1464,7 @@ function Chatting (props:any) {
             { openRoomAddModal &&  <RoomAddModal onClose={handleCloseRoomModal} roomAdd={roomAdd} id={userId} />}
             { openPWAddModal &&  <EnterPW onClose={handleClosePWModal} onEnter={enterRoom} id={userId} />}
             { openAlertAddModal &&  <AlertModal onClose={handleCloseAlertModal} content={content} />}
+            { modalOpen && modalContent }
 		</div>
 	)
 }
