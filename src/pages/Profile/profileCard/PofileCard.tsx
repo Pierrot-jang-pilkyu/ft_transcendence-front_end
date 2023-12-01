@@ -9,7 +9,7 @@ function ProfileCard(props: any) {
   const [profile, setProfile] = useState();
   const [editFlag, setEditFlag] = useState(false);
   const { state } = useLocation();
-  const [id, setId] = useContext(IdContext);
+  // const [id, setId] = useContext(IdContext);
   useEffect(() => {
     if (props.flag === 1) {
       setEditFlag(true);
@@ -19,8 +19,8 @@ function ProfileCard(props: any) {
   }, [props.flag]);
 
   useEffect(() => {
-    if (id === undefined) setId(parseInt(state));
-    fetch(`http://localhost:3000/users/players/${id}`, {
+    // if (props.id === undefined) setId(parseInt(state));
+    fetch(`http://localhost:3000/users/players/${props.id}`, {
       method: "GET",
     })
       .then((response) => response.json())
@@ -28,8 +28,7 @@ function ProfileCard(props: any) {
       .catch((error) => {
         console.log("FAILED");
       });
-    console.log(id);
-  }, [id]);
+  }, [props.id]);
 
   return (
     <div className={`${styles.profile}`}>
@@ -62,20 +61,16 @@ function ProfileCard(props: any) {
           </div>
           <text className={`${styles.win}`}>Win:</text>
           <div className={`${styles.winvalue}`}>
-            {profile == undefined
-              ? null
-              : profile.gameRecord == null
-              ? 0
-              : profile.gameRecord.win}
+            {profile == undefined ? 0 : profile.gameRecord.win}
           </div>
           <text className={`${styles.lose}`}>Lose:</text>
-          <div className={`${styles.losevalue}`}>
+          <text className={`${styles.losevalue}`}>
             {profile == undefined
               ? null
               : profile.gameRecord == null
               ? 0
               : profile.gameRecord.lose}
-          </div>
+          </text>
         </div>
       </div>
     </div>
