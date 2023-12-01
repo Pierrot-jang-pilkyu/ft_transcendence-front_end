@@ -4,6 +4,8 @@ import { io } from "socket.io-client";
 //   autoConnect: false,
 // });
 
-const socket = io("localhost:3131/lobby");
+const socket = io("localhost:3131/lobby", {
+    autoConnect: false
+});
 
 export default socket;
