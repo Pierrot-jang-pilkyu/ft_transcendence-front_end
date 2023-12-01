@@ -2,9 +2,10 @@ import Header from "../../components/Header";
 import ProfileCard from "./profileCard/PofileCard";
 import MatchHistory from "./Match History/MatchHistory";
 import styles from "./profile.module.css";
-import { useContext, useState } from "react";
+import { useEffect, useContext, useState } from "react";
 import { IdContext } from "../../App";
 import ChangeModal from "./ChangeModal/ChangeModal";
+import socket from "../../hooks/socket/socket";
 
 function Myprofile(props: any) {
   const [nickModal, setNickModal] = useState(false);
@@ -16,6 +17,18 @@ function Myprofile(props: any) {
   const handleCloseChangeModal = () => {
     setNickModal(false);
   };
+
+  useEffect(() => {
+    socket.connect();
+
+    socket.emit("REGIST", parseInt(id));
+    
+    return (() => {
+      socket.disconnect();
+    }
+    );
+  }, []);
+
   return (
     <div className={`${styles.background}`}>
       <Header />

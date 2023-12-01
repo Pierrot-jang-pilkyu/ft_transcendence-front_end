@@ -1,7 +1,7 @@
 import styles from "./AddAndAccept.module.css";
-import socket from "../hooks/socket/socket";
+// import socket from "../hooks/socket/socket";
 
-function AddAndAccept({ type, onClose, data }) {
+function AddAndAccept({ type, onClose, data, socket }) {
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       if (type === "REQUEST_FRIEND") {
@@ -25,7 +25,7 @@ function AddAndAccept({ type, onClose, data }) {
     onClose();
   };
   const handleGameAccept = () => {
-    socket.emit("ACCPET_GAME", data);
+    socket.emit("ACCEPT_GAME", data);
     onClose();
   };
 
@@ -65,9 +65,9 @@ function AddAndAccept({ type, onClose, data }) {
         <div className={`${styles.avatar_container}`}>
           <img
             className={`${styles.avatar_image}`}
-            src={data == undefined ? null : data.avatar}
+            src={data == undefined ? null : data.send.avatar}
           ></img>
-          <div className={`${styles.avatar_name}`}>{data.name}</div>
+          <div className={`${styles.avatar_name}`}>{data.send.name}</div>
         </div>
         <div className={`${styles.button_container}`}>
           <button

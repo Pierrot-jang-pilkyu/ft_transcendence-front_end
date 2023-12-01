@@ -21,6 +21,17 @@ function Lobby(props: any) {
   const { state } = useLocation();
   const [id, setId] = useContext(IdContext);
 
+  useEffect(() => {
+    socket.connect();
+
+    socket.emit("REGIST", parseInt(id));
+    
+    return (() => {
+      socket.disconnect();
+    }
+    );
+  }, []);
+
   const Objects: FriendProps[] = [
     {
       name: "pjang",
