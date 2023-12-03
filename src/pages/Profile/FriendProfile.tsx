@@ -27,8 +27,6 @@ function Friendprofile(props: any) {
         <ProfileCard id={id} />
         <MatchHistory id={id} />
       </div>
-      <div className={`${styles.buttonone}`}>DM</div>
-      <div className={`${styles.buttontwo}`}>INVITE</div>
     </div>
   );
 }

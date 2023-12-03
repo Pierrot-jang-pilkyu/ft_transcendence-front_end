@@ -45,7 +45,6 @@ function ChangeModal({ onClose, id }) {
     if (id == undefined) id = { state };
     fetchData();
   }, [id]);
-
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
@@ -79,6 +78,7 @@ function ChangeModal({ onClose, id }) {
     setUserName(e.target.value);
     console.log(e.target.value);
   }
+
   return (
     <div className={`${styles.popup_wrap}`} onClick={handleOutsideClick}>
       <div className={`${styles.popup}`}>

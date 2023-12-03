@@ -32,9 +32,9 @@ function Ranking(props: any) {
         <ProfileCard id={id} />
         <RankTable />
       </div>
-      <div className={`${styles.buttonone}`} onClick={handlerButton}>
+      <button className={`${styles.buttonone}`} onClick={handlerButton}>
         Match History
-      </div>
+      </button>
     </div>
   );
 }
