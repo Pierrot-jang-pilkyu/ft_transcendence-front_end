@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useContext } from 'react';
 import styles from "./Gaming.module.css"
 import { GameContext, socket } from '../Utils';
 import { useNavigate } from 'react-router-dom';
+import ChattingRoom from '../ChattingRoom/ChattingRoom';
 
 function Gaming() {
 	const canvasRef = useRef(null);
@@ -271,8 +272,9 @@ function Gaming() {
 	}
 
 	return (
-		<div>
+		<div className={`${styles.container}`}>
 			{ !end && <canvas className={`${styles.canvas}`} ref={canvasRef}></canvas> }
+			{ !end && <ChattingRoom isLeft={isLeft}/>}
 			{ end == 1 && <div className={`${styles.end}`}>Win</div>}
 			{ end == 2 && <div className={`${styles.end}`}>Lose</div>}
 			{ end != 0 && <button>lobby</button>}

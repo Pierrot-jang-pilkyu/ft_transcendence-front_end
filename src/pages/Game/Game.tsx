@@ -46,7 +46,7 @@ function Game()
 				<Header/>
 				{ game.room.start == null && <Loading /> }
 				{ game.room.start == false && <Setting /> }
-				{ game.room.start == true && <Gaming /> }
+				{ game.room.start == true && <Gaming /> } 
 				{/* { status != Status.Loading  && <ChattingRoom opposite={}/> } */}
 			</div>
 		</GameContext.Provider>
