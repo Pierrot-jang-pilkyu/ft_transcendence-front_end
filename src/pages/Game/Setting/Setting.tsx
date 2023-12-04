@@ -1,27 +1,25 @@
 import styles from "./Setting.module.css"
-import Option from "./Option/Option";
 import { useContext, useEffect, useState } from "react";
-import { GameContext, Status, socket } from "../Utils";
+import { GameContext, socket } from "../Utils";
 import ChattingRoom from "../ChattingRoom/ChattingRoom";
 import AnnounceBar from "../AnnounceBar/AnnounceBar";
+import Mode from "./Mode/Mode";
 
 function Setting()
 {
-    const [speed, setSpeed] = useState(5);
-    const [ballSize, setBallSize] = useState(5);
-    const [barSize, setBarSize] = useState(5);
-    const [ready, setReady] = useState({left: false, right: false});
     const [game, setGame] = useContext(GameContext);
-
-    function clickReady()
-    {
-        socket.emit("READY", game);
-    }
+    const [option, setOption] = useState({
+        speed: 5,
+        ballSize: 5,
+        barSize: 5,
+    });
+    const [ready, setReady] = useState({left: false, right: false});
 
     useEffect(()=> {
         socket.on("OPTION", (data)=>{
-            //
+            setOption(data);
         })
+
         socket.on("READY", (data)=>{
             setReady({
                 left:data.room.left.isReady,
@@ -30,7 +28,6 @@ function Setting()
         });
 
         socket.on("START", (data)=>{
-            console.log(data);
             setGame(data);
         });
         
@@ -41,25 +38,9 @@ function Setting()
         });
     }, [])
 
-    useEffect(()=>{
-        socket.emit("OPTION", { speed: speed, ballSize: ballSize, barSize: barSize });
-    }, [speed, ballSize, barSize])
-
     return (
         <div>
-            <div className={`${styles.container}`}>
-                <div className={`${styles.title}`}>Mode Setting</div>
-                <div className={`${styles.options}`}>
-                    <Option name="Speed" value={speed} setValue={setSpeed} clickable={!game.room.rank && !ready && game.isLeft}/>
-                    <Option name="Ball Size" value={ballSize} setValue={setBallSize} clickable={!game.room.rank && !ready && game.isLeft}/>
-                    <Option name="Bar Size" value={barSize} setValue={setBarSize} clickable={!game.room.rank && !ready && game.isLeft}/>
-                </div>
-                <button className={`${styles.button}`} onClick={clickReady}>Ready</button>
-                <div className={`${styles.readyBar}`}>
-                    <div className={`${ (ready.left) ? styles.ready : styles.unready}`}>READY!</div>
-                    <div className={`${ (ready.right) ? styles.ready : styles.unready}`}>READY!</div>
-                </div>
-            </div>
+            <Mode option={option} author={!game.room.rank && !ready && game.isLeft} ready={ready}/>
             <AnnounceBar/>
             <ChattingRoom isLeft={game.isLeft}/>
         </div>

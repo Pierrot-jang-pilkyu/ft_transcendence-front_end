@@ -26,9 +26,7 @@ function Loading() {
                     socket.emit("MATCH");
             }
             else
-            {2
                 setGame(data);   
-            }
         });
         socket.on("LOAD", (data) => {
             setGame(data);
