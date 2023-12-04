@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { GameContext, socket} from "../Utils";
 import { useNavigate } from "react-router-dom";
-import { MoonLoader } from "react-spinners";
 import styles from "./Loading.module.css";
+import BorderButton from "../../../components/BorderButton/BorderButton";
+import LoadingAnimation from "../../../components/LoadingAnimation/LoadingAnimation";
 
 function Loading() {
     const [wait, setWait] = useState(false);
@@ -25,7 +26,7 @@ function Loading() {
                     socket.emit("MATCH");
             }
             else
-            {
+            {2
                 setGame(data);   
             }
         });
@@ -43,12 +44,8 @@ function Loading() {
 
     return (
         <div className={`${styles.container}`}>
-            <div className={`${styles.typing_indicator}`}>
-                <div className={`${styles.typing_circle}`} />
-                <div className={`${styles.typing_circle}`}></div>
-                <div className={`${styles.typing_circle}`}></div>
-            </div>
-            {wait && <button className={`${styles.button}`} onClick={clickCancel}>cancel</button>}
+            <LoadingAnimation/>
+            {wait && <BorderButton title="cancel" onClick={clickCancel}/>}
         </div>
     );
 }

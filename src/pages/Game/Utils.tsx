@@ -39,7 +39,6 @@ export interface GameRoom {
 export const GameContext = createContext(null);
 
 export function isOnlyBlank(str) {
-	console.log(str);
 	const blank_pattern = /^\s+|\s+$/g;
 	if(!str || str.replace(blank_pattern, '') == "" ){
 		return true;

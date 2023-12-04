@@ -2,7 +2,6 @@ import styles from "./Setting.module.css"
 import Option from "./Option/Option";
 import { useContext, useEffect, useState } from "react";
 import { GameContext, Status, socket } from "../Utils";
-import { IdContext } from "../../../App";
 import ChattingRoom from "../ChattingRoom/ChattingRoom";
 import AnnounceBar from "../AnnounceBar/AnnounceBar";
 
@@ -11,17 +10,11 @@ function Setting()
     const [speed, setSpeed] = useState(5);
     const [ballSize, setBallSize] = useState(5);
     const [barSize, setBarSize] = useState(5);
-    const [ready, setReady] = useState({user:false, oppo:false});
+    const [ready, setReady] = useState({left: false, right: false});
     const [game, setGame] = useContext(GameContext);
 
     function clickReady()
     {
-        setReady((prev) => {
-            return {
-                user: prev.user == true ? false : true,
-                oppo: prev.oppo,
-            };
-        });
         socket.emit("READY", game);
     }
 
@@ -30,7 +23,10 @@ function Setting()
             //
         })
         socket.on("READY", (data)=>{
-            console.log("ready:", data);
+            setReady({
+                left:data.room.left.isReady,
+                right:data.room.right.isReady
+            });
         });
 
         socket.on("START", (data)=>{
@@ -50,7 +46,7 @@ function Setting()
     }, [speed, ballSize, barSize])
 
     return (
-        <>
+        <div>
             <div className={`${styles.container}`}>
                 <div className={`${styles.title}`}>Mode Setting</div>
                 <div className={`${styles.options}`}>
@@ -60,13 +56,13 @@ function Setting()
                 </div>
                 <button className={`${styles.button}`} onClick={clickReady}>Ready</button>
                 <div className={`${styles.readyBar}`}>
-                    <div className={`${ (game.isLeft ? ready.user : ready.oppo) ? styles.ready : styles.unready}`}>READY!</div>
-                    <div className={`${ (!game.isLeft ? ready.user : ready.oppo) ? styles.ready : styles.unready}`}>READY!</div>
+                    <div className={`${ (ready.left) ? styles.ready : styles.unready}`}>READY!</div>
+                    <div className={`${ (ready.right) ? styles.ready : styles.unready}`}>READY!</div>
                 </div>
             </div>
-            <AnnounceBar></AnnounceBar>
+            <AnnounceBar/>
             <ChattingRoom isLeft={game.isLeft}/>
-        </>
+        </div>
     )
 }
 
