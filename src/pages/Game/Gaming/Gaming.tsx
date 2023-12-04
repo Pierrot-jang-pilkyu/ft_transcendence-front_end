@@ -3,6 +3,7 @@ import styles from "./Gaming.module.css"
 import { GameContext, socket } from '../Utils';
 import { useNavigate } from 'react-router-dom';
 import ChattingRoom from '../ChattingRoom/ChattingRoom';
+import AnnounceBar from '../AnnounceBar/AnnounceBar';
 
 function Gaming() {
 	const canvasRef = useRef(null);
@@ -12,6 +13,8 @@ function Gaming() {
 	const roomId = game.room.roomId;
 	const option = game.room.option;
 	const isLeft = game.isLeft;
+	const stop = game.room.stop;
+	const start_ball = game.room.gameInfo.ball;
 
 	useEffect(() => {
 		let turn = 1;
@@ -68,21 +71,21 @@ function Gaming() {
 		}
 
 		const ball = {
-			x : width/2,
-			y : height/2,
+			x : start_ball.x,
+			y : start_ball.y,
 			radius : 10 * ballSizeRatio,
 			speed : 20 * speedRatio,
 			// vX : 10 * speedRatio * Math.cos(45),
 			// vY : 10 * speedRatio * Math.sin(45),
-			vX : 20 * speedRatio,
-			vY : 0,
+			vX : start_ball.xv,
+			vY : start_ball.yv,
 			color : "white",
 			pause: 100,
 		}
 
 		const tmp_ball = {
-			x : width/2,
-			y : height/2,
+			x : start_ball.x,
+			y : start_ball.y,
 		}
 
 		const tmp_com = {
@@ -211,6 +214,8 @@ function Gaming() {
 		}
 
 		//main
+		if (stop)
+			socket.emit("RESUME");
 		let rafId = requestAnimationFrame(game);
 		canvas.addEventListener("mousemove", moveUser);
 		document.addEventListener("visibilitychange", onVisiblityChange);
@@ -264,6 +269,9 @@ function Gaming() {
 		})
 		return (()=>{
 			document.removeEventListener("visibilitychange", onVisiblityChange);
+			if (!end)
+				socket.emit("PAUSE");
+			//off function required
 		})
 	}, []);
 
@@ -274,6 +282,7 @@ function Gaming() {
 	return (
 		<div className={`${styles.container}`}>
 			{ !end && <canvas className={`${styles.canvas}`} ref={canvasRef}></canvas> }
+			{ !end && <AnnounceBar/>}
 			{ !end && <ChattingRoom isLeft={isLeft}/>}
 			{ end == 1 && <div className={`${styles.end}`}>Win</div>}
 			{ end == 2 && <div className={`${styles.end}`}>Lose</div>}
