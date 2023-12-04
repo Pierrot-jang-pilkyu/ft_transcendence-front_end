@@ -214,9 +214,11 @@ function Gaming() {
 		}
 
 		//main
+		let rafId;
 		if (stop)
 			socket.emit("RESUME");
-		let rafId = requestAnimationFrame(game);
+		else
+			rafId = requestAnimationFrame(game);
 		canvas.addEventListener("mousemove", moveUser);
 		document.addEventListener("visibilitychange", onVisiblityChange);
 

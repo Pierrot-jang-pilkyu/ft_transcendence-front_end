@@ -18,6 +18,7 @@ function Loading() {
 
     useEffect(() => {
         socket.on("RELOAD", (data) => {
+            console.log(data);
             if (data.room == null)
             {
                 if (game.room.roomId != null)
