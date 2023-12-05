@@ -14,10 +14,6 @@ function Option({option, name, author}:{option:{[index:string]:number, speed:num
             socket.emit("OPTION", {[name]: option[name] + 1});
     }
 
-    useEffect(()=>{
-        console.log(name);
-    })
-
     return (
         <div className={`${styles.container}`}>
             <div>{name.charAt(0).toUpperCase() + name.slice(1)}:</div>

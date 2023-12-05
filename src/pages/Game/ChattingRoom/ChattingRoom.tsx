@@ -12,7 +12,6 @@ function ChattingRoom({isLeft})
     const [logs, setLogs] = useState([]);
  
     useEffect(()=>{
-        console.log(isLeft);
         socket.on("MSG", (data)=>{
             setLogs(prev => [
                 ...prev,
@@ -22,7 +21,6 @@ function ChattingRoom({isLeft})
     }, []);
 
     useEffect(()=>{
-        console.log(input);
         setLogs(prev => [
             ...prev,
             { content: input, isUser: true, isLeft: isLeft}
