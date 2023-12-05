@@ -10,14 +10,11 @@ function Gaming() {
 	const [end, setEnd] = useState(0);
 	const navigate = useNavigate();
 	const [game, setGame] = useContext(GameContext);
-	const roomId = game.room.roomId;
-	const option = game.room.option;
-	const isLeft = game.isLeft;
-	const stop = game.room.stop;
-	const start_ball = game.room.gameInfo.ball;
+	const {isLeft, room } = game;
+	const {score, option } = room;
+	const start_ball = room.gameInfo.ball;
 
 	useEffect(() => {
-		let turn = 1;
 		const canvas = canvasRef.current;
 		const width = 800;
 		const height = 700;
@@ -37,16 +34,9 @@ function Gaming() {
 		context.scale(dpr, dpr);
 		context.font = 	"bold 50px sans-serif";
 
-		const barSizeRatio = option.barSize / 5;
-		const ballSizeRatio = option.ballSize / 5;
-		const speedRatio = option.speed / 10;
-
-		function right() {
-			return isLeft == true ? tmp_com.y : tmp_user.y
-		}
-
-		function left() {
-			return isLeft == true ? tmp_com.y : tmp_user.y
+		function moveUser(event) {
+			const rect = canvas.getBoundingClientRect();
+			socket.emit("PING", {bar: event.clientY - rect.top - 70, isLeft: isLeft})
 		}
 
 		function drawRect(x, y, w, h, color) {
@@ -62,148 +52,46 @@ function Gaming() {
 			context.fill();
 		}
 
-		const user = {
-			x : isLeft == true ? 40 : width - 16 - 40,
-			y : height/2 - 70,
+		const barSizeRatio = option.barSize / 5;
+		const ballSizeRatio = option.ballSize / 5;
+
+		const left = {
+			x : 40,
+			y : canvas.height/2 - 70,
 			width : 16,
 			height : 140 * barSizeRatio,
-			color : isLeft == true ? "#397DFF" : "#FFB359",
+			color : "#397DFF",
 		}
-
+		
+		const right = {
+			x : width - 16 - 40,
+			y : canvas.height/2 - 70,
+			width : 16,
+			height : 140 * barSizeRatio,
+			color : "#FFB359",
+		}
+		
 		const ball = {
 			x : start_ball.x,
 			y : start_ball.y,
 			radius : 10 * ballSizeRatio,
-			speed : 20 * speedRatio,
-			// vX : 10 * speedRatio * Math.cos(45),
-			// vY : 10 * speedRatio * Math.sin(45),
-			vX : start_ball.xv,
-			vY : start_ball.yv,
 			color : "white",
-			pause: 100,
 		}
-
-		const tmp_ball = {
-			x : start_ball.x,
-			y : start_ball.y,
-		}
-
-		const tmp_com = {
-			width : 16,
-			height : 140 * barSizeRatio,
-			x : isLeft == false ? 40 : width - 16 - 40,
-			y : height/2 - 70,
-			color : isLeft == false ? "#397DFF" : "#FFB359",
-		}
-
-		const tmp_user = {
-			x : isLeft == true ? 40 : width - 16 - 40,
-			y : height/2 - 70,
-			width : 16,
-			height : 140 * barSizeRatio,
-			color : isLeft == true ? "#397DFF" : "#FFB359",
-		}
-
-		const score = {
-			left: 0,
-			right: 0,
-		}
-
-		function isHitByWall() {
-			return ball.y + ball.radius > height
-				|| ball.y - ball.radius < 0
-		}
-
-		function isOut() {
-			return ball.x < 0
-				|| ball.x > width
-		}
-
-		function isHitBy(player) {
-			return ball.right > player.left
-				&& ball.left < player.right
-				&& ball.top < player.bottom
-				&& ball.bottom > player.top
-		}
-
-		function updateBall() { 
-			if (ball.pause-- > 0)
-				return ;
-			ball.x += ball.vX;
-			ball.y += ball.vY;
-			ball.top = ball.y - ball.radius;
-			ball.bottom = ball.y + ball.radius;
-			ball.left = ball.x - ball.radius;
-			ball.right = ball.x + ball.radius;
-
-			const player = user;
-			if (isHitByWall())
-				ball.vY *= -1;
-			else if (((isLeft == true && ball.x < width/2) || (isLeft == false && ball.x > width/2))
-				&& isHitBy(player))
-			{
-				const fPoint = ball.y - (player.y + player.height/2); 
-				const angle = (fPoint / player.height/2) * Math.PI / 1.5;
-
-				ball.vX = ball.speed * Math.cos(angle);
-				if (ball.x > width/2)
-					ball.vX *= -1;
-				ball.vY = ball.speed * Math.sin(angle);
-				socket.emit("HIT", { x: ball.x, y: ball.y, xv: ball.vX, yv: ball.vY });
-			}
-			else if (isOut())
-			{
-				if ((isLeft == true && ball.x > width) || (isLeft == false && ball.x < 0))
-					socket.emit("SCORE", { roomId: roomId, isLeft: isLeft });
-				ball.x = width/2;
-				ball.y = height/2;
-				ball.pause = 100;
-				turn *= -1;
-				ball.vX = 20 * speedRatio * turn;
-				ball.vY = 0;
-				render();
-			}
-		}
-
-		function updatePlayer(p) {
-			p.top = p.y;
-			p.bottom = p.y + p.height;
-			p.left = p.x;
-			p.right = p.x + p.width;
-		}
-
-		function update() {
-			updateBall();
-			updatePlayer(user);
-		}
-
-		function moveUser(event) {
-			const rect = canvas.getBoundingClientRect();
-			user.y = event.clientY - rect.top - 70;
-		}
-
 
 		function render() {
 			context.clearRect(0, 0, width, height)
 			context.fillText(score.left, width/4, height/4);
 			context.fillText(score.right, width/4 * 3 - 50, height/4);
 			drawRect(0, height/2 - 1, width, 2, "#FFFFFF");
-			drawRect(tmp_user.x, tmp_user.y, tmp_user.width, tmp_user.height, tmp_user.color);
-			drawRect(tmp_com.x, tmp_com.y, tmp_user.width, tmp_user.height, tmp_com.color);
-			drawCircle(tmp_ball.x, tmp_ball.y, ball.radius, ball.color);
+			drawRect(left.x, left.y, left.width, left.height, left.color);
+			drawRect(right.x, right.y, right.width, right.height, right.color);
+			drawCircle(ball.x, ball.y, ball.radius, ball.color);
 		}
 
 		function renderPause()
 		{
 			context.fillStyle = "rgba(255, 255, 255, 0.6)";
 			context.fillRect(0, 0, width, height);
-		}
-
-		function game() {
-			update();
-			socket.emit("PING", { roomId: roomId, ball: { x: ball.x, y: ball.y }, bar: user.y, isLeft: isLeft });
-			render();
-			rafId = requestAnimationFrame(game);
 		}
 
 		function onVisiblityChange() {
@@ -214,27 +102,19 @@ function Gaming() {
 		}
 
 		//main
-		let rafId;
 		if (stop)
 			socket.emit("RESUME");
-		else
-			rafId = requestAnimationFrame(game);
 		canvas.addEventListener("mousemove", moveUser);
 		document.addEventListener("visibilitychange", onVisiblityChange);
 
 		//socket_on
 		socket.on("PONG", (data) => {
-			tmp_ball.x = data.ball.x;
-			tmp_ball.y = data.ball.y;
-			tmp_user.y = isLeft == true ? data.left : data.right;
-			tmp_com.y = isLeft == false ? data.left : data.right;
-		});
-
-		socket.on("VECTOR", (data) => {
-			ball.x = data.x;
-			ball.y = data.y;
-			ball.vX = data.xv;
-			ball.vY = data.yv;
+			ball.x = data.ball.x;
+			ball.y = data.ball.y;
+			left.y = data.left;
+			right.y = data.right;
+			console.log(data);
+			render();
 		});
 
 		socket.on("SCORE", (data) => {
@@ -243,32 +123,12 @@ function Gaming() {
 		})
 
 		socket.on("END", (data) => {
-			cancelAnimationFrame(rafId);
 			if (data.winnerIsLeft === isLeft)
 				setEnd(1);
 			else
 				setEnd(2);
 		})
 
-		socket.on("PAUSE", () => {
-			cancelAnimationFrame(rafId);
-			renderPause();
-			socket.emit("SAVE", { ball: { x: ball.x, y: ball.y, xv: ball.vX, yv: ball.vY}, right: isLeft == true ? tmp_com.y : tmp_user.y, left: isLeft == true ? tmp_user.y : tmp_com.y });
-		})
-		
-		socket.on("RESUME", async (data) => {
-			await (function () {
-				ball.x = data.ball.x;
-				ball.y = data.ball.y;
-				ball.vX = data.ball.xv;
-				ball.vY = data.ball.yv;
-				tmp_ball.x = data.ball.x;
-				tmp_ball.y = data.ball.y;
-				tmp_user.y = isLeft == true ? data.left : data.right;
-				tmp_com.y = isLeft == false ? data.left : data.right;
-			})
-			rafId = requestAnimationFrame(game);
-		})
 		return (()=>{
 			document.removeEventListener("visibilitychange", onVisiblityChange);
 			if (!end)
@@ -288,7 +148,7 @@ function Gaming() {
 			{ !end && <ChattingRoom isLeft={isLeft}/>}
 			{ end == 1 && <div className={`${styles.end}`}>Win</div>}
 			{ end == 2 && <div className={`${styles.end}`}>Lose</div>}
-			{ end != 0 && <button>lobby</button>}
+			{ end != 0 && <button onClick={clickButton}>lobby</button>}
 		</div>
 	);
 }
