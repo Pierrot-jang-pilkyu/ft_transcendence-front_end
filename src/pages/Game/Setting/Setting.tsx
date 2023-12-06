@@ -4,6 +4,7 @@ import { GameContext, socket } from "../Utils";
 import ChattingRoom from "../ChattingRoom/ChattingRoom";
 import AnnounceBar from "../AnnounceBar/AnnounceBar";
 import Mode from "./Mode/Mode";
+import { useNavigate } from "react-router-dom";
 
 function Setting()
 {
@@ -14,6 +15,7 @@ function Setting()
         barSize: 5,
     });
     const [ready, setReady] = useState({left: false, right: false});
+    const navigate = useNavigate();
 
     useEffect(()=> {
         socket.on("OPTION", (data)=>{
@@ -30,6 +32,10 @@ function Setting()
         socket.on("START", (data)=>{
             setGame(data);
         });
+
+        socket.on("DODGE", ()=>{
+            navigate("/Lobby");
+        })
         
         return (()=>{
             socket.off("READY");
