@@ -4,6 +4,7 @@ import { GameContext, socket } from '../Utils';
 import { useNavigate } from 'react-router-dom';
 import ChattingRoom from '../ChattingRoom/ChattingRoom';
 import AnnounceBar from '../AnnounceBar/AnnounceBar';
+import BorderButton from '../../../components/BorderButton/BorderButton';
 
 function Gaming() {
 	const canvasRef = useRef(null);
@@ -88,24 +89,8 @@ function Gaming() {
 			drawCircle(ball.x, ball.y, ball.radius, ball.color);
 		}
 
-		function renderPause()
-		{
-			context.fillStyle = "rgba(255, 255, 255, 0.6)";
-			context.fillRect(0, 0, width, height);
-		}
-
-		function onVisiblityChange() {
-			if (document.visibilityState == 'visible')
-				socket.emit("RESUME");
-			else
-				socket.emit("PAUSE");
-		}
-
 		//main
-		if (stop)
-			socket.emit("RESUME");
 		canvas.addEventListener("mousemove", moveUser);
-		document.addEventListener("visibilitychange", onVisiblityChange);
 
 		//socket_on
 		socket.on("PONG", (data) => {
@@ -129,12 +114,6 @@ function Gaming() {
 				setEnd(2);
 		})
 
-		return (()=>{
-			document.removeEventListener("visibilitychange", onVisiblityChange);
-			if (!end)
-				socket.emit("PAUSE");
-			//off function required
-		})
 	}, []);
 
 	function clickButton() {
@@ -148,7 +127,7 @@ function Gaming() {
 			{ !end && <ChattingRoom isLeft={isLeft}/>}
 			{ end == 1 && <div className={`${styles.end}`}>Win</div>}
 			{ end == 2 && <div className={`${styles.end}`}>Lose</div>}
-			{ end != 0 && <button onClick={clickButton}>lobby</button>}
+			{ end && <BorderButton title="BACK TO LOBBY" onClick={clickButton}/>}
 		</div>
 	);
 }

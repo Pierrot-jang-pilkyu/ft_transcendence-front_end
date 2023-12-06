@@ -5,7 +5,6 @@ import styles from "./AnnounceBar.module.css"
 function AnnounceBar() 
 {
     const [content, setContent] = useState("");
-    const [tid, setTid] = useState<any>(null);
 
     useEffect(()=>{
         socket.on("ANNOUNCE", (data)=>{
@@ -17,19 +16,6 @@ function AnnounceBar()
         }
         );
     }, []);
-
-    useEffect(()=>{
-        if (!content)
-            return ;
-        
-        if (tid)
-        {
-            clearTimeout(tid);
-            setTid(null);
-        }
-        let tmp = setTimeout(()=>{setContent("");}, 3000);
-        setTid(tmp);
-    }, [content]);
 
     return (
         <div className={`${styles.container}`}>
