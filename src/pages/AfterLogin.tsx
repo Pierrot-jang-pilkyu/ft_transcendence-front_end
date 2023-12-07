@@ -60,7 +60,7 @@ function AfterLogin({ userId }) {
       console.log("JOIN_GAME");
       console.log(responseData);
 
-      navigate("/Game", { state: { userId: id, roomId: responseData.roomId } });
+      navigate("/Game", {state: { userId: userId, roomId: responseData.roomId, gameRequest: responseData.gameRequest }});
     }
 
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
