@@ -37,6 +37,7 @@ export interface GameRoom {
 }
 
 export const GameContext = createContext(null);
+export const GameModalContext = createContext(null);
 
 export function isOnlyBlank(str) {
 	const blank_pattern = /^\s+|\s+$/g;

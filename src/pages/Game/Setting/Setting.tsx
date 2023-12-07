@@ -1,14 +1,16 @@
 import styles from "./Setting.module.css"
 import { useContext, useEffect, useState } from "react";
-import { GameContext, socket } from "../Utils";
+import { GameContext, GameModalContext, socket } from "../Utils";
 import ChattingRoom from "../ChattingRoom/ChattingRoom";
 import AnnounceBar from "../AnnounceBar/AnnounceBar";
 import Mode from "./Mode/Mode";
 import { useNavigate } from "react-router-dom";
+import GameModal from "../GameModal/GameModal";
 
 function Setting()
 {
     const [game, setGame] = useContext(GameContext);
+    const [gameModal, setGameModal] = useContext(GameModalContext);
     const [option, setOption] = useState({
         speed: 5,
         ballSize: 5,
@@ -34,7 +36,19 @@ function Setting()
         });
 
         socket.on("DODGE", ()=>{
-            navigate("/Lobby");
+            setGameModal({
+                open: true,
+                content: 
+                (<GameModal
+                    title={"상대방 닷지"}
+                    content={""}
+                    leftButton={{title:"창닫기", onClick:()=>{
+                        setGameModal({open:false});
+                        navigate("/Lobby");
+                    }}}
+                    rightButton={{title:"...", onClick: null}}
+                />)
+            });
         })
         
         return (()=>{
