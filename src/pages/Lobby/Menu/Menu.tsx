@@ -20,7 +20,7 @@ function Menu(props: any) {
     // navigate("/Game");
     console.log(state);
     console.log("Click");
-    socket.emit("REQUEST_FRIEND", { userId: parseInt(state), target: "bread" });
+    socket.emit("REQUEST_FRIEND", { userId: parseInt(state), target: "frank" });
   };
   const handlerButtonChatting = () => {
     navigate("/Chatting");

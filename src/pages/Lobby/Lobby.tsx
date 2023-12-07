@@ -44,7 +44,7 @@ function Lobby(props: any) {
   return (
     <div className={`${styles.background}`}>
       {/* <img className={`${styles.img}`} src={HomeBall}/> */}
-      <Header />
+      <Header socket={socket} />
       <Profile id={id} />
       <div className={`${styles.ranking_container}`}>
         <Ranking />
