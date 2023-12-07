@@ -40,6 +40,8 @@
     height: 100vh;
     height: 100dvh;
     background-color: rgb(229 231 235);
+
+    z-index: 9;
 }
 
 .input_container {
@@ -529,6 +531,8 @@
     height: 92dvh;
     scrollbar-width: none;
     background: #FFF;
+
+    z-index: 10;
 }
 
 .friend_list::-webkit-scrollbar {

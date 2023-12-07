@@ -271,17 +271,31 @@ function Chatting (props:any) {
         for (let i = 0; i < currentCR.users.length; ++i)
         {
             // 이미지, 방장여부, 상태(온라인, 게임중, 오프라인) 받기
-            res.push(
-                <li>
-                    <Avatar name={currentCR.users[i].name} img={currentCR.users[i].img} state={currentCR.users[i].state} op={currentCR.users[i].op} />
-                </li>
-            );
+            // if (props.name === currentCR.users[i].name)
+            if (testUser.name === currentCR.users[i].name)
+            {
+                res.push(
+                    <li>
+                        <Avatar name={currentCR.users[i].name} img={currentCR.users[i].img} state={currentCR.users[i].state} op={currentCR.users[i].op} id={currentCR.users[i].id} flag={true} />
+                    </li>
+                );
+            }
+            else
+            {
+                res.push(
+                    <li>
+                        <Avatar name={currentCR.users[i].name} img={currentCR.users[i].img} state={currentCR.users[i].state} op={currentCR.users[i].op} id={currentCR.users[i].id} flag={false} />
+                    </li>
+                );
+            }
         }
 
         return res;
     };
 
     const thisDayStamp = (log:any, date:string) => {
+        if (currentCR.backLogList.length === 0)
+            return ;
         if (logDay === date.substring(0, 10))
             return ;
         else
@@ -529,7 +543,7 @@ function Chatting (props:any) {
             clientChatList.splice(0, clientChatList.length);
             clientChatList.push(lobby);
             publicChatList.splice(0, publicChatList.length);
-            publicChatList.splice(0, dmChatList.length);
+            dmChatList.splice(0, dmChatList.length);
     
             for (let i = 0; i < responseData.me.length; ++i) {
                 // console.log(responseData.me[i]);
@@ -550,6 +564,7 @@ function Chatting (props:any) {
             }
     
             setViewRoomList(viewChattingRoomList());
+            setViewDMList(viewChattingDMList());
         }
 
         function onInfoChMem (responseData:any) {

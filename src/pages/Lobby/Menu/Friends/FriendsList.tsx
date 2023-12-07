@@ -1,24 +1,56 @@
 import styles from "./FriendsList.module.css";
 import Avatar from './Avatar';
-import { useState } from "react";
+import { useState, useEffect, useContext, KeyboardEvent } from "react";
 import SearchFriends from "../../../../assets/SearchFriends.svg";
 import FriendsArrow from "../../../../assets/FriendsArrow.svg";
 import FriendsAdd from "../../../../assets/FriendsAdd.svg";
+import axios from 'axios';
+import { IdContext } from "../../../../App";
+import socket from "../../../../hooks/socket/socket";
 
+interface Friend {
+	name: string;
+	img: string;
+	state: string;
+	id: string;
+  }
 
-function FriendsList(props)
+function FriendsList(props:any)
 {
     const [nick, setNick] = useState('');
-	const avatars:any = [];
+	const [id, setId] = useContext(IdContext);
+	const [fList, setFList] = useState<any>([]);
+	const friendsList:Friend[] = [];
+	const userId:number = id;
 
-    const changeAvatar = () => {
-		for (let i = 0; i < props.friendObjects.length; ++i)
+	const changeAvatar = () => {
+		const res:any = [];
+
+		for (let i = 0; i < friendsList.length; ++i)
 		{
-			avatars.push(<li><Avatar name={props.friendObjects[i].name} img={props.friendObjects[i].img} state={props.friendObjects[i].state} /></li>);
-			// console.log('name: ' + props.friendObjects[i].name + ', img_src: ' + props.friendObjects[i].img);
+			res.push(<li><Avatar name={friendsList[i].name} img={friendsList[i].img} state={friendsList[i].state} id={friendsList[i].id} /></li>);
+			// console.log('name: ' + friendsList[i].name + ', img_src: ' + friendsList[i].img);
 		}
+
+		return res;
 	};
-		
+
+	useEffect(() => {
+		axios.get(`http://localhost:3000/users/friends/${id}`)
+            .then((Response) => {
+                console.log("friends list");
+                console.log(Response.data);
+
+				for (let i = 0; i < Response.data.length; ++i)
+				{
+					friendsList.push({ name: Response.data[i].friend.name, img: Response.data[i].friend.avatar, state: Response.data[i].friend.status, id: Response.data[i].friend.id });
+				}
+
+				setFList(changeAvatar());
+            })
+            .catch((Error)=>{console.log(Error)})
+	}, [id]);
+
 	// const addFriendList = (nickName:any, img:any, state:any) => {
 	// 	avatars.push(<li><Avatar name={nickName} img={img} state={state}/></li>);
 	// };
@@ -32,11 +64,18 @@ function FriendsList(props)
 		setNick('');
 		if (nick === '')
 		{
-			alert("warning");
 			return '';
 		}
-		// 백엔드 
+
+		socket.emit("REQUEST_FRIEND", { userId: userId, target: nick });
 	};
+
+	const activeEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && e.nativeEvent.isComposing === false)
+        {
+            onAddButton();
+        }
+    }
 
     return (
         <div className="drawer drawer-end">
@@ -55,14 +94,12 @@ function FriendsList(props)
 						<div className={styles.friend_list} >
 							<ul className="menu p-4 w-80 min-h-full bg-gray-200 text-base-content">
 								{/* Sidebar content here */}
-								{/* <li><Avatar name="James Dinn" /></li> */}
-								{changeAvatar()}
-								{avatars}
+								{ fList }
 							</ul>
 						</div>
 						<div className={`${styles.input_container}`}>
 							<div className="input-group">
-								<input type="text" placeholder="Search…" className={`${styles.input}`} value={nick} onChange={onChange} />
+								<input type="text" placeholder="Search…" className={`${styles.input}`} value={nick} onChange={onChange} onKeyDown={activeEnter} />
 								<img className={styles.add_container} src={FriendsAdd} onClick={onAddButton} ></img>
 							</div>
 						</div>
