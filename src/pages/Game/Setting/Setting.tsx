@@ -46,7 +46,7 @@ function Setting()
 
     return (
         <div>
-            <Mode option={option} author={!game.room.rank && !ready && game.isLeft} ready={ready}/>
+            <Mode option={option} author={!game.room.rank && game.isLeft && !ready.left} ready={ready}/>
             <AnnounceBar/>
             <ChattingRoom isLeft={game.isLeft}/>
         </div>
