@@ -43,7 +43,7 @@ function Menu(props: any) {
           Chatting Room
         </div>
       </button>
-      <FriendsList friendObjects={props.friendObjects} />
+      <FriendsList friendObjects={props.friendObjects} socket={props.socket} />
     </div>
   );
 }
