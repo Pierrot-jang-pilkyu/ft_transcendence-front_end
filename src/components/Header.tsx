@@ -3,7 +3,7 @@ import styles from "./Header.module.css";
 import FriendsRequest from "./FriendsRequest";
 import { useState } from "react";
 
-function Header() {
+function Header(props: any) {
   const navigate = useNavigate();
   const handlerButton = () => {
     navigate("/Lobby");

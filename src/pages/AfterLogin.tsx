@@ -38,6 +38,7 @@ function AfterLogin({ userId }) {
           socket={socket}
         />
       );
+      console.log(data);
       setModalOpen(true);
     };
     const handleGameRequest = (data) => {
