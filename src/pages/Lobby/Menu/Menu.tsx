@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import styles from "./Menu.module.css";
 import GameStart from "../../../assets/GameStart.svg";
 import ChattingRoom from "../../../assets/Chatting.svg";
@@ -11,12 +11,15 @@ import FriendsList from "./Friends/FriendsList";
 
 import { useLocation } from "react-router-dom";
 import socket from "../../../hooks/socket/socket";
+import { IdContext } from "../../../App";
+
 function Menu(props: any) {
   const { state } = useLocation();
+  const [id, setId] = useContext(IdContext);
+
   const navigate = useNavigate();
   const handlerButton = () => {
-    // navigate('/Mode')
-    navigate("/Game");
+    navigate("/Game", {state: { userId: id, roomId: null, gameRequest: null }});
     // console.log(state);
     // console.log("Click");
     // socket.emit("REQUEST_FRIEND", { userId: parseInt(state), target: "frank" });

@@ -18,7 +18,7 @@ function Profile(props: any) {
   const [id, setId] = useContext(IdContext);
 
   useEffect(() => {
-    if (id == undefined) setId(parseInt(state));
+    // if (id == undefined) setId(parseInt(state));
     fetch(`http://localhost:3000/users/players/${state}`, {
       method: "GET",
     })
