@@ -5,7 +5,7 @@ import styles from "./Loading.module.css";
 import BorderButton from "../../../components/BorderButton/BorderButton";
 import LoadingAnimation from "../../../components/LoadingAnimation/LoadingAnimation";
 
-function Loading() {
+function Loading({gameRequest}) {
     const [wait, setWait] = useState(false);
     const [game, setGame] = useContext(GameContext);
     const navigate = useNavigate();
@@ -22,7 +22,10 @@ function Loading() {
             if (data.room == null)
             {
                 if (game.room.roomId != null)
-			        socket.emit("JOIN_GAME", game.room.roomId);
+                {
+                    console.log(gameRequest);
+                    socket.emit("JOIN", {roomId: game.room.roomId, gameRequest: gameRequest});
+                }
                 else
                     socket.emit("MATCH");
             }
