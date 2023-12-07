@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { IdContext } from "../App";
 
 function Loading() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState();
+  const [id,setId] = useContext(IdContext);
 
   function onChangeId(e) {
     setUserId(e.target.value);
@@ -11,6 +13,7 @@ function Loading() {
   }
 
   function enter() {
+    setId(userId);
     navigate("/Lobby", { state: userId });
   }
 

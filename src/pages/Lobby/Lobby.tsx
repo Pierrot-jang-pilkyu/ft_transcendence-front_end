@@ -23,7 +23,6 @@ function Lobby(props: any) {
 
   useEffect(() => {
     socket.connect();
-
     socket.emit("REGIST", parseInt(state));
 
     return () => {
