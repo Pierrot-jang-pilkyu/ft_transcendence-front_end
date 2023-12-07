@@ -89,6 +89,13 @@ function Gaming() {
 			drawCircle(ball.x, ball.y, ball.radius, ball.color);
 		}
 
+		function renderPause()
+		{
+			context.fillStyle = "rgba(255, 255, 255, 0.6)";
+			context.fillRect(0, 0, width, height);
+		}
+
+
 		//main
 		canvas.addEventListener("mousemove", moveUser);
 
@@ -112,6 +119,22 @@ function Gaming() {
 				setEnd(1);
 			else
 				setEnd(2);
+		})
+
+		socket.on("PAUSE", ()=>{
+			renderPause();
+		})
+		
+		socket.on("RESUME", ()=>{
+			render();
+		})
+
+		return (()=>{
+			socket.off("PONG");
+			socket.off("SCORE");
+			socket.off("END");
+			socket.off("PAUSE");
+			socket.off("RESUME");
 		})
 
 	}, []);
