@@ -41,12 +41,11 @@ function Setting()
                 content: 
                 (<GameModal
                     title={"상대방 닷지"}
-                    content={""}
-                    leftButton={{title:"창닫기", onClick:()=>{
+                    content={<div>상대방이 나갔습니다.<br/>버튼을 누르면 로비로 이동합니다.</div>}
+                    leftButton={{title:"로비로", onClick:()=>{
                         setGameModal({open:false});
                         navigate("/Lobby");
                     }}}
-                    rightButton={{title:"...", onClick: null}}
                 />)
             });
         })
