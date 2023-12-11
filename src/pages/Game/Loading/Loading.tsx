@@ -17,21 +17,6 @@ function Loading({gameRequest}) {
     }
 
     useEffect(() => {
-        socket.on("RELOAD", (data) => {
-            console.log(data);
-            if (data.room == null)
-            {
-                if (game.room.roomId != null)
-                {
-                    console.log(gameRequest);
-                    socket.emit("JOIN", {roomId: game.room.roomId, gameRequest: gameRequest});
-                }
-                else
-                    socket.emit("MATCH");
-            }
-            else
-                setGame(data);   
-        });
         socket.on("LOAD", (data) => {
             setGame(data);
         });

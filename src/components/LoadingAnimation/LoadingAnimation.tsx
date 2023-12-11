@@ -6,8 +6,11 @@ function LoadingAnimation() {
                 <div className={`${styles.typing_circle}`} />
                 <div className={`${styles.typing_circle}`} />
                 <div className={`${styles.typing_circle}`} />
+                <div className={`${styles.typing_shadow}`} />
+                <div className={`${styles.typing_shadow}`} />
+                <div className={`${styles.typing_shadow}`} />
         </div>
     );
 }
 
-export default LoadingAnimation;
+export default LoadingAnimation
