@@ -1,6 +1,7 @@
 .container {
 	display: flex;
 	flex-direction: column;
+	text-align: center;
 }
 .canvas {
 	border: 5px solid #FFF;
@@ -10,8 +11,9 @@
 
 .end {
 	background: rgba(255, 255, 255, 0);
-	box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
+	margin-top: 100px;
+	margin-bottom: 50px;
 	font-size: 80px;
     font-style: normal;
 	font-family: 'Anton', sans-serif;

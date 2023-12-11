@@ -19,7 +19,7 @@ function Menu(props: any) {
 
   const navigate = useNavigate();
   const handlerButton = () => {
-    navigate("/Game", {state: { userId: id, roomId: null, gameRequest: null }});
+    navigate("/Game", {state: { userId: id, invite: {roomId: null, gameRequest: null }}});
     // console.log(state);
     // console.log("Click");
     // socket.emit("REQUEST_FRIEND", { userId: parseInt(state), target: "frank" });
