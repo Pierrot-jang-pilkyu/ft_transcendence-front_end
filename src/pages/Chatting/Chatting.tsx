@@ -1049,7 +1049,7 @@ function Chatting (props:any) {
             console.log("JOIN_GAME");
             console.log(responseData);
 
-            navigate("/Game", {state: { userId: userId, roomId: responseData.roomId, gameRequest: responseData.gameRequest }});
+            navigate("/Game", {state: { userId: userId, invite: {roomId: responseData.roomId, gameRequest: responseData.gameRequest }}});
         }
 
         // notice

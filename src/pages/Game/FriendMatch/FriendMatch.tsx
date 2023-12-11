@@ -7,10 +7,11 @@ function FriendMatch({invite})
 
     useEffect(()=>{
         socket.on("LOAD", (data) => {
+            console.log(data);
             setGame(data);
         });
 
-        socket.emit("JOIN", invite);
+        socket.emit("JOIN_GAME", invite);
 
         return (()=>{
             socket.off("LOAD");
