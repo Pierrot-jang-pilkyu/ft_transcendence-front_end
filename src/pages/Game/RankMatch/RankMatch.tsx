@@ -7,6 +7,7 @@ import styles from "./RankMatch.module.css"
 import Timer from "../Timer/Timer";
 import LoadingAnimation from "../../../components/LoadingAnimation/LoadingAnimation";
 import axios from "axios";
+import {IdContext} from "../../../App";
 
 function RankMatch()
 {
@@ -15,6 +16,8 @@ function RankMatch()
     const [gameModal, setGameModal] = useContext(GameModalContext);
     const [rate, setRate] = useState(null);
     const navigate = useNavigate();
+
+	const [id, setId] = useContext(IdContext);
 
 
     function clickMatch() {
@@ -34,9 +37,9 @@ function RankMatch()
     }
 
     useEffect(()=>{
-        axios.get("localhost:3000/history/latest")
+        axios.get(`http://localhost:3000/users/game-records/${id}`)
         .then(function (response) {
-            setRate(response.data);
+            setRate(response.data.rating);
         })
 
         socket.on("LOAD", (data) => {
@@ -65,7 +68,7 @@ function RankMatch()
     }, [])
     return (
         <div className={`${styles.container}`}>
-             <div className={`${styles.title}`}>RATE: {1500}p</div>
+             <div className={`${styles.title}`}>RATE: {rate}p</div>
             <BorderButton title={"MATCH START"} onClick={()=>{clickMatch()}}/>
             <BorderButton title={"BACK TO LOBBY"} onClick={()=>{navigate("/Lobby")}}/>
         </div>
