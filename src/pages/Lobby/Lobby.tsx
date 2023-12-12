@@ -24,7 +24,6 @@ function Lobby(props: any) {
   useEffect(() => {
     console.log(state);
     socket.connect();
-
     socket.emit("REGIST", parseInt(state));
 
     return () => {

@@ -498,8 +498,39 @@ function Chatting(props: any) {
     if (chatListNum === 0) {
       chatListNum++;
 
+/* issue79
       return;
     }
+    */
+//=====================================
+        if (currentCR.chatId === 0 || currentCR.users.length === 0)
+        {
+            res.push(<li><div className={styles.profile_font}>{" \" Carpe Diem ! \" "}</div></li>);
+            return res;
+        }
+        
+        for (let i = 0; i < currentCR.users.length; ++i)
+        {
+            // 이미지, 방장여부, 상태(온라인, 게임중, 오프라인) 받기
+            // if (props.name === currentCR.users[i].name)
+            if (testUser.name === currentCR.users[i].name)
+            {
+                res.push(
+                    <li>
+                        <Avatar name={currentCR.users[i].name} img={currentCR.users[i].img} state={currentCR.users[i].state} op={currentCR.users[i].op} id={currentCR.users[i].id} flag={true} />
+                    </li>
+                );
+            }
+            else
+            {
+                res.push(
+                    <li>
+                        <Avatar name={currentCR.users[i].name} img={currentCR.users[i].img} state={currentCR.users[i].state} op={currentCR.users[i].op} id={currentCR.users[i].id} flag={false} />
+                    </li>
+                );
+            }
+        }
+//main
 
     for (let i = 0; i < clientChatList.length; ++i) {
       res.push(
@@ -512,6 +543,7 @@ function Chatting(props: any) {
       );
     }
 
+//issue79
     for (let i = 0; i < publicChatList.length; ++i) {
       res.push(
         <li>
@@ -524,6 +556,23 @@ function Chatting(props: any) {
         </li>
       );
     }
+//==================================
+    const thisDayStamp = (log:any, date:string) => {
+        if (currentCR.backLogList.length === 0)
+            return ;
+        if (logDay === date.substring(0, 10))
+            return ;
+        else
+        {
+            logDay = date.substring(0, 10);
+            log.push(<li>
+                <div className={styles.chatting_start}>
+                    <div className={styles.chatting_start_font}>{timeStamp_this(1, date)}</div>
+                </div>
+                </li>);
+        }
+    };
+//main
 
     return res;
   };
@@ -782,6 +831,7 @@ function Chatting(props: any) {
               chatLogList: [],
             });
         }
+//issue79
         {
           !responseData.dm[i].public &&
             dmChatList.push({
@@ -794,6 +844,38 @@ function Chatting(props: any) {
               backLogList: [],
               chatLogList: [],
             });
+//=======
+
+        function onInfoChList (responseData:any) {
+            console.log("INFO_CH_LIST");
+            console.log(responseData);
+    
+            clientChatList.splice(0, clientChatList.length);
+            clientChatList.push(lobby);
+            publicChatList.splice(0, publicChatList.length);
+            dmChatList.splice(0, dmChatList.length);
+    
+            for (let i = 0; i < responseData.me.length; ++i) {
+                // console.log(responseData.me[i]);
+                { responseData.me[i].public && clientChatList.push({ start: 1, chatId: responseData.me[i].id, title: responseData.me[i].title, private: false, users: [], limits: responseData.me[i].limit, backLogList: [], chatLogList: [] }) };
+                { !responseData.me[i].public && clientChatList.push({ start: 1, chatId: responseData.me[i].id, title: responseData.me[i].title, private: true, users: [], limits: responseData.me[i].limit, backLogList: [], chatLogList: [] }) };
+            }
+    
+            for (let i = 0; i < responseData.other.length; ++i) {
+                // console.log(responseData.other[i]);
+                { responseData.other[i].public && publicChatList.push({ start: 1, chatId: responseData.other[i].id, title: responseData.other[i].title, private: false, users: [], limits: responseData.other[i].limit, backLogList: [], chatLogList: [] }) };
+                { !responseData.other[i].public && publicChatList.push({ start: 1, chatId: responseData.other[i].id, title: responseData.other[i].title, private: true, users: [], limits: responseData.other[i].limit, backLogList: [], chatLogList: [] }) };
+            }
+    
+            for (let i = 0; i < responseData.dm.length; ++i) {
+                // console.log(responseData.dm[i]);
+                { responseData.dm[i].public && dmChatList.push({ start: 1, chatId: responseData.dm[i].id, title: responseData.dm[i].title, private: false, users: [], limits: responseData.dm[i].limit, backLogList: [], chatLogList: [] }) };
+                { !responseData.dm[i].public && dmChatList.push({ start: 1, chatId: responseData.dm[i].id, title: responseData.dm[i].title, private: true, users: [], limits: responseData.dm[i].limit, backLogList: [], chatLogList: [] }) };
+            }
+    
+            setViewRoomList(viewChattingRoomList());
+            setViewDMList(viewChattingDMList());
+// main
         }
       }
 
@@ -1083,6 +1165,7 @@ function Chatting(props: any) {
       return res;
     }
 
+// issue79
     function onNotice(responseData: any) {
       console.log("NOTICE");
       console.log(responseData);
@@ -1299,6 +1382,10 @@ function Chatting(props: any) {
           break;
       }
     }
+//=======
+            navigate("/Game", {state: { userId: userId, invite: {roomId: responseData.roomId, gameRequest: responseData.gameRequest }}});
+        }
+//main
 
     // -------------------------------------------------------------------
     // -------------------------------------------------------------------
