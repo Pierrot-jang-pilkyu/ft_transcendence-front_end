@@ -30,7 +30,7 @@ function Myprofile(props: any) {
 
   return (
     <div className={`${styles.background}`}>
-      <Header />
+      <Header pageFlag={1} />
       <div className={`${styles.Allcontainer}`}>
         <ProfileCard id={id} onOpenModal={handleOpenChangeModal} flag={1} />
         <MatchHistory id={id} />

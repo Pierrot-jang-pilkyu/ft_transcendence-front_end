@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 import FriendsRequest from "./FriendsRequest";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Header(props: any) {
+  const [pageFlag, setPageFlag] = useState<undefined | Number>();
   const navigate = useNavigate();
   const handlerButton = () => {
     navigate("/Lobby");
@@ -11,7 +12,10 @@ function Header(props: any) {
   const handlerButtonLogOut = () => {
     navigate("/");
   };
-
+  useEffect(() => {
+    if (props.pageFlag === 2) setPageFlag(2);
+    else setPageFlag(1);
+  }, []);
   return (
     <header className={`${styles.header}`}>
       <button
@@ -21,7 +25,7 @@ function Header(props: any) {
         Deer Feer
       </button>
       <div className={`${styles.list}`}>
-        <FriendsRequest />
+        <FriendsRequest pageFlag={pageFlag} />
       </div>
       <button
         className={`${styles.logout} ${styles.button}`}
