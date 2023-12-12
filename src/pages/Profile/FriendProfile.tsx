@@ -22,11 +22,13 @@ function Friendprofile(props: any) {
 
   return (
     <div className={`${styles.background}`}>
-      <Header pageFlag={1} />
+      <Header />
       <div className={`${styles.Allcontainer}`}>
         <ProfileCard id={id} />
         <MatchHistory id={id} />
       </div>
+      <div className={`${styles.buttonone}`}>DM</div>
+      <div className={`${styles.buttontwo}`}>INVITE</div>
     </div>
   );
 }

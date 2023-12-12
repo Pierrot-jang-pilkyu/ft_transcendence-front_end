@@ -20,7 +20,6 @@ function ProfileCard(props: any) {
 
   useEffect(() => {
     // if (props.id === undefined) setId(parseInt(state));
-    console.log(props.id);
     fetch(`http://localhost:3000/users/players/${props.id}`, {
       method: "GET",
     })
