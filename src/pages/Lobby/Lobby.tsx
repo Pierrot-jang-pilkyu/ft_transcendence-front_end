@@ -22,6 +22,7 @@ function Lobby(props: any) {
   const [id, setId] = useContext(IdContext);
 
   useEffect(() => {
+    console.log(state);
     socket.connect();
     socket.emit("REGIST", parseInt(state));
 
@@ -42,13 +43,13 @@ function Lobby(props: any) {
   return (
     <div className={`${styles.background}`}>
       {/* <img className={`${styles.img}`} src={HomeBall}/> */}
-      <Header />
-      <Profile id={props.id} />
+      <Header pageFlag={1} />
+      <Profile id={id} />
       <div className={`${styles.ranking_container}`}>
         <Ranking />
       </div>
       <div className={`${styles.menu_container}`}>
-        <Menu friendObjects={Objects} id={props.id} socket={props.socket} />
+        <Menu friendObjects={Objects} id={id} socket={props.socket} />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { Route, Routes } from "react-router-dom";
 import FriendProfile from "./Profile/FriendProfile";
 import Myprofile from "./Profile/Myprofile";
 import Lobby from "./Lobby/Lobby";
@@ -9,13 +9,10 @@ import Ranking from "./Ranking/Ranking";
 import Friends from "./Lobby/Menu/Friends/Friends";
 import Game from "./Game/Game";
 import Loading from "./Loading";
-import { useState } from "react";
-import { useContext } from "react";
 import { IdContext } from "../App";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import socket from "../hooks/socket/socket";
 import ModalAccept from "../components/AddAndAccept";
-import { useNavigate } from "react-router-dom";
 
 function AfterLogin({ userId }) {
   const { state } = useLocation();
@@ -41,6 +38,7 @@ function AfterLogin({ userId }) {
           socket={socket}
         />
       );
+      console.log(data);
       setModalOpen(true);
     };
     const handleGameRequest = (data) => {
@@ -55,7 +53,6 @@ function AfterLogin({ userId }) {
       );
       setModalOpen(true);
     };
-
     function onJoinGame(responseData: any) {
       console.log("JOIN_GAME");
       console.log(responseData);
@@ -69,7 +66,6 @@ function AfterLogin({ userId }) {
     // join game
     socket.on("JOIN_GAME", onJoinGame);
   }, [socket]);
-  socket.on("NOTICE", (data) => console.log(data.code));
   return (
     <div>
       <Routes>
