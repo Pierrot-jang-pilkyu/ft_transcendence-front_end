@@ -1,14 +1,33 @@
 .container {
     display: flex;
     flex-direction: column;
-    justify-content: end;
     gap: 10px;
-
-    overflow-y: auto;
 
     width: 742px;
     height: 230px;
     background: #fff;
+}
+
+.nameBar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    font-family: "Noto Sans", sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.logs {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+
+    height: 220px;
+    overflow-y: auto;
+    -ms-overflow-style: none;
 
     font-family: "Noto Sans", sans-serif;
     font-size: 16px;
@@ -17,31 +36,33 @@
     line-height: normal;
 }
 
-.container::-webkit-scrollbar{
+.logs::-webkit-scrollbar{
     display:none;
 }
 
-.user {
+.chatBox {
     display: inline-block;
     width: max-content;
-    max-width: 100%;
-    min-height: 54.5px;
+    max-width: 65%;
     word-break: break-all;
     border-radius: 8px;
     padding: 15px;
+}
+
+.right {
     margin-left: auto;
+}
+
+.left {
+    margin-left: 0;
+}
+
+.user {
     color: #fff;
     background-color: #285ADA;
 }
 
 .opposite {
-    display: inline-block;
-    width: max-content;
-    max-width: 100%;
-    min-height: 54.5px;
-    word-break: break-all;
-    border-radius: 8px;
-    padding: 15px;
     color: #000;
     background-color: #EBEBEB;
 }
