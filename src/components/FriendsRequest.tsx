@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./FriendsRequest.module.css";
 import axios from "axios";
+import Scoket_Lobby from "../hooks/socket/socket";
+import Socket_Chat from "../pages/Chatting/Socket";
 
 interface List {
   name: string;
@@ -10,35 +12,40 @@ function FriendsRequest(props: any) {
   const [listOpen, setListOpen] = useState(false);
   const [listInfo, setListInfo] = useState<List[]>([]);
   let RequestList: List[] = [];
-  const handleInputChange = (e) => {
+  let selectedSocket: any;
+
+  const handleInputChange = (e: any) => {
     setListOpen(!listOpen);
-    console.log("Request : ", listOpen);
+    if (props.pageFlag === 1) {
+      selectedSocket = Scoket_Lobby;
+    } else if (props.pageFlag === 2) {
+      selectedSocket = Socket_Chat;
+    }
     if (!listOpen) {
-      getList();
-      console.log(listInfo);
+      selectedSocket.emit("GET_FRIEND_REQUEST");
+      selectedSocket.on("GET_FRIEND_REQUEST", (data: any) =>
+        handleFriendsList(data)
+      );
+    } else {
+      selectedSocket.off("GET_FRIEND_REQUEST");
     }
   };
-  const getList = () => {
-    axios
-      .get(`http://localhost:3000/users/friend-requests-recv/2`)
-      .then((Response) => {
-        for (let i = 0; i < Response.data.length; ++i) {
-          {
-            Response.data[i] &&
-              RequestList.push({
-                name: Response.data[i].send.name,
-              });
-          }
-        }
-        setListInfo(RequestList);
-      });
+
+  const handleFriendsList = (data: any) => {
+    for (let i = 0; i < data.length; ++i) {
+      {
+        data[i] &&
+          RequestList.push({
+            name: data[i].send.name,
+          });
+      }
+    }
+    setListInfo(RequestList);
   };
-  const handleDeleteRequest = (index) => {
+  const handleDeleteRequest = (index: any) => {
     setListInfo((prevList) => {
-      // 함수형 업데이트를 사용하여 목록을 간단하게 업데이트합니다.
       const updatedList = [...prevList];
       updatedList.splice(index, 1);
-      // props.socket.emit();
       return updatedList;
     });
   };
