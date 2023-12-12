@@ -20,10 +20,10 @@ function Menu(props: any) {
   const navigate = useNavigate();
   const [alert, setAlert] = useState<React.ReactNode | null>(null);
   const handlerButton = () => {
-    navigate("/Game", {state: { userId: id, invite: null}});
+    // navigate("/Game", {state: { userId: id, invite: null}});
     // console.log(state);
     // console.log("Click");
-    // socket.emit("REQUEST_FRIEND", { userId: parseInt(state), target: "frank" });
+    socket.emit("REQUEST_FRIEND", { userId: parseInt(state), target: "bread" });
   };
   const handlerButtonChatting = () => {
     navigate("/Chatting");
@@ -31,7 +31,6 @@ function Menu(props: any) {
   //만약 친구추가나 게임초대에 실패하면 알려줄 경고창. 친구창이나 게임초대 화면에 넣을것. 예시
   useEffect(() => {
     const handleNotice = (data) => {
-      console.log(data.code);
       if (data.code == 30) {
         setAlert(
           <div role="alert" className={`${styles.alert} ${styles.alert_error}`}>

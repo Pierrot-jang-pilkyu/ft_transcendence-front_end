@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom";
 // import Friends from "./Friends/Frends"
 // import HomeBall from "../../assets/HomeBall.png";
 import socket from "../../hooks/socket/socket";
+import { getCookie } from "../../hooks/cookies";
 
 interface FriendProps {
   name: string;
@@ -18,14 +19,12 @@ interface FriendProps {
 }
 
 function Lobby(props: any) {
-  const { state } = useLocation();
   const [id, setId] = useContext(IdContext);
 
   useEffect(() => {
-    console.log(state);
     socket.connect();
-    socket.emit("REGIST", parseInt(state));
-
+    const getVal = getCookie("TwoFactorAuth");
+    console.log("coooooooooo", getVal);
     return () => {
       socket.disconnect();
     };

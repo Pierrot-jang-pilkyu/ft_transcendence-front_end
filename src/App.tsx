@@ -9,11 +9,10 @@ import Friends from "./pages/Lobby/Menu/Friends/Friends";
 import Chatting from "./pages/Chatting/Chatting";
 import Loading from "./pages/Loading/Loading";
 import { useState, createContext } from "react";
-// import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import AfterLogin from "./pages/AfterLogin";
-
 import socket from "./hooks/socket/socket";
+import { CookiesProvider } from "react-cookie";
 
 export const IdContext = createContext();
 
@@ -35,7 +34,10 @@ export const getCookie = (name: string) => {
 function App() {
   const [id, setId] = useState();
 
+  setCookie("user.id", "test_id");
   const userId = getCookie("user.id");
+  const token = cookies.get("TwoFactorAuth");
+  console.log("cookies", cookies);
   // socket.emit("REGIST", userId);
   // 라우트 가드 함수
   return (
@@ -52,16 +54,18 @@ function App() {
         href="https://fonts.googleapis.com/css2?family=Anton&display=swap"
         rel="stylesheet"
       />
-      <IdContext.Provider value={[id, setId]}>
-        <BrowserRouter>
-          {false && (
-            <Routes>
-              <Route index path="/" element={<Home />} />
-            </Routes>
-          )}
-          {true && <AfterLogin userId={userId} />}
-        </BrowserRouter>
-      </IdContext.Provider>
+      <CookiesProvider>
+        <IdContext.Provider value={[id, setId]}>
+          <BrowserRouter>
+            {!id && (
+              <Routes>
+                <Route index path="/" element={<Home />} />
+              </Routes>
+            )}
+            {id && <AfterLogin userId={userId} token={token} />}
+          </BrowserRouter>
+        </IdContext.Provider>
+      </CookiesProvider>
     </div>
   );
 }
