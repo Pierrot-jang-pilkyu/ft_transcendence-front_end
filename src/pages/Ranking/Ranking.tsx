@@ -27,14 +27,14 @@ function Ranking(props: any) {
 
   return (
     <div className={`${styles.background}`}>
-      <Header />
+      <Header pageFlag={1} />
       <div className={`${styles.Allcontainer}`}>
         <ProfileCard id={id} />
         <RankTable />
       </div>
-      <div className={`${styles.buttonone}`} onClick={handlerButton}>
+      <button className={`${styles.buttonone}`} onClick={handlerButton}>
         Match History
-      </div>
+      </button>
     </div>
   );
 }
