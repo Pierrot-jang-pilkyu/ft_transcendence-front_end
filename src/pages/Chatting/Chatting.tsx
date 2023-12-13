@@ -73,7 +73,7 @@ function Chatting (props:any) {
 
     // const userId:number = parseInt(getCookie("user.id"));
     const [id, setId] = useContext(IdContext);
-    const userId:number = id;
+    const userId:number = parseInt(id);
     // const { state } = useLocation();
     const navigate = useNavigate();
     // const userId = state;
@@ -130,6 +130,7 @@ function Chatting (props:any) {
             testUser = { name: 'dan', img: './src/assets/img_Profile.png', state: "1", id: "2", op: false}
             break;
         default:
+            console.log("default");
             break ;
     }
 
@@ -315,6 +316,7 @@ function Chatting (props:any) {
 
         cr.chatLogList.splice(0, cr.chatLogList.length);
     
+        console.log(cr.backLogList.length);
         if (cr.backLogList.length === 0 && cr.start === 0)
         {
             cr.start = 1;
@@ -349,6 +351,8 @@ function Chatting (props:any) {
                 </div>
             </li>)
         }
+
+        logDay = "";
 
         for (let i = 0; i < cr.backLogList.length; ++i)
         {
@@ -520,7 +524,7 @@ function Chatting (props:any) {
         }
 
         socket.connect();
-        socket.emit("REGIST", parseInt(userId));
+        socket.emit("REGIST", userId);
 
         function onLoadChat (responseData:any) {
             console.log("LOADCHAT");
@@ -530,7 +534,10 @@ function Chatting (props:any) {
             {
                 currentCR.backLogList.push({ name: responseData[i].user.name, img: responseData[i].user.avatar, date: responseData[i].date, chat: responseData[i].content });
             }
-    
+
+            if (currentCR.backLogList.length === 0)
+                currentCR.start = 0;
+                
             // onChatting(currentCR);
             setChatLog(onChatting(currentCR));
             currentCR.chatLogList = chatLog;
@@ -595,7 +602,7 @@ function Chatting (props:any) {
                 // if (cr.backLogList[i].name === props.name)
                 if (responseData.user.name === testUser.name)
                 {
-                    thisDayStamp(res, responseData.user.date);
+                    thisDayStamp(res, responseData.date);
                     res.push(<li>
                         <div className={ `${styles.chat} ${styles.chat_end}` }>
                             <div className={ `${styles.chat_image}` }>
@@ -605,7 +612,7 @@ function Chatting (props:any) {
                             </div>
                             <div className={ `${styles.chat_header}` }>
                                 {responseData.user.name}
-                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.date) }</time>
                             </div>
                             {/* <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div> */}
                             <div className={ `${styles.chat_bubble}` }>{responseData.content}</div>
@@ -616,7 +623,7 @@ function Chatting (props:any) {
                 }
                 else
                 {
-                    thisDayStamp(res, responseData.user.date);
+                    thisDayStamp(res, responseData.date);
                     res.push(<li>
                         <div className={ `${styles.chat} ${styles.chat_start}` }>
                             <div className={ `${styles.chat_image}` }>
@@ -626,7 +633,7 @@ function Chatting (props:any) {
                             </div>
                             <div className={ `${styles.chat_header}` }>
                                 {responseData.user.name}
-                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.date) }</time>
                             </div>
                             {/* <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div> */}
                             <div className={ `${styles.chat_bubble}` }>{responseData.content}</div>
@@ -641,7 +648,7 @@ function Chatting (props:any) {
                 // if (cr.backLogList[i].name === props.name)
                 if (responseData.user.name === testUser.name)
                 {
-                    thisDayStamp(res, responseData.user.date);
+                    thisDayStamp(res, responseData.date);
                     res.push(<li>
                         <div className={ `${styles.chat} ${styles.chat_end}` }>
                             <div className={ `${styles.chat_image}` }>
@@ -651,7 +658,7 @@ function Chatting (props:any) {
                             </div>
                             <div className={ `${styles.chat_header}` }>
                                 {responseData.user.name}
-                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.date) }</time>
                             </div>
                             <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div>
                             <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
@@ -661,7 +668,7 @@ function Chatting (props:any) {
                 }
                 else
                 {
-                    thisDayStamp(res, responseData.user.date);
+                    thisDayStamp(res, responseData.date);
                     res.push(<li>
                         <div className={ `${styles.chat} ${styles.chat_start}` }>
                             <div className={ `${styles.chat_image}` }>
@@ -671,7 +678,7 @@ function Chatting (props:any) {
                             </div>
                             <div className={ `${styles.chat_header}` }>
                                 {responseData.user.name}
-                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.user.date) }</time>
+                                <time className={ `${styles.text_xs} ${styles.opacity_50}` }>{ timeStamp_this(0, responseData.date) }</time>
                             </div>
                             <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div>
                             <div className={ `${styles.chat_footer} ${styles.opacity_50}` }>
@@ -1166,6 +1173,7 @@ function Chatting (props:any) {
                 {
                     if (publicChatList[i].private)
                     {
+                        logDay = "";
                         setIndex(i);
                         index2 = i;
                         setPWFlag(true);
@@ -1350,6 +1358,7 @@ function Chatting (props:any) {
         }
         else
         {
+            console.log(chat);
             socket.emit("MSG", { channelId: currentCR.chatId, userId: userId, content: chat });
             // socket.emit("MSG", { channelId: currentCR.chatId, userId: 2, content: chat });
         }
