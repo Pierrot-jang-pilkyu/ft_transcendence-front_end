@@ -36,6 +36,28 @@ function FriendsList(props:any)
 	};
 
 	useEffect(() => {
+		function onInfoFriends(responseData:any) {
+			console.log("INFO_FRIENDS");
+			console.log(responseData);
+
+			friendsList.splice(0, friendsList.length);
+
+			for (let i = 0; i < responseData.length; ++i) 
+			{
+				friendsList.push({ name: responseData[i].friend.name, img: responseData[i].friend.avatar, state: responseData[i].friend.status, id: responseData[i].friend.id });
+			}
+
+			setFList(changeAvatar());
+		};
+
+		socket.on("INFO_FRIENDS", onInfoFriends);
+		
+		return (() => {
+			socket.off("INFO_FRIENDS", onInfoFriends);
+		})
+	}, [])
+
+	useEffect(() => {
 		axios.get(`http://localhost:3000/users/friends/${id}`)
             .then((Response) => {
                 console.log("friends list");

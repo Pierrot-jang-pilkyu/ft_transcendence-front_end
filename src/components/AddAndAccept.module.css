@@ -9,6 +9,7 @@
   bottom: 0;
   display: flex;
   padding: 15px;
+  z-index: 20;
 }
 
 .popup {
@@ -20,6 +21,7 @@
   overflow: hidden;
   background-color: #fff;
   box-shadow: 5px 10px 10px 1px rgba(0, 0, 0, 0.5);
+
 }
 
 .logo {
