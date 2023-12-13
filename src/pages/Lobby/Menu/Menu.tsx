@@ -89,9 +89,9 @@ function Menu(props: any) {
         <img className={styles.game_img} src={GameStart}></img>
         <div className={`${styles.game_font}`}>Start Game!</div>
       </button>
-      <button id="Chatting_Room" className={`${styles.button} ${styles.chat}`}>
+      <button id="Chatting_Room" className={`${styles.button} ${styles.chat}`} onClick={handlerButtonChatting}>
         <img src={ChattingRoom} />
-        <div className={`${styles.chat_font}`} onClick={handlerButtonChatting}>
+        <div className={`${styles.chat_font}`}>
           Chatting Room
         </div>
       </button>
