@@ -2,6 +2,7 @@ import styles from "./ChangeModal.module.css";
 import socket from "../../../hooks/socket/socket";
 import { useState, useEffect, ChangeEvent } from "react";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 function ChangeModal({ onClose, id }) {
   const [profile, setProfile] = useState();
@@ -23,13 +24,9 @@ function ChangeModal({ onClose, id }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let response = await fetch(
-          `http://localhost:3000/users/players/${id}`,
-          {
-            method: "GET",
-          }
+        let response = await axios.get(
+          `http://localhost:3000/users/players/${id}`
         );
-
         if (!response.ok) {
           throw new Error("네트워크 응답이 올바르지 않습니다");
         }
