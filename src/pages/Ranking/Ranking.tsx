@@ -1,4 +1,4 @@
-import styles from "./ranking.module.css";
+import styles from "./Ranking.module.css";
 import ProfileCard from "../Profile/profileCard/PofileCard";
 import Header from "../../components/Header";
 import RankTable from "./RankTable/RankTable";

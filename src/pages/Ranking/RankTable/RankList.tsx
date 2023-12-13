@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import styles from "./rankList.module.css";
+import styles from "./RankList.module.css";
 
 function RankList(props: any) {
   const navigate = useNavigate();
