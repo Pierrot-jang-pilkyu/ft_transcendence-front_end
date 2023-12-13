@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import styles from "./Ranking.module.css";
 import UserRanking from "./UserRanking";
 import Stroke from "../../../assets/Ranking_Vector(Stroke).png";
+import axios from "axios";
 
 function Ranking(props: any) {
   const navigate = useNavigate();
@@ -14,11 +15,8 @@ function Ranking(props: any) {
   const [ranks, setRanks] = useState();
 
   useEffect(() => {
-    fetch("http://localhost:3000/games/ranks", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => setRanks(data));
+    axios.get("http://localhost:3000/games/ranks")
+    .then((res) => setRanks(res.data))
   }, []);
 
   const rankerTable1 = () => {

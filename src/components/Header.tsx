@@ -1,16 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 import FriendsRequest from "./FriendsRequest";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { LoginContext } from "../App";
 
 function Header(props: any) {
+  const [login, setLogin] = useContext(LoginContext);
   const [pageFlag, setPageFlag] = useState<undefined | Number>();
   const navigate = useNavigate();
   const handlerButton = () => {
     navigate("/Lobby");
   };
   const handlerButtonLogOut = () => {
-    navigate("/");
+    
   };
   useEffect(() => {
     if (props.pageFlag === 2) setPageFlag(2);

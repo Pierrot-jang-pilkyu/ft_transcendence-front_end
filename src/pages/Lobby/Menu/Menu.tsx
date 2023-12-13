@@ -1,29 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Menu.module.css";
 import GameStart from "../../../assets/GameStart.svg";
 import ChattingRoom from "../../../assets/Chatting.svg";
-import SearchFriends from "../../../assets/SearchFriends.svg";
-import FriendsArrow from "../../../assets/FriendsArrow.svg";
-import FriendsAdd from "../../../assets/FriendsAdd.svg";
-import axios from "axios";
 import FriendsList from "./Friends/FriendsList";
-
 import { useLocation } from "react-router-dom";
 import socket from "../../../hooks/socket/socket";
-import { IdContext } from "../../../App";
 
-function Menu(props: any) {
-  const { state } = useLocation();
-  const [id, setId] = useContext(IdContext);
-
+function Menu() {
   const navigate = useNavigate();
   const [alert, setAlert] = useState<React.ReactNode | null>(null);
   const handlerButton = () => {
-    navigate("/Game", {state: { userId: id, invite: null}});
-    // console.log(state);
-    // console.log("Click");
-    // socket.emit("REQUEST_FRIEND", { userId: parseInt(state), target: "frank" });
+    navigate("/Game", {state: { invite: null}});
   };
   const handlerButtonChatting = () => {
     navigate("/Chatting");
@@ -95,7 +83,7 @@ function Menu(props: any) {
           Chatting Room
         </div>
       </button>
-      <FriendsList friendObjects={props.friendObjects} socket={props.socket} />
+      <FriendsList />
       {alert}
     </div>
   );

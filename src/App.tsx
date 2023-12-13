@@ -1,24 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home/Home";
-import Lobby from "./pages/Lobby/Lobby";
-import Mode from "./pages/Mode/Mode";
-import Myprofile from "./pages/Profile/Myprofile";
-import Friendprofile from "./pages/Profile/FriendProfile";
-import Game from "./pages/Game/Game";
-import Friends from "./pages/Lobby/Menu/Friends/Friends";
-import Chatting from "./pages/Chatting/Chatting";
-import Loading from "./pages/Loading/Loading";
-import { useState, createContext } from "react";
-// import { Navigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useState, createContext, useEffect } from "react";
 import AfterLogin from "./pages/AfterLogin";
-
-import socket from "./hooks/socket/socket";
-
-export const IdContext = createContext();
-
-// Cookie
+export const LoginContext = createContext();
 import { Cookies } from "react-cookie";
+import axios from "axios";
 
 const cookies = new Cookies();
 
@@ -33,11 +19,20 @@ export const getCookie = (name: string) => {
 // Socket connet
 //HERE
 function App() {
-  const [id, setId] = useState();
 
-  const userId = getCookie("user.id");
-  // socket.emit("REGIST", userId);
-  // 라우트 가드 함수
+  const [login, setLogin] = useState(false);
+
+  useEffect(()=>{
+    axios.defaults.withCredentials = true;
+    if (getCookie("login"))
+      setLogin(true);
+  }, [])
+
+  useEffect(()=>{
+    if (login == true)
+      setCookie("login", "true");
+  }, [login])
+
   return (
     <div>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -52,16 +47,14 @@ function App() {
         href="https://fonts.googleapis.com/css2?family=Anton&display=swap"
         rel="stylesheet"
       />
-      <IdContext.Provider value={[id, setId]}>
+      <LoginContext.Provider value={[login, setLogin] as any}>
         <BrowserRouter>
-          {false && (
-            <Routes>
-              <Route index path="/" element={<Home />} />
-            </Routes>
-          )}
-          {true && <AfterLogin userId={userId} />}
+          <Routes>
+            <Route index path="/" element={<Home />} />
+          </Routes>
+          {login && <AfterLogin />}
         </BrowserRouter>
-      </IdContext.Provider>
+      </LoginContext.Provider>
     </div>
   );
 }

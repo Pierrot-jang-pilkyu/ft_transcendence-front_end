@@ -72,8 +72,7 @@ export const getCookie = (name: string) => {
 function Chatting (props:any) {
 
     // const userId:number = parseInt(getCookie("user.id"));
-    const [id, setId] = useContext(IdContext);
-    const userId:number = parseInt(id);
+    const userId:number = parseInt(props.id);
     // const { state } = useLocation();
     const navigate = useNavigate();
     // const userId = state;

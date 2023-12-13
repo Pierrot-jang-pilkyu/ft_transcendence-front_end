@@ -1,16 +1,14 @@
 import styles from "./RankTable.module.css";
 import RankList from "./RankList";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 function RankTable(props: any) {
   const [ranks, setRanks] = useState();
 
   useEffect(() => {
-    fetch("http://localhost:3000/games/ranks", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => setRanks(data));
+    axios.get("http://localhost:3000/games/ranks")
+    .then((res) => setRanks(res.data))
   }, []);
   const rankerTable1 = () => {
     const res = [];
