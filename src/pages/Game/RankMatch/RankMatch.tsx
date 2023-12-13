@@ -17,9 +17,6 @@ function RankMatch()
     const [rate, setRate] = useState(null);
     const navigate = useNavigate();
 
-	const [id, setId] = useContext(IdContext);
-
-
     function clickMatch() {
         socket.emit("MATCH");
         setGameModal({
@@ -37,7 +34,7 @@ function RankMatch()
     }
 
     useEffect(()=>{
-        axios.get(`http://localhost:3000/users/game-records/${id}`)
+        axios.get(`http://localhost:3000/users/game-records/me`)
         .then(function (response) {
             setRate(response.data.rating);
         })

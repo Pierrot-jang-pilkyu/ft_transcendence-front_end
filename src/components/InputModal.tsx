@@ -3,11 +3,11 @@ import React from "react";
 import axios from "axios";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { IdContext } from "../App";
-import QRModal from "./QRModal";
+import { LoginContext } from "../App";
 
 function InputModal({ onClose, code, onOpenModal }) {
   const [textError, setTextError] = useState(false);
+  const [login, setLogin] = useContext(LoginContext);
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -28,7 +28,6 @@ function InputModal({ onClose, code, onOpenModal }) {
   }, []);
 
   const [text, setText] = useState();
-  const [id, setId] = useContext(IdContext);
 
   function onChangeText(event) {
     setText(event.target.value);
@@ -42,9 +41,9 @@ function InputModal({ onClose, code, onOpenModal }) {
       .post("http://localhost:3000/auth/2fa", {
         code: text,
       })
-      .then((res) => {
-        setId(res.data.id);
-        navigate("/Loading");
+      .then(() => {
+        setLogin(true);
+        navigate("/Lobby");
       })
       .catch((error) => {
         setTextError(true);

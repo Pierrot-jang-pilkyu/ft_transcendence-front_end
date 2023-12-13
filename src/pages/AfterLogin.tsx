@@ -8,25 +8,17 @@ import Mode from "./Mode/Mode";
 import Ranking from "./Ranking/Ranking";
 import Friends from "./Lobby/Menu/Friends/Friends";
 import Game from "./Game/Game";
-import Loading from "./Loading";
-import { IdContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 import socket from "../hooks/socket/socket";
 import ModalAccept from "../components/AddAndAccept";
 
-function AfterLogin({ userId }) {
-  const { state } = useLocation();
+function AfterLogin() {
   const navigate = useNavigate();
-  const [id, setId] = useContext(IdContext);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode | null>(
     null
   );
-  useEffect(() => {
-    if (state) {
-      socket.emit("REGIST", parseInt(state));
-    }
-  }, [state]);
+
   useEffect(() => {
     const handleFriendRequest = (data) => {
       // data.avatar를 사용하여 원하는 동작 수행
@@ -57,7 +49,7 @@ function AfterLogin({ userId }) {
       console.log("JOIN_GAME");
       console.log(responseData);
 
-      navigate("/Game", {state: { userId: userId, invite:{roomId: responseData.roomId, gameRequest: responseData.gameRequest }}});
+      navigate("/Game", {state: { invite:{roomId: responseData.roomId, gameRequest: responseData.gameRequest }}});
     }
 
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
@@ -69,11 +61,9 @@ function AfterLogin({ userId }) {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Loading />} />
+        <Route index path="/Lobby" element={<Lobby />} />
         <Route path="/MyProfile" element={<Myprofile />} />
         <Route path="/FriendProfile/:id" element={<FriendProfile />} />
-        <Route path="/Lobby" element={<Lobby id={id} />} />
-        <Route path="/Loading" element={<Loading />} />
         <Route path="/Game" element={<Game />} />
         {/* <Route path="/Friends" element={<Friends />} /> */}
         <Route
@@ -81,7 +71,7 @@ function AfterLogin({ userId }) {
           element={
             <Chatting
               socket={null}
-              id={userId}
+              id={null}
               pageStart="0"
               name="pjang"
               avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"

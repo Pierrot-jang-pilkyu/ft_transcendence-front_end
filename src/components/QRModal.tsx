@@ -1,5 +1,5 @@
 import styles from "./QRModal.module.css";
-import { IdContext } from "../App";
+import { IdContext, LoginContext } from "../App";
 import { useState, useRef, useEffect, useContext } from "react";
 import React from "react";
 import axios from "axios";
@@ -13,7 +13,7 @@ function QRModal({ onClose }) {
   const [text, setText] = useState();
   const navigate = useNavigate();
   const [qr, setQr] = useState();
-  const [id, setId] = useContext(IdContext);
+  const [login, setLogin] = useContext(LoginContext);
   const [textError, setTextError] = useState(false);
   function onChangeText(event) {
     setText(event.target.value);
@@ -26,8 +26,8 @@ function QRModal({ onClose }) {
         code: text,
       })
       .then((res) => {
-        setId(res.data.id);
-        navigate("/Loading");
+        setLogin(true);
+        navigate("/Lobby");
       })
       .catch((error) => {
         setTextError(true);
@@ -114,18 +114,3 @@ function QRModal({ onClose }) {
 }
 
 export default QRModal;
-
-// const [text, setText] = useState();
-
-// function onChangeText (event) {
-//   setText(event.target.value);
-// }
-
-// function onClick () {
-//   axios.defaults.withCredentials = true;
-//   axios.post('http://localhost:3000/auth/2fa', {
-//     code: text,
-//   })
-//   .then((res)=> {navigate('/Lobby')})
-//   .catch((error)=>{console.log(error);})
-// }

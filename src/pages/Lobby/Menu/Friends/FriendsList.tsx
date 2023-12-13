@@ -15,13 +15,11 @@ interface Friend {
 	id: string;
   }
 
-function FriendsList(props:any)
+function FriendsList()
 {
     const [nick, setNick] = useState('');
-	const [id, setId] = useContext(IdContext);
 	const [fList, setFList] = useState<any>([]);
 	const friendsList:Friend[] = [];
-	const userId:number = id;
 
 	const changeAvatar = () => {
 		const res:any = [];
@@ -36,7 +34,7 @@ function FriendsList(props:any)
 	};
 
 	useEffect(() => {
-		axios.get(`http://localhost:3000/users/friends/${id}`)
+		axios.get(`http://localhost:3000/users/friends/me`)
             .then((Response) => {
                 console.log("friends list");
                 console.log(Response.data);
@@ -49,7 +47,7 @@ function FriendsList(props:any)
 				setFList(changeAvatar());
             })
             .catch((Error)=>{console.log(Error)})
-	}, [id]);
+	}, []);
 
 	// const addFriendList = (nickName:any, img:any, state:any) => {
 	// 	avatars.push(<li><Avatar name={nickName} img={img} state={state}/></li>);

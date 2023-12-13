@@ -9,12 +9,9 @@ import socket from "../../hooks/socket/socket";
 
 function Myprofile(props: any) {
   const [nickModal, setNickModal] = useState(false);
-  const [id, setId] = useContext(IdContext);
 
   useEffect(() => {
     socket.connect();
-
-    socket.emit("REGIST", parseInt(id));
 
     return () => {
       socket.disconnect();
@@ -32,10 +29,10 @@ function Myprofile(props: any) {
     <div className={`${styles.background}`}>
       <Header pageFlag={1} />
       <div className={`${styles.Allcontainer}`}>
-        <ProfileCard id={id} onOpenModal={handleOpenChangeModal} flag={1} />
-        <MatchHistory id={id} />
+        <ProfileCard onOpenModal={handleOpenChangeModal} flag={1} />
+        <MatchHistory />
       </div>
-      {nickModal && <ChangeModal id={id} onClose={handleCloseChangeModal} />}
+      {nickModal && <ChangeModal onClose={handleCloseChangeModal} />}
     </div>
   );
 }

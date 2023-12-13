@@ -5,6 +5,7 @@ import ProfileImg from "../../../assets/img_Profile.png";
 import Crown from "../../../assets/Lobby_crown.png";
 import { IdContext } from "../../../App";
 import { Cookies } from "react-cookie";
+import axios from "axios";
 // import React from 'react';
 
 function Profile(props: any) {
@@ -15,16 +16,11 @@ function Profile(props: any) {
     navigate("/MyProfile");
   };
   const [profile, setProfile] = useState();
-  const [id, setId] = useContext(IdContext);
 
   useEffect(() => {
-    // if (id == undefined) setId(parseInt(state));
-    fetch(`http://localhost:3000/users/players/${state}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => setProfile(data));
-  }, [id]);
+    axios.get("http://localhost:3000/users/players/me")
+    .then((res)=> setProfile(res.data))
+  }, []);
 
   return (
     <div className={`${styles.profile_container}`}>

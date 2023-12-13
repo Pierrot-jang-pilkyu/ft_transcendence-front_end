@@ -14,14 +14,12 @@ import FriendMatch from "./FriendMatch/FriendMatch";
 
 function Game()
 {
-	const [id, setId] = useContext(IdContext);
 	const [gameModal, setGameModal] = useState<any>({open:false, content:null});
 	const invite = useLocation().state.invite;
 	const [game, setGame] = useState<any>();
 
 	useEffect(()=>{
-		socket.connect()
-		socket.emit("REGIST", parseInt(id));
+		socket.connect();
 		console.log(invite);
 
 		return (()=>{

@@ -8,11 +8,8 @@ import { useContext, useEffect } from "react";
 import socket from "../../hooks/socket/socket";
 
 function Ranking(props: any) {
-  const [id, setId] = useContext(IdContext);
   useEffect(() => {
     socket.connect();
-
-    socket.emit("REGIST", parseInt(id));
 
     return () => {
       socket.disconnect();
@@ -29,7 +26,7 @@ function Ranking(props: any) {
     <div className={`${styles.background}`}>
       <Header pageFlag={1} />
       <div className={`${styles.Allcontainer}`}>
-        <ProfileCard id={id} />
+        <ProfileCard />
         <RankTable />
       </div>
       <button className={`${styles.buttonone}`} onClick={handlerButton}>

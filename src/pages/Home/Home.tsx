@@ -50,7 +50,7 @@ function Home() {
           onOpenModal={handleToQrModal}
         />
       )}
-      {openQRModal && <QRModal onClose={handleClodeToQRModal} />}
+      {openQRModal && <QRModal onClose={handleClodeToQRModal}/>}
     </div>
   );
 }
