@@ -78,8 +78,9 @@ function FriendsList(props:any)
     }
 
     return (
-        <div className="drawer drawer-end">
-           	<input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+        // <div className="drawer drawer-end">
+        <div className={`${styles.drawer} ${styles["drawer-end"]}`}>
+           	<input id="my-drawer-4" type="checkbox" className={`${styles["drawer-toggle"]}`} />
 			<div className="drawer-content">
 				{/* Page content here */}
 				<label htmlFor="my-drawer-4" className={`${styles.button} ${styles.friend} ${styles.friend_font}` }>
@@ -88,8 +89,8 @@ function FriendsList(props:any)
 					<img src={FriendsArrow}></img>
 				</label>
 			</div> 
-			<div className="drawer-side">
-				<label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
+			<div className={`${styles["drawer-side"]}`}>
+				<label htmlFor="my-drawer-4" aria-label="close sidebar" className={`${styles["drawer-overlay"]}`}></label>
 				<div className={styles.fl_background}>
 						<div className={styles.friend_list} >
 							<ul className="menu p-4 w-80 min-h-full bg-gray-200 text-base-content">
