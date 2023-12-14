@@ -4,9 +4,7 @@ import FriendProfile from "./Profile/FriendProfile";
 import Myprofile from "./Profile/Myprofile";
 import Lobby from "./Lobby/Lobby";
 import Chatting from "./Chatting/Chatting";
-import Mode from "./Mode/Mode";
 import Ranking from "./Ranking/Ranking";
-import Friends from "./Lobby/Menu/Friends/Friends";
 import Game from "./Game/Game";
 import { useNavigate, useLocation } from "react-router-dom";
 import socket from "../hooks/socket/socket";
@@ -90,12 +88,17 @@ function AfterLogin() {
               console.log("");
               navigate("/");
             });
+          break;
       }
+
+      return () => {
+        socket.off("NOTICE");
+      };
     };
+    socket.on("NOTICE", (data) => handleNotice(data));
 
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
     socket.on("INVITE", (data) => handleGameRequest(data));
-    socket.on("NOTICE", (data) => handleNotice(data));
     // join game
     socket.on("JOIN_GAME", onJoinGame);
   }, [socket]);
