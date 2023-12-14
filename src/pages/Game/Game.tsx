@@ -19,8 +19,7 @@ function Game()
 	const [game, setGame] = useState<any>();
 
 	useEffect(()=>{
-		socket.connect();
-		console.log(invite);
+		console.log(socket.connect());
 
 		return (()=>{
 			socket.disconnect();
