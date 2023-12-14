@@ -22,9 +22,9 @@ function Profile(props: any) {
       .get("http://localhost:3000/users/players/me")
       .then((res) => setProfile(res.data))
       .catch((error) => {
-        axios
-          .get("http://localhost:3000/auth/refresh")
-          .then((res) => console.log(res.data));
+        if (error.response.data.message === "Unauthorized") {
+          axios.get("http://localhost:3000/auth/refresh/2fa");
+        }
       });
   });
 
@@ -53,7 +53,7 @@ function Profile(props: any) {
             ? null
             : profile.gameRecord == null
             ? 0
-            : profile.gameRecord.lose}
+            : profile.gameRecord.loss}
         </div>
       </div>
       <div className={`${styles.profile_line}`}></div>

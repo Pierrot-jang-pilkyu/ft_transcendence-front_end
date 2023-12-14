@@ -29,6 +29,7 @@ function App() {
 
   useEffect(() => {
     if (login == true) setCookie("login", "true");
+    if (login == false) setCookie("login", "false");
     if (!login) {
       setIfLoginPage(
         <Routes>
