@@ -10,10 +10,6 @@ import socket from "../../hooks/socket/socket";
 function Lobby(props: any) {
   useEffect(() => {
     socket.connect();
-    socket.on("NOTICE", (data) => {
-      if (data.code === 201) {
-      }
-    });
 
     return () => {
       socket.disconnect();

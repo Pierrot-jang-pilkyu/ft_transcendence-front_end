@@ -11,9 +11,12 @@ import Game from "./Game/Game";
 import { useNavigate, useLocation } from "react-router-dom";
 import socket from "../hooks/socket/socket";
 import ModalAccept from "../components/AddAndAccept";
+import axios from "axios";
+import { LoginContext } from "../App";
 
 function AfterLogin() {
   const navigate = useNavigate();
+  const [login, setLogin] = useContext(LoginContext);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode | null>(
     null
@@ -58,10 +61,41 @@ function AfterLogin() {
         },
       });
     }
+    const handleNotice = (data) => {
+      console.log(data);
+      switch (data.code) {
+        case 201:
+          axios.defaults.withCredentials = true;
+          axios
+            .post("http://localhost:3000/auth/logout")
+            .then((response) => {
+              setLogin(false);
+              navigate("/");
+            })
+            .catch((error) => {
+              if (error.response.data.message === "Unauthorized") {
+                axios.get("http://localhost:3000/auth/refresh/login");
+              }
+              console.log(error);
+            });
+          break;
+        case 202:
+          axios
+            .get("http://localhost:3000/auth/refresh/2fa")
+            .then((res) => {
+              console.log(res.data);
+            })
+            .catch((error) => {
+              setLogin(false);
+              console.log("");
+              navigate("/");
+            });
+      }
+    };
 
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
     socket.on("INVITE", (data) => handleGameRequest(data));
-
+    socket.on("NOTICE", (data) => handleNotice(data));
     // join game
     socket.on("JOIN_GAME", onJoinGame);
   }, [socket]);

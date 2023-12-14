@@ -26,7 +26,7 @@ function Profile(props: any) {
           axios.get("http://localhost:3000/auth/refresh/2fa");
         }
       });
-  });
+  }, []);
 
   return (
     <div className={`${styles.profile_container}`}>
