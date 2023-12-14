@@ -1,5 +1,7 @@
 .popup_wrap {
   background-color: rgba(0, 0, 0, 0.3);
+  width: 100%; /* 100% 화면 너비 */
+  height: 100%; /* 100% 화면 높이 */
   justify-content: center;
   align-items: center;
   position: fixed;
