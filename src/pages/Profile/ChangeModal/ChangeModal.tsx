@@ -2,8 +2,9 @@ import styles from "./ChangeModal.module.css";
 import socket from "../../../hooks/socket/socket";
 import { useState, useEffect, ChangeEvent } from "react";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
-function ChangeModal({ onClose, id }) {
+function ChangeModal({ onClose }) {
   const [profile, setProfile] = useState();
   const { state } = useLocation();
   const [image, setImage] = useState(undefined as string | undefined);
@@ -22,29 +23,21 @@ function ChangeModal({ onClose, id }) {
   };
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        let response = await fetch(
-          `http://localhost:3000/users/players/${id}`,
-          {
-            method: "GET",
+      axios
+        .get(`http://localhost:3000/users/players/me`)
+        .then((res) => {
+          setProfile(res.data);
+          setOriginalImage(res.data.avatar);
+        })
+        .catch((error) => {
+          if (error.response.data.message === "Unauthorized") {
+            axios.get("http://localhost:3000/auth/refresh/2fa");
           }
-        );
-
-        if (!response.ok) {
-          throw new Error("네트워크 응답이 올바르지 않습니다");
-        }
-
-        let data = await response.json();
-        setProfile(data);
-        setOriginalImage(data.avatar);
-      } catch (error) {
-        console.error("데이터를 가져오는 중 오류 발생:", error);
-      }
+          console.error("데이터를 가져오는 중 오류 발생:", error);
+        });
     };
-
-    if (id == undefined) id = { state };
     fetchData();
-  }, [id]);
+  }, []);
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 

@@ -10,7 +10,7 @@ interface QRModalProps {
 }
 
 function QRModal({ onClose }) {
-  const [text, setText] = useState();
+  const [text, setText] = useState("");
   const navigate = useNavigate();
   const [qr, setQr] = useState();
   const [login, setLogin] = useContext(LoginContext);
@@ -30,16 +30,21 @@ function QRModal({ onClose }) {
         navigate("/Lobby");
       })
       .catch((error) => {
+        if (error.response.data.message === "Unauthorized") {
+          axios
+            .get("http://localhost:3000/auth/refresh/login")
+            .then((res) => console.log(res.data));
+        }
         setTextError(true);
         setTimeout(() => {
-          setTextError(false); // 400ms 후에 다시 false로 설정하여 흔들림 효과 제거
+          setTextError(false);
         }, 400);
         console.log(error);
       });
   }
   const handleOnKeyPress = (e) => {
     if (e.key === "Enter") {
-      onClick(); // Enter 입력이 되면 클릭 이벤트 실행
+      onClick();
     }
   };
 
@@ -76,7 +81,9 @@ function QRModal({ onClose }) {
       .then((response) => response.blob())
       .then((blob) => URL.createObjectURL(blob))
       .then((url) => setQr(url))
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (

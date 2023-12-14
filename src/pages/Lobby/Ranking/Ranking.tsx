@@ -15,8 +15,14 @@ function Ranking(props: any) {
   const [ranks, setRanks] = useState();
 
   useEffect(() => {
-    axios.get("http://localhost:3000/games/ranks")
-    .then((res) => setRanks(res.data))
+    axios
+      .get("http://localhost:3000/games/ranks")
+      .then((res) => setRanks(res.data))
+      .catch((error) => {
+        if (error.response.data.message === "Unauthorized") {
+          axios.get("http://localhost:3000/auth/refresh/2fa");
+        }
+      });
   }, []);
 
   const rankerTable1 = () => {

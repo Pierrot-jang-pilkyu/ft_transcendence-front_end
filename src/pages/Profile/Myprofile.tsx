@@ -3,7 +3,6 @@ import ProfileCard from "./profileCard/PofileCard";
 import MatchHistory from "./Match History/MatchHistory";
 import styles from "./profile.module.css";
 import { useEffect, useContext, useState } from "react";
-import { IdContext } from "../../App";
 import ChangeModal from "./ChangeModal/ChangeModal";
 import socket from "../../hooks/socket/socket";
 
@@ -30,7 +29,7 @@ function Myprofile(props: any) {
       <Header pageFlag={1} />
       <div className={`${styles.Allcontainer}`}>
         <ProfileCard onOpenModal={handleOpenChangeModal} flag={1} />
-        <MatchHistory />
+        <MatchHistory id={null} />
       </div>
       {nickModal && <ChangeModal onClose={handleCloseChangeModal} />}
     </div>

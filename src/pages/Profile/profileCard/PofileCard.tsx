@@ -68,7 +68,7 @@ function ProfileCard(props: any) {
               ? null
               : profile.gameRecord == null
               ? 0
-              : profile.gameRecord.lose}
+              : profile.gameRecord.loss}
           </text>
         </div>
       </div>

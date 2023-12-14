@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import { useState, createContext, useEffect } from "react";
 import AfterLogin from "./pages/AfterLogin";
@@ -19,19 +19,31 @@ export const getCookie = (name: string) => {
 // Socket connet
 //HERE
 function App() {
-
   const [login, setLogin] = useState(false);
+  const [ifLoginPage, setIfLoginPage] = useState<React.ReactNode | null>(null);
 
-  useEffect(()=>{
+  useEffect(() => {
     axios.defaults.withCredentials = true;
-    if (getCookie("login"))
-      setLogin(true);
-  }, [])
+    if (getCookie("login")) setLogin(true);
+  }, []);
 
-  useEffect(()=>{
-    if (login == true)
-      setCookie("login", "true");
-  }, [login])
+  useEffect(() => {
+    if (login == true) setCookie("login", "true");
+    if (login == false) setCookie("login", "false");
+    if (!login) {
+      setIfLoginPage(
+        <Routes>
+          <Route index path="/" element={<Home />} />
+        </Routes>
+      );
+    } else {
+      setIfLoginPage(
+        <div>
+          <AfterLogin />
+        </div>
+      );
+    }
+  }, [login]);
 
   return (
     <div>
@@ -48,12 +60,7 @@ function App() {
         rel="stylesheet"
       />
       <LoginContext.Provider value={[login, setLogin] as any}>
-        <BrowserRouter>
-          <Routes>
-            <Route index path="/" element={<Home />} />
-          </Routes>
-          {login && <AfterLogin />}
-        </BrowserRouter>
+        <BrowserRouter>{ifLoginPage}</BrowserRouter>
       </LoginContext.Provider>
     </div>
   );

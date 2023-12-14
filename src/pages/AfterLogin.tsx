@@ -4,16 +4,17 @@ import FriendProfile from "./Profile/FriendProfile";
 import Myprofile from "./Profile/Myprofile";
 import Lobby from "./Lobby/Lobby";
 import Chatting from "./Chatting/Chatting";
-import Mode from "./Mode/Mode";
 import Ranking from "./Ranking/Ranking";
-import Friends from "./Lobby/Menu/Friends/Friends";
 import Game from "./Game/Game";
 import { useNavigate, useLocation } from "react-router-dom";
 import socket from "../hooks/socket/socket";
 import ModalAccept from "../components/AddAndAccept";
+import axios from "axios";
+import { LoginContext } from "../App";
 
 function AfterLogin() {
   const navigate = useNavigate();
+  const [login, setLogin] = useContext(LoginContext);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode | null>(
     null
@@ -49,19 +50,62 @@ function AfterLogin() {
       console.log("JOIN_GAME");
       console.log(responseData);
 
-      navigate("/Game", {state: { invite:{roomId: responseData.roomId, gameRequest: responseData.gameRequest }}});
+      navigate("/Game", {
+        state: {
+          invite: {
+            roomId: responseData.roomId,
+            gameRequest: responseData.gameRequest,
+          },
+        },
+      });
     }
+    const handleNotice = (data) => {
+      console.log(data);
+      switch (data.code) {
+        case 201:
+          axios.defaults.withCredentials = true;
+          axios
+            .post("http://localhost:3000/auth/logout")
+            .then((response) => {
+              setLogin(false);
+              navigate("/");
+            })
+            .catch((error) => {
+              if (error.response.data.message === "Unauthorized") {
+                axios.get("http://localhost:3000/auth/refresh/login");
+              }
+              console.log(error);
+            });
+          break;
+        case 202:
+          axios
+            .get("http://localhost:3000/auth/refresh/2fa")
+            .then((res) => {
+              console.log(res.data);
+            })
+            .catch((error) => {
+              setLogin(false);
+              console.log("");
+              navigate("/");
+            });
+          break;
+      }
+
+      return () => {
+        socket.off("NOTICE");
+      };
+    };
+    socket.on("NOTICE", (data) => handleNotice(data));
 
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
     socket.on("INVITE", (data) => handleGameRequest(data));
-
     // join game
     socket.on("JOIN_GAME", onJoinGame);
   }, [socket]);
   return (
     <div>
       <Routes>
-        <Route index path="/Lobby" element={<Lobby />} />
+        <Route path="/Lobby" element={<Lobby />} />
         <Route path="/MyProfile" element={<Myprofile />} />
         <Route path="/FriendProfile/:id" element={<FriendProfile />} />
         <Route path="/Game" element={<Game />} />
@@ -79,6 +123,7 @@ function AfterLogin() {
           }
         />
         <Route path="/Ranking" element={<Ranking />} />
+        <Route path="*" element={<Lobby />} />
       </Routes>
       {modalOpen && modalContent}
     </div>
