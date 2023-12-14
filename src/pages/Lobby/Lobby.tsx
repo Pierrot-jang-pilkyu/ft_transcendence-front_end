@@ -8,11 +8,12 @@ import { useLocation } from "react-router-dom";
 import socket from "../../hooks/socket/socket";
 
 function Lobby(props: any) {
-  const { state } = useLocation();
-
   useEffect(() => {
     socket.connect();
-    socket.emit("REGIST", parseInt(state));
+    socket.on("NOTICE", (data) => {
+      if (data.code === 201) {
+      }
+    });
 
     return () => {
       socket.disconnect();
