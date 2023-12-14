@@ -18,9 +18,15 @@ function Profile(props: any) {
   const [profile, setProfile] = useState();
 
   useEffect(() => {
-    axios.get("http://localhost:3000/users/players/me")
-    .then((res)=> setProfile(res.data))
-  }, []);
+    axios
+      .get("http://localhost:3000/users/players/me")
+      .then((res) => setProfile(res.data))
+      .catch((error) => {
+        axios
+          .get("http://localhost:3000/auth/refresh")
+          .then((res) => console.log(res.data));
+      });
+  });
 
   return (
     <div className={`${styles.profile_container}`}>

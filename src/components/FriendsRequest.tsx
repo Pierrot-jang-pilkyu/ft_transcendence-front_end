@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import styles from "./FriendsRequest.module.css";
-import axios from "axios";
 import Scoket_Lobby from "../hooks/socket/socket";
 import Socket_Chat from "../pages/Chatting/Socket";
 
