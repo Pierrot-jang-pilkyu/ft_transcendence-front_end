@@ -7,6 +7,7 @@ function Reloading() {
 
     useEffect(()=>{
         socket.on("RELOAD", (data) => {
+            console.log("reload?")
             setGame(data); 
         });
 
