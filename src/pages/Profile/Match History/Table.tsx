@@ -15,8 +15,17 @@ function HistoryTable(props: any) {
   const [history, setHistory] = useState<History[]>([]);
   let HistoryList: History[] = [];
   useEffect(() => {
+    console.log(props.id);
+    let url;
+    if (props.id === null) {
+      url = `http://localhost:3000/games/historys/me`;
+      console.log(url);
+    } else {
+      url = `http://localhost:3000/games/historys/${props.id}`;
+    }
+    console.log(url);
     axios
-      .get(`http://localhost:3000/games/historys/${props.id}`)
+      .get(url)
       .then((Response) => {
         for (let i = 0; i < Response.data.length; ++i) {
           {
@@ -29,6 +38,12 @@ function HistoryTable(props: any) {
           }
         }
         setHistory(HistoryList);
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.message === "Unauthorized") {
+          axios.get("http://localhost:3000/auth/refresh/2fa");
+        }
       });
   }, []);
 

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import styles from "./FriendsRequest.module.css";
-import axios from "axios";
 import Scoket_Lobby from "../hooks/socket/socket";
 import Socket_Chat from "../pages/Chatting/Socket";
 
@@ -23,6 +22,7 @@ function FriendsRequest(props: any) {
     }
     if (!listOpen) {
       selectedSocket.emit("GET_FRIEND_REQUEST");
+      console.log("ccbcvbcvbvcbvcbvcbvc");
       selectedSocket.on("GET_FRIEND_REQUEST", (data: any) =>
         handleFriendsList(data)
       );
