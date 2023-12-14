@@ -49,7 +49,14 @@ function AfterLogin() {
       console.log("JOIN_GAME");
       console.log(responseData);
 
-      navigate("/Game", {state: { invite:{roomId: responseData.roomId, gameRequest: responseData.gameRequest }}});
+      navigate("/Game", {
+        state: {
+          invite: {
+            roomId: responseData.roomId,
+            gameRequest: responseData.gameRequest,
+          },
+        },
+      });
     }
 
     socket.on("REQUEST_FRIEND", (data) => handleFriendRequest(data));
@@ -61,7 +68,7 @@ function AfterLogin() {
   return (
     <div>
       <Routes>
-        <Route index path="/Lobby" element={<Lobby />} />
+        <Route path="/Lobby" element={<Lobby />} />
         <Route path="/MyProfile" element={<Myprofile />} />
         <Route path="/FriendProfile/:id" element={<FriendProfile />} />
         <Route path="/Game" element={<Game />} />
@@ -79,6 +86,7 @@ function AfterLogin() {
           }
         />
         <Route path="/Ranking" element={<Ranking />} />
+        <Route path="*" element={<Lobby />} />
       </Routes>
       {modalOpen && modalContent}
     </div>

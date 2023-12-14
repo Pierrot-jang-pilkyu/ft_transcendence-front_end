@@ -11,7 +11,6 @@ function Lobby(props: any) {
   const { state } = useLocation();
 
   useEffect(() => {
-    console.log(state);
     socket.connect();
     socket.emit("REGIST", parseInt(state));
 
