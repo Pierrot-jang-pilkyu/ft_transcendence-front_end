@@ -24,6 +24,7 @@ function FriendsRequest(props: any) {
     setListOpen(!listOpen);
     if (!listOpen) {
       selectedSocket.emit("GET_FRIEND_REQUEST");
+      console.log("ccbcvbcvbvcbvcbvcbvc");
       selectedSocket.on("GET_FRIEND_REQUEST", (data: any) =>
         handleFriendsList(data)
       );

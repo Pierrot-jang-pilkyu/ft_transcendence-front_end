@@ -3,11 +3,11 @@ import React from "react";
 import axios from "axios";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { IdContext } from "../App";
-import QRModal from "./QRModal";
+import { LoginContext } from "../App";
 
-function InputModal({ onClose, code, onOpenModal }) {
+function InputModal({ onClose, onOpenModal }) {
   const [textError, setTextError] = useState(false);
+  const [login, setLogin] = useContext(LoginContext);
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -15,20 +15,12 @@ function InputModal({ onClose, code, onOpenModal }) {
   };
 
   const handleOpenQRModal = () => {
-    onOpenModal();
+    axios.get("http://localhost:3000/auth/refresh/login").then((res) => {
+      onOpenModal();
+    });
   };
 
-  useEffect(() => {
-    axios.defaults.withCredentials = true;
-    axios
-      .post("http://localhost:3000/auth/login", {
-        code: code,
-      })
-      .then((response) => console.log(response.data));
-  }, []);
-
-  const [text, setText] = useState();
-  const [id, setId] = useContext(IdContext);
+  const [text, setText] = useState("");
 
   function onChangeText(event) {
     setText(event.target.value);
@@ -36,22 +28,24 @@ function InputModal({ onClose, code, onOpenModal }) {
 
   const navigate = useNavigate();
   function onClick() {
-    console.log(text);
     axios.defaults.withCredentials = true;
     axios
       .post("http://localhost:3000/auth/2fa", {
         code: text,
       })
-      .then((res) => {
-        setId(res.data.id);
-        navigate("/Loading");
+      .then(() => {
+        setLogin(true);
+        navigate("/Lobby");
       })
       .catch((error) => {
+        if (error.response.data.message === "Unauthorized") {
+          axios.get("http://localhost:3000/auth/refresh/login");
+        }
         setTextError(true);
         setTimeout(() => {
           setTextError(false); // 400ms 후에 다시 false로 설정하여 흔들림 효과 제거
         }, 400);
-        console.log(error);
+        // console.log(error);
       });
   }
 
@@ -88,7 +82,7 @@ function InputModal({ onClose, code, onOpenModal }) {
               </button>
             </div>
             <div className={`${styles.qr}`}>
-              <div className={`${styles.link}`} onClick={onOpenModal}>
+              <div className={`${styles.link}`} onClick={handleOpenQRModal}>
                 QR code 등록
               </div>
             </div>
