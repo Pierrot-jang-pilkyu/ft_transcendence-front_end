@@ -1,5 +1,5 @@
 import styles from "./QRModal.module.css";
-import { IdContext } from "../App";
+import { IdContext, LoginContext } from "../App";
 import { useState, useRef, useEffect, useContext } from "react";
 import React from "react";
 import axios from "axios";
@@ -10,10 +10,10 @@ interface QRModalProps {
 }
 
 function QRModal({ onClose }) {
-  const [text, setText] = useState();
+  const [text, setText] = useState("");
   const navigate = useNavigate();
   const [qr, setQr] = useState();
-  const [id, setId] = useContext(IdContext);
+  const [login, setLogin] = useContext(LoginContext);
   const [textError, setTextError] = useState(false);
   function onChangeText(event) {
     setText(event.target.value);
@@ -26,20 +26,25 @@ function QRModal({ onClose }) {
         code: text,
       })
       .then((res) => {
-        setId(res.data.id);
-        navigate("/Loading");
+        setLogin(true);
+        navigate("/Lobby");
       })
       .catch((error) => {
+        if (error.response.data.message === "Unauthorized") {
+          axios
+            .get("http://localhost:3000/auth/refresh/login")
+            .then((res) => console.log(res.data));
+        }
         setTextError(true);
         setTimeout(() => {
-          setTextError(false); // 400ms 후에 다시 false로 설정하여 흔들림 효과 제거
+          setTextError(false);
         }, 400);
         console.log(error);
       });
   }
   const handleOnKeyPress = (e) => {
     if (e.key === "Enter") {
-      onClick(); // Enter 입력이 되면 클릭 이벤트 실행
+      onClick();
     }
   };
 
@@ -76,7 +81,9 @@ function QRModal({ onClose }) {
       .then((response) => response.blob())
       .then((blob) => URL.createObjectURL(blob))
       .then((url) => setQr(url))
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (
@@ -114,18 +121,3 @@ function QRModal({ onClose }) {
 }
 
 export default QRModal;
-
-// const [text, setText] = useState();
-
-// function onChangeText (event) {
-//   setText(event.target.value);
-// }
-
-// function onClick () {
-//   axios.defaults.withCredentials = true;
-//   axios.post('http://localhost:3000/auth/2fa', {
-//     code: text,
-//   })
-//   .then((res)=> {navigate('/Lobby')})
-//   .catch((error)=>{console.log(error);})
-// }

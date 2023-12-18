@@ -8,8 +8,7 @@ import { IdContext } from "../../../App";
 function ProfileCard(props: any) {
   const [profile, setProfile] = useState();
   const [editFlag, setEditFlag] = useState(false);
-  const { state } = useLocation();
-  // const [id, setId] = useContext(IdContext);
+
   useEffect(() => {
     if (props.flag === 1) {
       setEditFlag(true);
@@ -19,17 +18,16 @@ function ProfileCard(props: any) {
   }, [props.flag]);
 
   useEffect(() => {
-    // if (props.id === undefined) setId(parseInt(state));
-    console.log(props.id);
-    fetch(`http://localhost:3000/users/players/${props.id}`, {
+    fetch(`http://localhost:3000/users/players/me`, {
       method: "GET",
+      credentials: "include",
     })
       .then((response) => response.json())
       .then((data) => setProfile(data))
       .catch((error) => {
         console.log("FAILED");
       });
-  }, [props.id]);
+  }, []);
 
   return (
     <div className={`${styles.profile}`}>
@@ -70,7 +68,7 @@ function ProfileCard(props: any) {
               ? null
               : profile.gameRecord == null
               ? 0
-              : profile.gameRecord.lose}
+              : profile.gameRecord.loss}
           </text>
         </div>
       </div>

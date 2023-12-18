@@ -4,18 +4,31 @@ import Header from "./Header.js";
 import HomeBall from "../../assets/HomeBall.png";
 import QRModal from "../../components/QRModal.js";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import InputModal from "../../components/InputModal.js";
+import axios from "axios";
+let i = 0;
 
 function Home() {
   const [showQRModal, setShowQRModal] = useState(false);
   const [openQRModal, setToQRModal] = useState(false);
+  const navigate = useNavigate();
   const code = new URL(window.location.href).searchParams.get("code");
 
   useEffect(() => {
-    if (code) {
-      setShowQRModal(true);
+    if (code && i === 0) {
+      i++;
+      axios.defaults.withCredentials = true;
+      axios
+        .post("http://localhost:3000/auth/login", {
+          code: code,
+        })
+        .then((response) => {
+          console.log(response.data);
+          setShowQRModal(true);
+        });
     }
-  }, []);
+  }, [showQRModal]);
 
   const handleOpenModal = () => {
     setShowQRModal(true);
@@ -44,11 +57,7 @@ function Home() {
         </div>
       </div>
       {showQRModal && (
-        <InputModal
-          onClose={handleCloseModal}
-          code={code}
-          onOpenModal={handleToQrModal}
-        />
+        <InputModal onClose={handleCloseModal} onOpenModal={handleToQrModal} />
       )}
       {openQRModal && <QRModal onClose={handleClodeToQRModal} />}
     </div>
