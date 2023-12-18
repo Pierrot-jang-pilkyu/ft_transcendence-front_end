@@ -5,6 +5,7 @@ import AfterLogin from "./pages/AfterLogin";
 export const LoginContext = createContext();
 import { Cookies } from "react-cookie";
 import axios from "axios";
+import Loading from "./pages/Loading/Loading";
 
 const cookies = new Cookies();
 
@@ -19,30 +20,36 @@ export const getCookie = (name: string) => {
 // Socket connet
 //HERE
 function App() {
-  const [login, setLogin] = useState(false);
-  const [ifLoginPage, setIfLoginPage] = useState<React.ReactNode | null>(null);
+  const [login, setLogin] = useState<boolean | undefined>();
+  const [ifLoginPage, setIfLoginPage] = useState<React.ReactNode | null>(<Loading/>);
 
   useEffect(() => {
     axios.defaults.withCredentials = true;
-    if (getCookie("login")) setLogin(true);
+    axios
+      .post("http://localhost:3000/auth/login")
+      .then(() => {
+        setLogin(true);
+      })
+      .catch((error) => {
+        if (error.response.data.message === "Unauthorized") {
+          axios.get("http://localhost:3000/auth/refresh/2fa")
+          .then(() => {
+            setLogin(true);
+          })
+          .catch(() => {
+            setLogin(false);
+          });
+        }
+      });
   }, []);
 
   useEffect(() => {
-    if (login == true) setCookie("login", "true");
-    if (login == false) setCookie("login", "false");
-    if (!login) {
-      setIfLoginPage(
-        <Routes>
-          <Route index path="/" element={<Home />} />
-        </Routes>
-      );
-    } else {
-      setIfLoginPage(
-        <div>
-          <AfterLogin />
-        </div>
-      );
-    }
+    if (login== undefined) 
+      setIfLoginPage(<Loading/>)
+    else if (login == false)
+      setIfLoginPage(<Home/>);
+    else
+      setIfLoginPage(<AfterLogin />);
   }, [login]);
 
   return (
