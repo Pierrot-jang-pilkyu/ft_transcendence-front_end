@@ -18,7 +18,7 @@ function ProfileCard(props: any) {
   }, [props.flag]);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/users/players/me`, {
+    fetch(`http://"+import.meta.env.VITE_BACKEND+"/users/players/me`, {
       method: "GET",
       credentials: "include",
     })

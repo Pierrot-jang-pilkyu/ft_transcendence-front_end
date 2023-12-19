@@ -8,11 +8,11 @@ function RankTable(props: any) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/games/ranks")
+      .get("http://"+import.meta.env.VITE_BACKEND+"/games/ranks")
       .then((res) => setRanks(res.data))
       .catch((error) => {
         if (error.response.data.message === "Unauthorized") {
-          axios.get("http://localhost:3000/auth/refresh/2fa");
+          axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa");
         }
       });
   }, []);

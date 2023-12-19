@@ -18,10 +18,10 @@ function HistoryTable(props: any) {
     console.log(props.id);
     let url;
     if (props.id === null) {
-      url = `http://localhost:3000/games/historys/me`;
+      url = `http://"+import.meta.env.VITE_BACKEND+"/games/historys/me`;
       console.log(url);
     } else {
-      url = `http://localhost:3000/games/historys/${props.id}`;
+      url = `http://"+import.meta.env.VITE_BACKEND+"/games/historys/${props.id}`;
     }
     console.log(url);
     axios
@@ -42,7 +42,7 @@ function HistoryTable(props: any) {
       .catch((error) => {
         console.log(error);
         if (error.response.data.message === "Unauthorized") {
-          axios.get("http://localhost:3000/auth/refresh/2fa");
+          axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa");
         }
       });
   }, []);
