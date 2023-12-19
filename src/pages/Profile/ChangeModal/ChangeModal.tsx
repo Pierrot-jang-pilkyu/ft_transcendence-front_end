@@ -24,14 +24,14 @@ function ChangeModal({ onClose }) {
   useEffect(() => {
     const fetchData = async () => {
       axios
-        .get(`http://localhost:3000/users/players/me`)
+        .get(`http://"+import.meta.env.VITE_BACKEND+"/users/players/me`)
         .then((res) => {
           setProfile(res.data);
           setOriginalImage(res.data.avatar);
         })
         .catch((error) => {
           if (error.response.data.message === "Unauthorized") {
-            axios.get("http://localhost:3000/auth/refresh/2fa");
+            axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa");
           }
           console.error("데이터를 가져오는 중 오류 발생:", error);
         });
