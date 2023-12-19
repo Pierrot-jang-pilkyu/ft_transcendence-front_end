@@ -31,15 +31,7 @@ function App() {
         setLogin(true);
       })
       .catch((error) => {
-        if (error.response.data.message === "Unauthorized") {
-          axios.get("http://localhost:3000/auth/refresh/2fa")
-          .then(() => {
-            setLogin(true);
-          })
-          .catch(() => {
-            setLogin(false);
-          });
-        }
+        setLogin(false);
       });
   }, []);
 
