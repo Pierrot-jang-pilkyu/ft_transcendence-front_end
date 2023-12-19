@@ -26,7 +26,7 @@ function App() {
   useEffect(() => {
     axios.defaults.withCredentials = true;
     axios
-      .post("http://localhost:3000/auth/login")
+      .post("http://"+import.meta.env.VITE_BACKEND+":3000/auth/login")
       .then(() => {
         setLogin(true);
       })
