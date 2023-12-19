@@ -584,10 +584,10 @@ function Chatting(props: any) {
   // }, [viewRoomList, chatLog]);
 
   useEffect(() => {
-    // axios.get(`http://localhost:3000/users/${userId}/channels`)
+    // axios.get(`http://"+import.meta.env.VITE_BACKEND+"/users/${userId}/channels`)
     if (clientChatList.length === 1) {
       axios
-        .get(`http://localhost:3000/users/${userId}/channels/me`)
+        .get(`http://"+import.meta.env.VITE_BACKEND+"/users/${userId}/channels/me`)
         .then((Response) => {
           setMe(Response.data);
           // console.log("me");
@@ -631,7 +631,7 @@ function Chatting(props: any) {
     }
     if (publicChatList.length === 0) {
       axios
-        .get(`http://localhost:3000/users/${userId}/channels/other`)
+        .get(`http://"+import.meta.env.VITE_BACKEND+"/users/${userId}/channels/other`)
         .then((Response) => {
           setOther(Response.data);
           // console.log("other");
@@ -675,7 +675,7 @@ function Chatting(props: any) {
     }
     if (dmChatList.length === 0) {
       axios
-        .get(`http://localhost:3000/users/${userId}/channels/dm`)
+        .get(`http://"+import.meta.env.VITE_BACKEND+"/users/${userId}/channels/dm`)
         .then((Response) => {
           setOther(Response.data);
           // console.log("dm");
@@ -1324,21 +1324,21 @@ function Chatting(props: any) {
         case 201:
           axios.defaults.withCredentials = true;
           axios
-            .post("http://localhost:3000/auth/logout")
+            .post("http://"+import.meta.env.VITE_BACKEND+"/auth/logout")
             .then((response) => {
               setLogin(false);
               navigate("/");
             })
             .catch((error) => {
               if (error.response.data.message === "Unauthorized") {
-                axios.get("http://localhost:3000/auth/refresh/login");
+                axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/login");
               }
               console.log(error);
             });
           break;
         case 202:
           axios
-            .get("http://localhost:3000/auth/refresh/2fa")
+            .get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa")
             .then((res) => {
               console.log(res.data);
             })

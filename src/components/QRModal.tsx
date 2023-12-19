@@ -22,7 +22,7 @@ function QRModal({ onClose }) {
   function onClick() {
     axios.defaults.withCredentials = true;
     axios
-      .post("http://localhost:3000/auth/2fa", {
+      .post("http://"+import.meta.env.VITE_BACKEND+"/auth/2fa", {
         code: text,
       })
       .then((res) => {
@@ -32,7 +32,7 @@ function QRModal({ onClose }) {
       .catch((error) => {
         if (error.response.data.message === "Unauthorized") {
           axios
-            .get("http://localhost:3000/auth/refresh/login")
+            .get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/login")
             .then((res) => console.log(res.data));
         }
         setTextError(true);
@@ -55,7 +55,7 @@ function QRModal({ onClose }) {
   };
 
   useEffect(() => {
-    fetch("http://localhost:3000/auth/2fa/generate", {
+    fetch("http://"+import.meta.env.VITE_BACKEND+"/auth/2fa/generate", {
       method: "POST",
       credentials: "include",
     })

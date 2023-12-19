@@ -42,7 +42,7 @@ function FriendsList() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/users/friends/me`)
+      .get(`http://"+import.meta.env.VITE_BACKEND+"/users/friends/me`)
       .then((Response) => {
         console.log("friends list");
         console.log(Response.data);
@@ -61,7 +61,7 @@ function FriendsList() {
       .catch((Error) => {
         console.log(Error);
         if (Error.response.data.message === "Unauthorized") {
-          axios.get("http://localhost:3000/auth/refresh/2fa");
+          axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa");
         }
       });
   }, []);

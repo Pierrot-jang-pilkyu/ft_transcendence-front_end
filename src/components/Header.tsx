@@ -14,14 +14,14 @@ function Header({pageFlag}: {pageFlag:number}) {
   const handlerButtonLogOut = () => {
     axios.defaults.withCredentials = true;
     axios
-      .post("http://localhost:3000/auth/logout")
+      .post("http://"+import.meta.env.VITE_BACKEND+"/auth/logout")
       .then((response) => {
         setLogin(false);
         navigate("/");
       })
       .catch((error) => {
         if (error.response.data.message === "Unauthorized") {
-          axios.get("http://localhost:3000/auth/refresh/login");
+          axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/login");
         }
         console.log(error);
       });

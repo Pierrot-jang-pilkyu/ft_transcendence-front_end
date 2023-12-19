@@ -20,7 +20,7 @@ function Home() {
       i++;
       axios.defaults.withCredentials = true;
       axios
-        .post("http://localhost:3000/auth/login", {
+        .post("http://"+import.meta.env.VITE_BACKEND+"/auth/login", {
           code: code,
         })
         .then((response) => {

@@ -19,11 +19,11 @@ function Profile(props: any) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/users/players/me")
+      .get("http://"+import.meta.env.VITE_BACKEND+"/users/players/me")
       .then((res) => setProfile(res.data))
       .catch((error) => {
         if (error.response.data.message === "Unauthorized") {
-          axios.get("http://localhost:3000/auth/refresh/2fa");
+          axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa");
         }
       });
   }, []);

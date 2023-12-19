@@ -15,7 +15,7 @@ function InputModal({ onClose, onOpenModal }) {
   };
 
   const handleOpenQRModal = () => {
-    axios.get("http://localhost:3000/auth/refresh/login").then((res) => {
+    axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/login").then((res) => {
       onOpenModal();
     });
   };
@@ -30,7 +30,7 @@ function InputModal({ onClose, onOpenModal }) {
   function onClick() {
     axios.defaults.withCredentials = true;
     axios
-      .post("http://localhost:3000/auth/2fa", {
+      .post("http://"+import.meta.env.VITE_BACKEND+"/auth/2fa", {
         code: text,
       })
       .then(() => {
@@ -39,7 +39,7 @@ function InputModal({ onClose, onOpenModal }) {
       })
       .catch((error) => {
         if (error.response.data.message === "Unauthorized") {
-          axios.get("http://localhost:3000/auth/refresh/login");
+          axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/login");
         }
         setTextError(true);
         setTimeout(() => {
