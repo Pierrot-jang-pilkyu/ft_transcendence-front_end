@@ -1,29 +1,37 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "./Profile.module.css";
-import ProfileImg from "../../../assets/img_Profile.png";
 import Crown from "../../../assets/Lobby_crown.png";
-import { IdContext } from "../../../App";
-import { Cookies } from "react-cookie";
 import axios from "axios";
-// import React from 'react';
+import { LoginContext } from "../../../App";
 
 function Profile(props: any) {
   const navigate = useNavigate();
-  // const cookies = new Cookies();
-  const { state } = useLocation();
+  const [login, setLogin] = useContext(LoginContext);
   const handlerButton = () => {
     navigate("/MyProfile");
   };
-  const [profile, setProfile] = useState();
+  const [profile, setProfile] = useState<any>();
 
   useEffect(() => {
     axios
-      .get("http://"+import.meta.env.VITE_BACKEND+"/users/players/me")
+      .get("http://" + import.meta.env.VITE_BACKEND + "/users/players/me")
       .then((res) => setProfile(res.data))
       .catch((error) => {
+        console.log("a");
         if (error.response.data.message === "Unauthorized") {
-          axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa");
+          axios
+            .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+            .then(() => {
+              axios
+                .get(
+                  "http://" + import.meta.env.VITE_BACKEND + "/users/players/me"
+                )
+                .then((res) => setProfile(res.data));
+            })
+            .catch(() => {
+              setLogin(false);
+            });
         }
       });
   }, []);

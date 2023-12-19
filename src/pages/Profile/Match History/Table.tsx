@@ -2,7 +2,7 @@ import styles from "./Table.module.css";
 import List from "./List";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { IdContext } from "../../../App";
+import { LoginContext } from "../../../App";
 
 interface History {
   winflag: boolean;
@@ -11,19 +11,19 @@ interface History {
 }
 
 function HistoryTable(props: any) {
-  // const [id, setId] = useContext(IdContext);
+  const [login, setLogin] = useContext(LoginContext);
   const [history, setHistory] = useState<History[]>([]);
   let HistoryList: History[] = [];
   useEffect(() => {
-    console.log(props.id);
-    let url;
+    let url: any;
     if (props.id === null) {
-      url = `http://"+import.meta.env.VITE_BACKEND+"/games/historys/me`;
-      console.log(url);
+      url = "http://" + import.meta.env.VITE_BACKEND + "/games/historys/me";
     } else {
-      url = `http://"+import.meta.env.VITE_BACKEND+"/games/historys/${props.id}`;
+      url =
+        "http://" +
+        import.meta.env.VITE_BACKEND +
+        `/games/historys/${props.id}`;
     }
-    console.log(url);
     axios
       .get(url)
       .then((Response) => {
@@ -42,7 +42,26 @@ function HistoryTable(props: any) {
       .catch((error) => {
         console.log(error);
         if (error.response.data.message === "Unauthorized") {
-          axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa");
+          axios
+            .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+            .then(() => {
+              axios.get(url).then((Response) => {
+                for (let i = 0; i < Response.data.length; ++i) {
+                  {
+                    Response.data[i] &&
+                      HistoryList.push({
+                        winflag: Response.data[i].result,
+                        matchtime: Response.data[i].date,
+                        name: Response.data[i].opponent.name,
+                      });
+                  }
+                }
+                setHistory(HistoryList);
+              });
+            })
+            .catch(() => {
+              setLogin(false);
+            });
         }
       });
   }, []);

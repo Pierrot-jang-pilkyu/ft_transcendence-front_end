@@ -7,9 +7,10 @@ import styles from "./RankMatch.module.css";
 import Timer from "../Timer/Timer";
 import LoadingAnimation from "../../../components/LoadingAnimation/LoadingAnimation";
 import axios from "axios";
-import { IdContext } from "../../../App";
+import { LoginContext } from "../../../App";
 
 function RankMatch() {
+  const [login, setLogin] = useContext(LoginContext);
   const [game, setGame] = useContext(GameContext);
   const [gameModal, setGameModal] = useContext(GameModalContext);
   const [rate, setRate] = useState(null);
@@ -37,9 +38,31 @@ function RankMatch() {
 
   useEffect(() => {
     axios
-      .get(`http://"+import.meta.env.VITE_BACKEND+"/users/game-records/me`)
+      .get("http://" + import.meta.env.VITE_BACKEND + "/users/game-records/me")
       .then(function (response) {
         setRate(response.data.rating);
+      })
+      .catch((error) => {
+        if (error.response.data.message === "Unauthorized") {
+          axios
+            .get(
+              "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login"
+            )
+            .then(() => {
+              axios
+                .get(
+                  "http://" +
+                    import.meta.env.VITE_BACKEND +
+                    "/users/game-records/me"
+                )
+                .then(function (response) {
+                  setRate(response.data.rating);
+                });
+            })
+            .catch(() => {
+              setLogin(false);
+            });
+        }
       });
 
     socket.on("LOAD", (data) => {

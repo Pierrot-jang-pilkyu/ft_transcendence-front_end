@@ -21,27 +21,45 @@ export const getCookie = (name: string) => {
 //HERE
 function App() {
   const [login, setLogin] = useState<boolean | undefined>();
-  const [ifLoginPage, setIfLoginPage] = useState<React.ReactNode | null>(<Loading/>);
+  const [ifLoginPage, setIfLoginPage] = useState<React.ReactNode | null>(
+    <Loading />
+  );
 
   useEffect(() => {
     axios.defaults.withCredentials = true;
     axios
-      .post("http://"+import.meta.env.VITE_BACKEND+":3000/auth/login")
+      .post("http://" + import.meta.env.VITE_BACKEND + "/auth/check/login")
       .then(() => {
         setLogin(true);
       })
       .catch((error) => {
-        setLogin(false);
+        if (error.response.data.message === "Unauthorized") {
+          axios
+            .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+            .then(() =>
+              axios
+                .post(
+                  "http://" + import.meta.env.VITE_BACKEND + "/auth/check/login"
+                )
+                .then(() => {
+                  setLogin(true);
+                })
+            )
+            .catch(() => {
+              setLogin(false);
+            });
+        }
       });
   }, []);
 
   useEffect(() => {
-    if (login== undefined) 
-      setIfLoginPage(<Loading/>)
-    else if (login == false)
-      setIfLoginPage(<Home/>);
-    else
+    console.log(login);
+    if (login == undefined) setIfLoginPage(<Loading />);
+    else if (login == false) setIfLoginPage(<Home />);
+    else if (login == true) {
+      console.log("Test");
       setIfLoginPage(<AfterLogin />);
+    }
   }, [login]);
 
   return (
