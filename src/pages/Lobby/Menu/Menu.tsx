@@ -11,7 +11,7 @@ function Menu() {
   const navigate = useNavigate();
   const [alert, setAlert] = useState<React.ReactNode | null>(null);
   const handlerButton = () => {
-    navigate("/Game", {state: { invite: null}});
+    navigate("/Game", { state: { invite: null } });
   };
   const handlerButtonChatting = () => {
     navigate("/Chatting");
@@ -67,7 +67,7 @@ function Menu() {
       }
     };
     socket.on("NOTICE", (data) => handleNotice(data));
-  });
+  }, []);
   return (
     <div className={`${styles.container}`}>
       <button
@@ -77,11 +77,13 @@ function Menu() {
         <img className={styles.game_img} src={GameStart}></img>
         <div className={`${styles.game_font}`}>Start Game!</div>
       </button>
-      <button id="Chatting_Room" className={`${styles.button} ${styles.chat}`} onClick={handlerButtonChatting}>
+      <button
+        id="Chatting_Room"
+        className={`${styles.button} ${styles.chat}`}
+        onClick={handlerButtonChatting}
+      >
         <img src={ChattingRoom} />
-        <div className={`${styles.chat_font}`}>
-          Chatting Room
-        </div>
+        <div className={`${styles.chat_font}`}>Chatting Room</div>
       </button>
       <FriendsList />
       {alert}

@@ -65,28 +65,37 @@ function AfterLogin() {
         case 201:
           axios.defaults.withCredentials = true;
           axios
-            .post("http://"+import.meta.env.VITE_BACKEND+"/auth/logout")
+            .post("http://" + import.meta.env.VITE_BACKEND + "/auth/logout")
             .then((response) => {
               setLogin(false);
               navigate("/");
             })
             .catch((error) => {
               if (error.response.data.message === "Unauthorized") {
-                axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/login");
+                axios
+                  .get(
+                    "http://" +
+                      import.meta.env.VITE_BACKEND +
+                      "/auth/refresh/login"
+                  )
+                  .then((response) => {
+                    axios.post(
+                      "http://" + import.meta.env.VITE_BACKEND + "/auth/logout"
+                    );
+                    setLogin(false);
+                    navigate("/");
+                  })
+                  .catch(() => {
+                    setLogin(false);
+                  });
               }
-              console.log(error);
             });
           break;
         case 202:
           axios
-            .get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa")
-            .then((res) => {
-              console.log(res.data);
-            })
-            .catch((error) => {
+            .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+            .catch(() => {
               setLogin(false);
-              console.log("");
-              navigate("/");
             });
           break;
       }

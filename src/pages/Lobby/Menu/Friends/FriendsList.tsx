@@ -7,6 +7,7 @@ import FriendsAdd from "../../../../assets/FriendsAdd.svg";
 import axios from "axios";
 import { IdContext } from "../../../../App";
 import socket from "../../../../hooks/socket/socket";
+import { LoginContext } from "../../../../App";
 
 interface Friend {
   name: string;
@@ -16,6 +17,7 @@ interface Friend {
 }
 
 function FriendsList() {
+  const [login, setLogin] = useContext(LoginContext);
   const [nick, setNick] = useState("");
   const [fList, setFList] = useState<any>([]);
   const friendsList: Friend[] = [];
@@ -42,11 +44,8 @@ function FriendsList() {
 
   useEffect(() => {
     axios
-      .get(`http://"+import.meta.env.VITE_BACKEND+"/users/friends/me`)
+      .get("http://" + import.meta.env.VITE_BACKEND + "/users/friends/me")
       .then((Response) => {
-        console.log("friends list");
-        console.log(Response.data);
-
         for (let i = 0; i < Response.data.length; ++i) {
           friendsList.push({
             name: Response.data[i].friend.name,
@@ -55,13 +54,33 @@ function FriendsList() {
             id: Response.data[i].friend.id,
           });
         }
-
         setFList(changeAvatar());
       })
       .catch((Error) => {
-        console.log(Error);
+        console.log("C");
         if (Error.response.data.message === "Unauthorized") {
-          axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa");
+          axios
+            .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+            .then(() => {
+              axios
+                .get(
+                  "http://" + import.meta.env.VITE_BACKEND + "/users/friends/me"
+                )
+                .then((Response) => {
+                  for (let i = 0; i < Response.data.length; ++i) {
+                    friendsList.push({
+                      name: Response.data[i].friend.name,
+                      img: Response.data[i].friend.avatar,
+                      state: Response.data[i].friend.status,
+                      id: Response.data[i].friend.id,
+                    });
+                  }
+                  setFList(changeAvatar());
+                });
+            })
+            .catch(() => {
+              setLogin(false);
+            });
         }
       });
   }, []);

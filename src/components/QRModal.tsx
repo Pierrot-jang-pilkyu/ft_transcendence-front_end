@@ -1,5 +1,5 @@
 import styles from "./QRModal.module.css";
-import { IdContext, LoginContext } from "../App";
+import { LoginContext } from "../App";
 import { useState, useRef, useEffect, useContext } from "react";
 import React from "react";
 import axios from "axios";
@@ -22,18 +22,26 @@ function QRModal({ onClose }) {
   function onClick() {
     axios.defaults.withCredentials = true;
     axios
-      .post("http://"+import.meta.env.VITE_BACKEND+"/auth/2fa", {
+      .post("http://" + import.meta.env.VITE_BACKEND + "/auth/2fa", {
         code: text,
       })
-      .then((res) => {
+      .then(() => {
         setLogin(true);
         navigate("/Lobby");
       })
       .catch((error) => {
         if (error.response.data.message === "Unauthorized") {
           axios
-            .get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/login")
-            .then((res) => console.log(res.data));
+            .get(
+              "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login"
+            )
+            .then(() => {
+              setLogin(true);
+              navigate("/Lobby");
+            })
+            .catch(() => {
+              setLogin(false);
+            });
         }
         setTextError(true);
         setTimeout(() => {
@@ -55,7 +63,7 @@ function QRModal({ onClose }) {
   };
 
   useEffect(() => {
-    fetch("http://"+import.meta.env.VITE_BACKEND+"/auth/2fa/generate", {
+    fetch("http://" + import.meta.env.VITE_BACKEND + "/auth/2fa/generate", {
       method: "POST",
       credentials: "include",
     })

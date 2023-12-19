@@ -1,23 +1,34 @@
 import styles from "./RankTable.module.css";
 import RankList from "./RankList";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { LoginContext } from "../../../App";
 import axios from "axios";
 
 function RankTable(props: any) {
-  const [ranks, setRanks] = useState();
+  const [ranks, setRanks] = useState<any>();
+  const [login, setLogin] = useContext(LoginContext);
 
   useEffect(() => {
     axios
-      .get("http://"+import.meta.env.VITE_BACKEND+"/games/ranks")
+      .get("http://" + import.meta.env.VITE_BACKEND + "/games/ranks")
       .then((res) => setRanks(res.data))
       .catch((error) => {
         if (error.response.data.message === "Unauthorized") {
-          axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa");
+          axios
+            .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+            .then(() => {
+              axios
+                .get("http://" + import.meta.env.VITE_BACKEND + "/games/ranks")
+                .then((res) => setRanks(res.data));
+            })
+            .catch(() => {
+              setLogin(false);
+            });
         }
       });
   }, []);
   const rankerTable1 = () => {
-    const res = [];
+    const res: any = [];
     if (ranks == undefined) return res;
     for (let i = 0; i < 16; ++i) {
       if (ranks[i] == undefined)

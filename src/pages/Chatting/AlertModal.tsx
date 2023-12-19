@@ -1,6 +1,5 @@
 import styles from "./AlertModal.module.css";
 import React from "react";
-import axios from "axios";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -12,9 +11,7 @@ function EnterPW({ onClose, content }) {
     }
   };
 
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div className="modal" onClick={handleOutsideClick}>
