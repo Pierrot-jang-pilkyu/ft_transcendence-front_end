@@ -6,7 +6,7 @@ function Tmp() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/games/ranks")
+      .get("http://"+import.meta.env.VITE_BACKEND+"/games/ranks")
       .then((Response) => {
         setData(Response.data);
       })

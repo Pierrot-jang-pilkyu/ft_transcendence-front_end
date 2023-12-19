@@ -37,7 +37,7 @@ function RankMatch() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/users/game-records/me`)
+      .get(`http://"+import.meta.env.VITE_BACKEND+"/users/game-records/me`)
       .then(function (response) {
         setRate(response.data.rating);
       });
