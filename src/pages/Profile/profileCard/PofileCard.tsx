@@ -2,11 +2,12 @@ import styles from "./ProfileCard.module.css";
 import editprofile from "./Edit Profile.png";
 import crown from "./crown.png";
 import { useContext, useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { IdContext } from "../../../App";
+import { LoginContext } from "../../../App";
+import axios from "axios";
 
 function ProfileCard(props: any) {
-  const [profile, setProfile] = useState();
+  const [profile, setProfile] = useState<any>();
+  const [login, setLogin] = useContext(LoginContext);
   const [editFlag, setEditFlag] = useState(false);
 
   useEffect(() => {
@@ -18,14 +19,26 @@ function ProfileCard(props: any) {
   }, [props.flag]);
 
   useEffect(() => {
-    fetch(`http://"+import.meta.env.VITE_BACKEND+"/users/players/me`, {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => setProfile(data))
+    axios
+      .get("http://" + import.meta.env.VITE_BACKEND + "/users/players/me")
+      .then((res) => setProfile(res.data))
       .catch((error) => {
-        console.log("FAILED");
+        if (error.res.data.message === "Unauthorized") {
+          axios
+            .get(
+              "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login"
+            )
+            .then(() => {
+              axios
+                .get(
+                  "http://" + import.meta.env.VITE_BACKEND + "/users/players/me"
+                )
+                .then((res) => setProfile(res.data));
+            })
+            .catch(() => {
+              setLogin(false);
+            });
+        }
       });
   }, []);
 

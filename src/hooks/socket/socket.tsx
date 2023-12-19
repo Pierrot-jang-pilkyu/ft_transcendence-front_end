@@ -4,9 +4,9 @@ import { io } from "socket.io-client";
 //   autoConnect: false,
 // });
 
-const socket = io("localhost:3131/lobby", {
-    autoConnect: false,
-	withCredentials: true,
+const socket = io(import.meta.env.VITE_SOCKET + "/lobby", {
+  autoConnect: false,
+  withCredentials: true,
 });
 
 export default socket;

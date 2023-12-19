@@ -1,12 +1,12 @@
 import styles from "./ChangeModal.module.css";
 import socket from "../../../hooks/socket/socket";
-import { useState, useEffect, ChangeEvent } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useEffect, ChangeEvent, useContext } from "react";
+import { LoginContext } from "../../../App";
 import axios from "axios";
 
 function ChangeModal({ onClose }) {
+  const [login, setLogin] = useContext(LoginContext);
   const [profile, setProfile] = useState();
-  const { state } = useLocation();
   const [image, setImage] = useState(undefined as string | undefined);
   const [userName, setUserName] = useState<string | undefined>(profile?.name);
   const [originalImage, setOriginalImage] = useState<string | undefined>(
@@ -14,7 +14,6 @@ function ChangeModal({ onClose }) {
   );
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      console.log("Here");
       onClose();
     }
   };
@@ -24,14 +23,32 @@ function ChangeModal({ onClose }) {
   useEffect(() => {
     const fetchData = async () => {
       axios
-        .get(`http://"+import.meta.env.VITE_BACKEND+"/users/players/me`)
+        .get("http://" + import.meta.env.VITE_BACKEND + "/users/players/me")
         .then((res) => {
           setProfile(res.data);
           setOriginalImage(res.data.avatar);
         })
         .catch((error) => {
           if (error.response.data.message === "Unauthorized") {
-            axios.get("http://"+import.meta.env.VITE_BACKEND+"/auth/refresh/2fa");
+            axios
+              .get(
+                "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa"
+              )
+              .then(() => {
+                axios
+                  .get(
+                    "http://" +
+                      import.meta.env.VITE_BACKEND +
+                      "/users/players/me"
+                  )
+                  .then((res) => {
+                    setProfile(res.data);
+                    setOriginalImage(res.data.avatar);
+                  });
+              })
+              .catch(() => {
+                setLogin(false);
+              });
           }
           console.error("데이터를 가져오는 중 오류 발생:", error);
         });
