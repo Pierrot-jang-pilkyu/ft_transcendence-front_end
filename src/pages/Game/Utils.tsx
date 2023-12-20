@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import { io } from "socket.io-client";
 
-export const socket = io("localhost:3131/games", {
+export const socket = io(import.meta.env.VITE_SOCKET + "/games", {
     autoConnect: false,
 	withCredentials: true,
 });

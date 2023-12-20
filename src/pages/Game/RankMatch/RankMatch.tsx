@@ -18,22 +18,6 @@ function RankMatch() {
 
   function clickMatch() {
     socket.emit("MATCH");
-    setGameModal({
-      open: true,
-      content: (
-        <GameModal
-          title={"매치 메이킹중"}
-          content={<LoadingAnimation />}
-          leftButton={{
-            title: "취소",
-            onClick: () => {
-              socket.emit("CANCEL");
-              setGameModal({ open: false });
-            },
-          }}
-        />
-      ),
-    });
   }
 
   useEffect(() => {
@@ -64,13 +48,30 @@ function RankMatch() {
             });
         }
       });
+    
+      socket.on("NOTICE", (data) => {
+        console.log("notice");
+        switch (data.code) {
+          case 201:
+            axios.defaults.withCredentials = true;
+            axios.post("http://" + import.meta.env.VITE_BACKEND + "/auth/logout")
+            .then(() => {setLogin(false)})
+            .catch(() => {setLogin(false)})
+            break;
+          case 202:
+            axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+            .then(()=>{socket.emit("MATCH")})
+            .catch(() => {setLogin(false)});
+            break;
+        }
+      })
 
     socket.on("LOAD", (data) => {
       setGame(data);
       setGameModal({ open: close });
     });
 
-    socket.on("PENALTY", (data) => {
+    socket.on("PENALTY", () => {
       setGameModal({
         open: true,
         content: (
@@ -96,9 +97,30 @@ function RankMatch() {
       });
     });
 
+    socket.on("WAIT", ()=>{
+      console.log("wait");
+      setGameModal({
+        open: true,
+        content: (
+          <GameModal
+            title={"매치 메이킹중"}
+            content={<LoadingAnimation />}
+            leftButton={{
+              title: "취소",
+              onClick: () => {
+                socket.emit("CANCEL");
+                setGameModal({ open: false });
+              },
+            }}
+          />
+        ),
+      });
+    })
+
     return () => {
       socket.off("LOAD");
       socket.off("PENALTY");
+      socket.off("WAIT");
     };
   }, []);
   return (
