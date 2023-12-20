@@ -20,51 +20,32 @@ function RankMatch() {
     socket.emit("MATCH");
   }
 
+  function freshAxios(axObj:any, resFunc:any, errFunc:any) {
+    axios(axObj)
+    .then((res)=>{
+      resFunc(res)
+    })
+    .catch((error)=>{
+      if (error.response.data.message === "Unauthorized") {
+        axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login")
+        .then(()=>{
+          axios(axObj).then((res)=>{resFunc(res)})
+        })
+        .catch(()=>{
+          errFunc();
+        })
+      }
+    })
+  }
+
   useEffect(() => {
-    axios
-      .get("http://" + import.meta.env.VITE_BACKEND + "/users/game-records/me")
-      .then(function (response) {
-        setRate(response.data.rating);
-      })
-      .catch((error) => {
-        if (error.response.data.message === "Unauthorized") {
-          axios
-            .get(
-              "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login"
-            )
-            .then(() => {
-              axios
-                .get(
-                  "http://" +
-                    import.meta.env.VITE_BACKEND +
-                    "/users/game-records/me"
-                )
-                .then(function (response) {
-                  setRate(response.data.rating);
-                });
-            })
-            .catch(() => {
-              setLogin(false);
-            });
-        }
-      });
-    
-      socket.on("NOTICE", (data) => {
-        console.log("notice");
-        switch (data.code) {
-          case 201:
-            axios.defaults.withCredentials = true;
-            axios.post("http://" + import.meta.env.VITE_BACKEND + "/auth/logout")
-            .then(() => {setLogin(false)})
-            .catch(() => {setLogin(false)})
-            break;
-          case 202:
-            axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
-            .then(()=>{socket.emit("MATCH")})
-            .catch(() => {setLogin(false)});
-            break;
-        }
-      })
+    freshAxios({
+        method: "get",
+        url: "http://" + import.meta.env.VITE_BACKEND + "/users/game-records/me",
+      },
+      (res:any) => {setRate(res.data.rating)},
+      () => {setLogin(false)}
+    )
 
     socket.on("LOAD", (data) => {
       setGame(data);
