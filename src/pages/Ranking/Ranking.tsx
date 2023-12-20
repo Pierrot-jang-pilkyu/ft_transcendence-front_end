@@ -9,6 +9,15 @@ import socket from "../../hooks/socket/socket";
 
 function Ranking(props: any) {
   useEffect(() => {
+    socket.io.opts = {
+      autoConnect: false,
+      hostname: import.meta.env.VITE_HOSTNAME,
+      path: "/socket.io",
+      port: import.meta.env.VITE_PORT,
+      query: {status: 3},
+      secure: false,
+      withCredentials: true,
+    }
     socket.connect();
 
     return () => {

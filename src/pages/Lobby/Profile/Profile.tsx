@@ -18,7 +18,6 @@ function Profile(props: any) {
       .get("http://" + import.meta.env.VITE_BACKEND + "/users/players/me")
       .then((res) => setProfile(res.data))
       .catch((error) => {
-        console.log("a");
         if (error.response.data.message === "Unauthorized") {
           axios
             .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")

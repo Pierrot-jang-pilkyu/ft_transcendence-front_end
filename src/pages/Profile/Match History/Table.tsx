@@ -40,7 +40,6 @@ function HistoryTable(props: any) {
         setHistory(HistoryList);
       })
       .catch((error) => {
-        console.log(error);
         if (error.response.data.message === "Unauthorized") {
           axios
             .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")

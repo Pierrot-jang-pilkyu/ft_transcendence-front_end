@@ -57,7 +57,6 @@ function FriendsList() {
         setFList(changeAvatar());
       })
       .catch((Error) => {
-        console.log("C");
         if (Error.response.data.message === "Unauthorized") {
           axios
             .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
