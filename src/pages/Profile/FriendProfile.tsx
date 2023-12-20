@@ -19,7 +19,6 @@ function Friendprofile(props: any) {
       withCredentials: true,
     }
     socket.connect();
-
     return () => {
       socket.disconnect();
     };

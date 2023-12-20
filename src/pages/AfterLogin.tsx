@@ -10,10 +10,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import socket from "../hooks/socket/socket";
 import ModalAccept from "../components/AddAndAccept";
 import axios from "axios";
-import { LoginContext } from "../App";
+import { LoginContext, RenderContext } from "../App";
+import Loading from "./Loading/Loading";
 
 function AfterLogin() {
   const navigate = useNavigate();
+  const [render, setRender] = useContext(RenderContext);
   const [login, setLogin] = useContext(LoginContext);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode | null>(
@@ -60,7 +62,6 @@ function AfterLogin() {
       });
     }
     const handleNotice = (data) => {
-      console.log(data);
       switch (data.code) {
         case 201:
           axios.defaults.withCredentials = true;
@@ -94,7 +95,9 @@ function AfterLogin() {
         case 202:
           axios
             .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
-            .then((res) => console.log(res.data))
+            .then((res) => {
+              setRender((prev) =>!prev);
+            })
             .catch(() => {
               setLogin(false);
             });
@@ -116,6 +119,7 @@ function AfterLogin() {
     <div>
       <Routes>
         <Route path="/Lobby" element={<Lobby />} />
+        <Route path="/Loading" element={<Loading />} />
         <Route path="/MyProfile" element={<Myprofile />} />
         <Route path="/FriendProfile/:id" element={<FriendProfile />} />
         <Route path="/Game" element={<Game />} />

@@ -20,7 +20,6 @@ function Ranking(props: any) {
       .get("http://" + import.meta.env.VITE_BACKEND + "/games/ranks")
       .then((res) => setRanks(res.data))
       .catch((error) => {
-        console.log("b");
         if (error.response.data.message === "Unauthorized") {
           axios
             .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")

@@ -2,10 +2,11 @@ import styles from "./ProfileCard.module.css";
 import editprofile from "./Edit Profile.png";
 import crown from "./crown.png";
 import { useContext, useState, useEffect } from "react";
-import { LoginContext } from "../../../App";
+import { LoginContext, RenderContext } from "../../../App";
 import axios from "axios";
 
 function ProfileCard(props: any) {
+  const [render, setRender] = useContext(RenderContext);
   const [profile, setProfile] = useState<any>();
   const [login, setLogin] = useContext(LoginContext);
   const [editFlag, setEditFlag] = useState(false);
@@ -17,30 +18,63 @@ function ProfileCard(props: any) {
       setEditFlag(false);
     }
   }, [props.flag]);
-
+  
   useEffect(() => {
-    axios
-      .get("http://" + import.meta.env.VITE_BACKEND + "/users/players/me")
-      .then((res) => setProfile(res.data))
-      .catch((error) => {
-        if (error.res.data.message === "Unauthorized") {
-          axios
-            .get(
-              "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login"
-            )
-            .then(() => {
-              axios
-                .get(
-                  "http://" + import.meta.env.VITE_BACKEND + "/users/players/me"
-                )
-                .then((res) => setProfile(res.data));
-            })
-            .catch(() => {
-              setLogin(false);
-            });
-        }
-      });
-  }, []);
+    if (!props.id)
+    {
+      axios
+        .get("http://" + import.meta.env.VITE_BACKEND + "/users/players/me")
+        .then((res) => {
+          setProfile(res.data)
+        })
+        .catch((error) => {
+          if (error.res.data.message === "Unauthorized") {
+            axios
+              .get(
+                "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa"
+              )
+              .then(() => {
+                axios
+                  .get(
+                    "http://" + import.meta.env.VITE_BACKEND + "/users/players/me"
+                  )
+                  .then((res) => setProfile(res.data));
+              })
+              .catch(() => {
+                setLogin(false);
+              });
+          }
+        });
+    }
+    else
+    {
+      axios
+        .get("http://" + import.meta.env.VITE_BACKEND + `/users/players/${props.id}`)
+        .then((res) => {
+          setProfile(res.data)
+        })
+        .catch((error) => {
+          if (error.res.data.message === "Unauthorized") {
+            console.log("test");
+            axios
+              .get(
+                "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa"
+              )
+              .then(() => {
+                axios
+                  .get(
+                    "http://" + import.meta.env.VITE_BACKEND + "/users/players/me"
+                  )
+                  .then((res) => setProfile(res.data));
+              })
+              .catch(() => {
+                setLogin(false);
+              });
+          }
+        });
+    }
+
+  }, [render]);
 
   return (
     <div className={`${styles.profile}`}>
