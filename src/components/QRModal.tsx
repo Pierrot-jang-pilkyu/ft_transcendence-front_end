@@ -30,19 +30,6 @@ function QRModal({ onClose }) {
         navigate("/Lobby");
       })
       .catch((error) => {
-        if (error.response.data.message === "Unauthorized") {
-          axios
-            .get(
-              "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login"
-            )
-            .then(() => {
-              setLogin(true);
-              navigate("/Lobby");
-            })
-            .catch(() => {
-              setLogin(false);
-            });
-        }
         setTextError(true);
         setTimeout(() => {
           setTextError(false);
