@@ -1,15 +1,15 @@
 import Header from "./Header/Header";
 import styles from "./Game.module.css";
-import Loading from "./Loading/Loading";
 import Setting from "./Setting/Setting";
 import Gaming from "./Gaming/Gaming";
-import { useLoaderData, useLocation } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { socket, GameRoom, GameContext, GameModalContext } from "./Utils"
-import { IdContext } from "../../App";
+import { useLocation } from "react-router-dom";
+import {  useContext, useEffect, useState } from "react";
+import { socket, GameContext, GameModalContext } from "./Utils"
 import Reloading from "./Reloading/Reloading";
 import RankMatch from "./RankMatch/RankMatch";
 import FriendMatch from "./FriendMatch/FriendMatch";
+import axios from "axios";
+import { LoginContext } from "../../App";
 
 
 function Game()
@@ -17,6 +17,7 @@ function Game()
 	const [gameModal, setGameModal] = useState<any>({open:false, content:null});
 	const invite = useLocation().state.invite;
 	const [game, setGame] = useState<any>();
+	const [login, setLogin] = useContext(LoginContext);
 
 	useEffect(()=>{
 		console.log(socket.connect());
