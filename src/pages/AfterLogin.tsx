@@ -94,6 +94,7 @@ function AfterLogin() {
         case 202:
           axios
             .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+            .then((res) => console.log(res.data))
             .catch(() => {
               setLogin(false);
             });

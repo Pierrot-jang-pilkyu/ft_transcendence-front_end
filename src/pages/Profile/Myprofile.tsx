@@ -10,6 +10,15 @@ function Myprofile(props: any) {
   const [nickModal, setNickModal] = useState(false);
 
   useEffect(() => {
+    socket.io.opts = {
+      autoConnect: false,
+      hostname: import.meta.env.VITE_HOSTNAME,
+      path: "/socket.io",
+      port: import.meta.env.VITE_PORT,
+      query: {status: 1},
+      secure: false,
+      withCredentials: true,
+    }
     socket.connect();
 
     return () => {
