@@ -15,11 +15,7 @@ function InputModal({ onClose, onOpenModal }) {
   };
 
   const handleOpenQRModal = () => {
-    axios
-      .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login")
-      .then((res) => {
         onOpenModal();
-      });
   };
 
   const [text, setText] = useState("");
@@ -40,19 +36,6 @@ function InputModal({ onClose, onOpenModal }) {
         navigate("/Lobby");
       })
       .catch((error) => {
-        if (error.response.data.message === "Unauthorized") {
-          axios
-            .get(
-              "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login"
-            )
-            .then((res) => {
-              setLogin(true);
-              navigate("/Lobby");
-            })
-            .catch(() => {
-              setLogin(false);
-            });
-        }
         setTextError(true);
         setTimeout(() => {
           setTextError(false); // 400ms 후에 다시 false로 설정하여 흔들림 효과 제거
