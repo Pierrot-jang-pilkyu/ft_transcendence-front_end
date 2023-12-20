@@ -12,16 +12,25 @@ function Avatar(props:any) {
     }
 
     const avatarState = () => {
-        const res:any = [];
+        const res = [];
         
         if (props.state == "0")
-            res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
+            res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} onClick={onClick} /></ div>);
         if (props.state == "1")
-            res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
+            res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} onClick={onClick} /></ div>);
         if (props.state == "2")
-            res.push(<div className={`${styles.avatar_playing}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
+            res.push(<div className={`${styles.avatar_playing}`}><img className={`${styles.avatar}`} src={props.img} onClick={onClick} /></ div>);
         if (props.state == "3")
-            res.push(<div className={`${styles.avatar_offline}`}><img className={`${styles.avatar}`} src={props.img} /></div>);
+            res.push(<div className={`${styles.avatar_offline}`}><img className={`${styles.avatar}`} src={props.img} onClick={onClick} /></ div>);
+        if (props.state == "4")
+            res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} onClick={onClick} /></ div>);
+        if (props.state == "5")
+            res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} onClick={onClick} /></ div>);
+        if (props.state == "6")
+            res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} onClick={onClick} /></ div>);
+        if (props.state == "7")
+            res.push(<div className={`${styles.avatar_online}`}><img className={`${styles.avatar}`} src={props.img} onClick={onClick} /></ div>);
+
 
         return res;
     };

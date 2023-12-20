@@ -48,22 +48,23 @@ function Avatar(props:any) {
             res.push(<div className={`${styles.avatar_playing}`}><img id="tooltip-avatar" className={`${styles.avatar}`} src={props.img} onClick={props.flag ? onClickMy : onClick} /></ div>);
         if (props.state == "3")
             res.push(<div className={`${styles.avatar_offline}`}><img id="tooltip-avatar" className={`${styles.avatar}`} src={props.img} onClick={props.flag ? onClickMy : onClick} /></ div>);
-        
+        if (props.state == "4")
+            res.push(<div className={`${styles.avatar_online}`}><img id="tooltip-avatar" className={`${styles.avatar}`} src={props.img} onClick={props.flag ? onClickMy : onClick} /></ div>);
+        if (props.state == "5")
+            res.push(<div className={`${styles.avatar_online}`}><img id="tooltip-avatar" className={`${styles.avatar}`} src={props.img} onClick={props.flag ? onClickMy : onClick} /></ div>);
+        if (props.state == "6")
+            res.push(<div className={`${styles.avatar_online}`}><img id="tooltip-avatar" className={`${styles.avatar}`} src={props.img} onClick={props.flag ? onClickMy : onClick} /></ div>);
+        if (props.state == "7")
+            res.push(<div className={`${styles.avatar_online}`}><img id="tooltip-avatar" className={`${styles.avatar}`} src={props.img} onClick={props.flag ? onClickMy : onClick} /></ div>);
+
+
         return res;
     };
 
     return (
         <div className={`${styles.friend_container} ${styles.tooltip}`} data-tip={props.name} >
-            {/* <div className="tooltip" data-tip="hello">
-                <button className="btn">Hover me</button>
-            </div> */}
-            {/* <div className={styles.tooltip} data-tip="hello"> */}
-            {/* <div className={styles.tooltip_container} >
-                <p id="tooltip-text">{props.name}</p>
-            </div> */}
-                {props.op && <img className={styles.op_crown} src="./src/assets/Chat_Avatar_crown.png" />}
-                {avatarState()}
-            {/* </div> */}
+            {props.op && <img className={styles.op_crown} src="./src/assets/Chat_Avatar_crown.png" />}
+            {avatarState()}
         </div>
     );
   }

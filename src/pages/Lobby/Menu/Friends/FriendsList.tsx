@@ -5,7 +5,6 @@ import SearchFriends from "../../../../assets/SearchFriends.svg";
 import FriendsArrow from "../../../../assets/FriendsArrow.svg";
 import FriendsAdd from "../../../../assets/FriendsAdd.svg";
 import axios from "axios";
-import { IdContext } from "../../../../App";
 import socket from "../../../../hooks/socket/socket";
 import { LoginContext } from "../../../../App";
 
@@ -15,6 +14,8 @@ interface Friend {
   state: string;
   id: string;
 }
+
+let userId:number = 0;
 
 function FriendsList() {
   const [login, setLogin] = useContext(LoginContext);
@@ -43,6 +44,59 @@ function FriendsList() {
   };
 
   useEffect(() => {
+		function onInfoFriends(responseData:any) {
+			console.log("INFO_FRIENDS");
+			console.log(responseData);
+
+			friendsList.splice(0, friendsList.length);
+
+			for (let i = 0; i < responseData.length; ++i) 
+			{
+				friendsList.push({ name: responseData[i].friend.name, img: responseData[i].friend.avatar, state: responseData[i].friend.status, id: responseData[i].friend.id });
+			}
+
+			setFList(changeAvatar());
+		};
+
+		socket.on("INFO_FRIENDS", onInfoFriends);
+		
+		return (() => {
+			socket.off("INFO_FRIENDS", onInfoFriends);
+		})
+	}, [])
+
+  function freshAxios(axObj: any, resFunc: any, errFunc: any) {
+    axios(axObj)
+      .then((res) => {
+        resFunc(res)
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.message === "Unauthorized") {
+          axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login")
+            .then(() => {
+              axios(axObj).then((res) => { resFunc(res) })
+              .catch(() => {
+                errFunc();
+              })
+            })
+            .catch(() => {
+              errFunc();
+            })
+        }
+      })
+  }
+
+  useEffect(() => {
+
+    function getUserRes(Response:any) {
+      
+      userId = parseInt(Response.data.id);
+    }
+
+    freshAxios("http://" + import.meta.env.VITE_BACKEND + "/users/players/me",
+            getUserRes, () => { console.log("User's Info Error."); } );
+
     axios
       .get("http://" + import.meta.env.VITE_BACKEND + "/users/friends/me")
       .then((Response) => {
