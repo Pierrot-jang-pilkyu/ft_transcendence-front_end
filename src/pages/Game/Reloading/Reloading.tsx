@@ -6,14 +6,14 @@ function Reloading() {
     const [game, setGame] = useContext(GameContext);
 
     useEffect(()=>{
-        socket.on("RELOAD", (data) => {
-            console.log("reload?")
-            setGame(data); 
-        });
+        // socket.on("RELOAD", (data) => {
+        //     console.log("reload?")
+        //     setGame(data); 
+        // });
 
-        return (()=>{
-            socket.off("RELOAD");
-        })
+        // return (()=>{
+        //     socket.off("RELOAD");
+        // })
     }, [])
 
     return (
