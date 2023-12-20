@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-const socket = io('localhost:3131/chats', {
+const socket = io(import.meta.env.VITE_SOCKET + '/chats', {
     autoConnect: false,
     withCredentials: true,
 });

@@ -1,7 +1,7 @@
 import Header from "../../components/Header";
 import ProfileCard from "./profileCard/PofileCard";
 import MatchHistory from "./Match History/MatchHistory";
-import styles from "./profile.module.css";
+import styles from "./Profile.module.css";
 import { useEffect, useContext, useState } from "react";
 import ChangeModal from "./ChangeModal/ChangeModal";
 import socket from "../../hooks/socket/socket";

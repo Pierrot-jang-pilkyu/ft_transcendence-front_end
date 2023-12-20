@@ -18,7 +18,6 @@ import AlertModal from "./AlertModal";
 import axios from "axios";
 import socket from "./Socket";
 import TestChatList from "./TestChatList";
-import { IdContext } from "../../App";
 import ModalAccept from "../../components/AddAndAccept";
 import { LoginContext } from "../../App";
 
@@ -83,10 +82,12 @@ export const getCookie = (name: string) => {
   return cookies.get(name);
 };
 
+let thisUser:User = { id: "", name: "", img: "", state: "", op: false };
+let userId:number = 0;
+
 function Chatting(props: any) {
-  const [login, setLogin] = useContext(LoginContext);
   // const userId:number = parseInt(getCookie("user.id"));
-  const userId: number = parseInt(props.id);
+  // const [userId, setUserId] = useState<number>(0);
   // const { state } = useLocation();
   const navigate = useNavigate();
   // const userId = state;
@@ -124,57 +125,7 @@ function Chatting(props: any) {
     setOpenAlertAddModal(false);
   };
 
-  //test
-
-  let testUser: User = {
-    name: "pjang",
-    img: "./src/assets/img_Profile.png",
-    state: "1",
-    id: props.id,
-    op: false,
-  };
-
-  switch (userId) {
-    case 1:
-      testUser = {
-        name: "amanda",
-        img: "./src/assets/img_Profile.png",
-        state: "3",
-        id: "1",
-        op: false,
-      };
-      break;
-    case 2:
-      testUser = {
-        name: "bread",
-        img: "./src/assets/img_Profile.png",
-        state: "1",
-        id: "2",
-        op: false,
-      };
-      break;
-    case 3:
-      testUser = {
-        name: "calla",
-        img: "./src/assets/img_Profile.png",
-        state: "1",
-        id: "2",
-        op: false,
-      };
-      break;
-    case 4:
-      testUser = {
-        name: "dan",
-        img: "./src/assets/img_Profile.png",
-        state: "1",
-        id: "2",
-        op: false,
-      };
-      break;
-    default:
-      console.log("default");
-      break;
-  }
+  // const [thisUser, setThisUser] = useState<any>();
 
   // time
   let today: any = new Date();
@@ -342,7 +293,7 @@ function Chatting(props: any) {
     for (let i = 0; i < currentCR.users.length; ++i) {
       // 이미지, 방장여부, 상태(온라인, 게임중, 오프라인) 받기
       // if (props.name === currentCR.users[i].name)
-      if (testUser.name === currentCR.users[i].name) {
+      if (thisUser.name === currentCR.users[i].name) {
         res.push(
           <li>
             <Avatar
@@ -396,7 +347,6 @@ function Chatting(props: any) {
 
     cr.chatLogList.splice(0, cr.chatLogList.length);
 
-    console.log(cr.backLogList.length);
     if (cr.backLogList.length === 0 && cr.start === 0) {
       cr.start = 1;
       // cr.chatLogList = chatLog;
@@ -443,7 +393,7 @@ function Chatting(props: any) {
 
     for (let i = 0; i < cr.backLogList.length; ++i) {
       // if (cr.backLogList[i].name === props.name)
-      if (cr.backLogList[i].name === testUser.name) {
+      if (cr.backLogList[i].name === thisUser.name) {
         thisDayStamp(res, cr.backLogList[i].date);
         res.push(
           <li>
@@ -570,6 +520,7 @@ function Chatting(props: any) {
 
   function roomAdd(name: string, limits: string, pw: string) {
     if (2 <= parseInt(limits) && parseInt(limits) <= 10) {
+
       socket.emit("HOST", {
         userId: userId,
         title: name,
@@ -583,65 +534,93 @@ function Chatting(props: any) {
 
   // }, [viewRoomList, chatLog]);
 
+  function freshAxios(axObj: any, resFunc: any, errFunc: any) {
+    axios(axObj)
+      .then((res) => {
+        resFunc(res)
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.message === "Unauthorized") {
+          axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login")
+            .then(() => {
+              axios(axObj).then((res) => { resFunc(res) })
+              .catch(() => {
+                errFunc();
+              })
+            })
+            .catch(() => {
+              errFunc();
+            })
+        }
+      })
+  }
+
   useEffect(() => {
-    // axios.get(`http://"+import.meta.env.VITE_BACKEND+"/users/${userId}/channels`)
+
+    function getUserRes(Response:any) {
+      // console.log("me");
+      // console.log(Response.data);
+
+      // setThisUser(Response.data);
+      // setUserId(parseInt(Response.data.id));
+      thisUser.id = Response.data.id;
+      thisUser.name = Response.data.name;
+      thisUser.img = Response.data.avatar;
+      thisUser.state = Response.data.status;
+      userId = parseInt(Response.data.id);
+    }
+
+    freshAxios("http://" + import.meta.env.VITE_BACKEND + "/users/players/me",
+            getUserRes, () => { console.log("User's Info Error."); } );
+    
     if (clientChatList.length === 1) {
-      axios
-        .get(
-          "http://" +
-            import.meta.env.VITE_BACKEND +
-            "/users/${userId}/channels/me"
-        )
-        .then((Response) => {
-          setMe(Response.data);
-          // console.log("me");
-          // console.log(Response.data);
-          for (let i = 0; i < Response.data.length; ++i) {
-            // console.log(Response.data[i]);
-            {
-              Response.data[i].public &&
-                clientChatList.push({
-                  start: 1,
-                  chatId: Response.data[i].id,
-                  title: Response.data[i].title,
-                  private: false,
-                  users: [],
-                  limits: Response.data[i].limit,
-                  backLogList: [],
-                  chatLogList: [],
-                });
-            }
-            {
-              !Response.data[i].public &&
-                clientChatList.push({
-                  start: 1,
-                  chatId: Response.data[i].id,
-                  title: Response.data[i].title,
-                  private: true,
-                  users: [],
-                  limits: Response.data[i].limit,
-                  backLogList: [],
-                  chatLogList: [],
-                });
-            }
+
+      function getChatListMe(Response:any) {
+        setMe(Response.data);
+        // console.log("me");
+        // console.log(Response.data);
+        for (let i = 0; i < Response.data.length; ++i) {
+          {
+            Response.data[i].public &&
+              clientChatList.push({
+                start: 1,
+                chatId: Response.data[i].id,
+                title: Response.data[i].title,
+                private: false,
+                users: [],
+                limits: Response.data[i].limit,
+                backLogList: [],
+                chatLogList: [],
+              });
           }
-          setRoomListMe(clientChatList);
-          clientChatList = roomListMe;
-          setViewRoomList(viewChattingRoomList());
-        })
-        .catch((Error) => {
-          console.log(Error);
-        });
+          {
+            !Response.data[i].public &&
+              clientChatList.push({
+                start: 1,
+                chatId: Response.data[i].id,
+                title: Response.data[i].title,
+                private: true,
+                users: [],
+                limits: Response.data[i].limit,
+                backLogList: [],
+                chatLogList: [],
+              });
+          }
+        }
+        setRoomListMe(clientChatList);
+        clientChatList = roomListMe;
+        setViewRoomList(viewChattingRoomList());
+      }
+
+      freshAxios("http://" + import.meta.env.VITE_BACKEND + "/users/channels/me/in",
+            getChatListMe, () => { console.log("ChatListMe Info Error."); } );
+
     }
     if (publicChatList.length === 0) {
-      axios
-        .get(
-          "http://" +
-            import.meta.env.VITE_BACKEND +
-            "/users/${userId}/channels/other"
-        )
-        .then((Response) => {
-          setOther(Response.data);
+
+      function getChatListPublic(Response:any) {
+        setOther(Response.data);
           // console.log("other");
           // console.log(Response.data);
           for (let i = 0; i < Response.data.length; ++i) {
@@ -676,20 +655,16 @@ function Chatting(props: any) {
           setRoomListOther(publicChatList);
           publicChatList = roomListOther;
           setViewRoomList(viewChattingRoomList());
-        })
-        .catch((Error) => {
-          console.log(Error);
-        });
+      }
+
+      freshAxios("http://" + import.meta.env.VITE_BACKEND + "/users/channels/me/out",
+            getChatListPublic, () => { console.log("ChatListPublic Info Error."); } );
+    
     }
     if (dmChatList.length === 0) {
-      axios
-        .get(
-          "http://" +
-            import.meta.env.VITE_BACKEND +
-            "/users/${userId}/channels/dm"
-        )
-        .then((Response) => {
-          setOther(Response.data);
+
+      function getChatListDM(Response:any) {
+        setOther(Response.data);
           // console.log("dm");
           // console.log(Response.data);
           for (let i = 0; i < Response.data.length; ++i) {
@@ -707,10 +682,11 @@ function Chatting(props: any) {
           setDMList(dmChatList);
           setViewDMList(viewChattingDMList());
           // dmChatList = dmList;
-        })
-        .catch((Error) => {
-          console.log(Error);
-        });
+      }
+
+      freshAxios("http://" + import.meta.env.VITE_BACKEND + "/users/channels/me/dm",
+            getChatListDM, () => { console.log("ChatListDm Info Error."); } );
+
     }
 
     socket.connect();
@@ -854,6 +830,7 @@ function Chatting(props: any) {
         });
         // console.log(currentCR.users[i]);
       }
+      // currentCR.chatId = responseData[0].channel.id;
 
       setChatAvatar(viewAvatar());
     }
@@ -861,9 +838,11 @@ function Chatting(props: any) {
     function addChatLog(responseData: any, flag: number) {
       const res: any = [currentCR.chatLogList];
 
+      console.log(thisUser);
+
       if (flag === 0) {
         // if (cr.backLogList[i].name === props.name)
-        if (responseData.user.name === testUser.name) {
+        if (responseData.user.name === thisUser.name) {
           thisDayStamp(res, responseData.date);
           res.push(
             <li>
@@ -924,7 +903,7 @@ function Chatting(props: any) {
         }
       } else if (flag === 1) {
         // if (cr.backLogList[i].name === props.name)
-        if (responseData.user.name === testUser.name) {
+        if (responseData.user.name === thisUser.name) {
           thisDayStamp(res, responseData.date);
           res.push(
             <li>
@@ -989,8 +968,8 @@ function Chatting(props: any) {
     }
 
     function onMSG(responseData: any) {
-      // console.log("MSG");
-      // console.log(responseData);
+      console.log("MSG");
+      console.log(responseData);
 
       setChatLog(addChatLog(responseData, 0));
     }
@@ -1047,8 +1026,8 @@ function Chatting(props: any) {
         id: 1,
         user: {
           id: userId,
-          name: testUser.name,
-          avatar: testUser.img,
+          name: thisUser.name,
+          avatar: thisUser.img,
           status: 0,
           date: thisTime,
         },
@@ -1086,8 +1065,8 @@ function Chatting(props: any) {
         id: 1,
         user: {
           id: userId,
-          name: testUser.name,
-          avatar: testUser.img,
+          name: thisUser.name,
+          avatar: thisUser.img,
           status: 0,
           date: thisTime,
         },
@@ -1383,6 +1362,10 @@ function Chatting(props: any) {
       console.log("HOST");
       console.log(responseData);
 
+      console.log("check2");
+      console.log(thisUser);
+
+      currentCR.chatId = responseData.channelId;
       setChatId(responseData.channelId);
       setChatTitle(responseData.title);
       currentCR.backLogList.splice(0, currentCR.backLogList.length);
@@ -1488,10 +1471,10 @@ function Chatting(props: any) {
     // userId: userId
     if (chatId === 0) return;
 
-    console.log(pwFlag);
-    console.log(
-      "channelId: " + chatId + ", userId: " + userId + ", password: " + password
-    );
+    // console.log(pwFlag);
+    // console.log(
+    //   "channelId: " + chatId + ", userId: " + userId + ", password: " + password
+    // );
     socket.emit("JOIN", {
       channelId: chatId,
       userId: userId,
