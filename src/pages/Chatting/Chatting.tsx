@@ -1573,6 +1573,9 @@ function Chatting(props: any) {
 
   function clickQuit() {
     socket.emit("QUIT", { channelId: chatId, userId: userId });
+    freshSocket(socket, "QUIT",
+    { channelId: chatId, userId: userId },
+    () => { console.log("QUIT error."); } );
 
     setMenuChecked(false);
 
