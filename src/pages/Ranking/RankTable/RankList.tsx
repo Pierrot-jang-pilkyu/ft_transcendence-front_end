@@ -1,10 +1,41 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./rankList.module.css";
+import axios from "axios";
+import { useEffect, useContext, useState } from "react";
+import { LoginContext } from "../../../App";
 
 function RankList(props: any) {
   const navigate = useNavigate();
+  const [profile, setProfile] = useState<any>();
+  const [login, setLogin] = useContext(LoginContext);
+  useEffect(() => {
+    axios
+      .get("http://" + import.meta.env.VITE_BACKEND + "/users/players/me")
+      .then((res) => {
+        setProfile(res.data);
+      })
+      .catch((error) => {
+        if (error.res.data.message === "Unauthorized") {
+          axios
+            .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+            .then(() => {
+              axios
+                .get(
+                  "http://" + import.meta.env.VITE_BACKEND + "/users/players/me"
+                )
+                .then((res) => setProfile(res.data));
+            })
+            .catch(() => {
+              setLogin(false);
+            });
+        }
+      });
+  });
   const handlerButton = () => {
-    navigate(`/FriendProfile/${props.id}`);
+    if (props.id === profile.id) navigate(`/MyProfile`);
+    else {
+      navigate(`/FriendProfile/${props.id}`);
+    }
   };
   return (
     <div className={`${styles.listcontainer}`}>
@@ -12,12 +43,6 @@ function RankList(props: any) {
       <div className={`${styles.listnick}`} onClick={handlerButton}>
         {props.nickname}
       </div>
-      <text className={`${styles.winnum}`}>{props.win}</text>
-      <text className={`${styles.slash}`}>{props.win == null ? "" : "/"}</text>
-      <text className={`${styles.losenum}`}>{props.lose}</text>
-      <text className={`${styles.divide}`}>
-        {props.lose == null ? "" : "|"}
-      </text>
       <text className={`${styles.point}`}>{props.score}</text>
     </div>
   );

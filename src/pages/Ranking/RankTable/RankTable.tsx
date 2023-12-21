@@ -36,16 +36,12 @@ function RankTable(props: any) {
           <RankList rank={null} nickname={null} win={null} lose={null} />
         );
       else {
-        const win: string = ranks[i].win;
-        const lose: string = ranks[i].loss;
-        const score: string = "Point: " + ranks[i].rating;
+        const score: string = ranks[i].rating + "P";
         const id: number = ranks[i].user.id;
         res.push(
           <RankList
             rank={i + 1}
             nickname={ranks[i].user.name}
-            win={win}
-            lose={lose}
             score={score}
             id={id}
           />

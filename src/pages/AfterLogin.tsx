@@ -24,7 +24,6 @@ function AfterLogin() {
 
   useEffect(() => {
     const handleFriendRequest = (data) => {
-      // data.avatar를 사용하여 원하는 동작 수행
       setModalContent(
         <ModalAccept
           type={"REQUEST_FRIEND"}
@@ -33,11 +32,9 @@ function AfterLogin() {
           socket={socket}
         />
       );
-      console.log(data);
       setModalOpen(true);
     };
     const handleGameRequest = (data) => {
-      // data.avatar를 사용하여 원하는 동작 수행
       setModalContent(
         <ModalAccept
           type={"INVITE"}
@@ -49,9 +46,6 @@ function AfterLogin() {
       setModalOpen(true);
     };
     function onJoinGame(responseData: any) {
-      console.log("JOIN_GAME");
-      console.log(responseData);
-
       navigate("/Game", {
         state: {
           invite: {
@@ -96,7 +90,7 @@ function AfterLogin() {
           axios
             .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
             .then((res) => {
-              setRender((prev) =>!prev);
+              setRender((prev) => !prev);
             })
             .catch(() => {
               setLogin(false);
@@ -123,19 +117,7 @@ function AfterLogin() {
         <Route path="/MyProfile" element={<Myprofile />} />
         <Route path="/FriendProfile/:id" element={<FriendProfile />} />
         <Route path="/Game" element={<Game />} />
-        {/* <Route path="/Friends" element={<Friends />} /> */}
-        <Route
-          path="/Chatting"
-          element={
-            <Chatting
-              socket={null}
-              id={null}
-              pageStart="0"
-              name="pjang"
-              avatar="https://cdn.intra.42.fr/users/436a0681d2090c6c2673a67cb9b129e6/pjang.jpg"
-            />
-          }
-        />
+        <Route path="/Chatting" element={<Chatting />} />
         <Route path="/Ranking" element={<Ranking />} />
         <Route path="*" element={<Lobby />} />
       </Routes>
