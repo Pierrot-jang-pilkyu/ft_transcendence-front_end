@@ -47,9 +47,6 @@ function FriendsList() {
 
   useEffect(() => {
     function onInfoFriends(responseData: any) {
-      console.log("INFO_FRIENDS");
-      console.log(responseData);
-
       friendsList.splice(0, friendsList.length);
 
       for (let i = 0; i < responseData.length; ++i) {
@@ -129,7 +126,6 @@ function FriendsList() {
         resFunc(res);
       })
       .catch((error) => {
-        console.log(error);
         if (error.response.data.message === "Unauthorized") {
           axios
             .get(

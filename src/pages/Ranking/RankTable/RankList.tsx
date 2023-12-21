@@ -10,6 +10,7 @@ function RankList(props: any) {
   const [login, setLogin] = useContext(LoginContext);
   useEffect(() => {
     axios
+
       .get("http://" + import.meta.env.VITE_BACKEND + "/users/players/me")
       .then((res) => {
         setProfile(res.data);
@@ -30,7 +31,7 @@ function RankList(props: any) {
             });
         }
       });
-  });
+  }, []);
   const handlerButton = () => {
     if (props.id === profile.id) navigate(`/MyProfile`);
     else {

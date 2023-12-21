@@ -26,11 +26,7 @@ function HistoryTable(props: any) {
     }
     axios
       .get(url)
-      // .then((res) => {
-      //   console.log(url);
-      // })
       .then((Response) => {
-        console.log(Response.data);
         for (let i = 0; i < Response.data.length; ++i) {
           {
             Response.data[i] &&

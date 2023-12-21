@@ -34,7 +34,6 @@ function QRModal({ onClose }) {
         setTimeout(() => {
           setTextError(false);
         }, 400);
-        console.log(error);
       });
   }
   const handleOnKeyPress = (e) => {

@@ -35,7 +35,6 @@ function InputModal({ onOpenModal }) {
         setTimeout(() => {
           setTextError(false); // 400ms 후에 다시 false로 설정하여 흔들림 효과 제거
         }, 400);
-        // console.log(error);
       });
   }
 

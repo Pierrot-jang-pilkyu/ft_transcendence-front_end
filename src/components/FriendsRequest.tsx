@@ -24,11 +24,9 @@ function FriendsRequest(props: any) {
     setListOpen(!listOpen);
     if (!listOpen) {
       selectedSocket.emit("GET_FRIEND_REQUEST");
-      console.log("ccbcvbcvbvcbvcbvcbvc");
       selectedSocket.on("GET_FRIEND_REQUEST", (data: any) =>
         handleFriendsList(data)
       );
-      console.log(listInfo);
     } else {
       selectedSocket.off("GET_FRIEND_REQUEST");
     }
@@ -63,15 +61,13 @@ function FriendsRequest(props: any) {
       {listOpen && (
         <div
           className={`${styles.friendrlist}`}
-          style={{ overflowY: "scroll", overflowX: "hidden" }}
-        >
+          style={{ overflowY: "scroll", overflowX: "hidden" }}>
           {listInfo.map((item, index) => (
             <div className={`${styles.listcontainer}`}>
               <button
                 className={`${styles.ui_btn}`}
                 key={index}
-                onClick={() => handleBtnList(index)}
-              >
+                onClick={() => handleBtnList(index)}>
                 <span>{item.name}님이 친구가 되길 원합니다!</span>
               </button>
             </div>

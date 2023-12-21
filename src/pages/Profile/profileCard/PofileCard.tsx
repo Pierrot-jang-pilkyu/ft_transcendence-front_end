@@ -18,14 +18,13 @@ function ProfileCard(props: any) {
       setEditFlag(false);
     }
   }, [props.flag]);
-  
+
   useEffect(() => {
-    if (!props.id)
-    {
+    if (!props.id) {
       axios
         .get("http://" + import.meta.env.VITE_BACKEND + "/users/players/me")
         .then((res) => {
-          setProfile(res.data)
+          setProfile(res.data);
         })
         .catch((error) => {
           if (error.res.data.message === "Unauthorized") {
@@ -36,7 +35,9 @@ function ProfileCard(props: any) {
               .then(() => {
                 axios
                   .get(
-                    "http://" + import.meta.env.VITE_BACKEND + "/users/players/me"
+                    "http://" +
+                      import.meta.env.VITE_BACKEND +
+                      "/users/players/me"
                   )
                   .then((res) => setProfile(res.data));
               })
@@ -45,17 +46,18 @@ function ProfileCard(props: any) {
               });
           }
         });
-    }
-    else
-    {
+    } else {
       axios
-        .get("http://" + import.meta.env.VITE_BACKEND + `/users/players/${props.id}`)
+        .get(
+          "http://" +
+            import.meta.env.VITE_BACKEND +
+            `/users/players/${props.id}`
+        )
         .then((res) => {
-          setProfile(res.data)
+          setProfile(res.data);
         })
         .catch((error) => {
           if (error.res.data.message === "Unauthorized") {
-            console.log("test");
             axios
               .get(
                 "http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa"
@@ -63,7 +65,9 @@ function ProfileCard(props: any) {
               .then(() => {
                 axios
                   .get(
-                    "http://" + import.meta.env.VITE_BACKEND + "/users/players/me"
+                    "http://" +
+                      import.meta.env.VITE_BACKEND +
+                      "/users/players/me"
                   )
                   .then((res) => setProfile(res.data));
               })
@@ -73,7 +77,6 @@ function ProfileCard(props: any) {
           }
         });
     }
-
   }, [render]);
 
   return (
