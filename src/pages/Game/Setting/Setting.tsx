@@ -10,9 +10,9 @@ import axios from "axios";
 import { LoginContext } from "../../../App";
 
 function Setting() {
-  const [game, setGame] = useContext(GameContext);
-  const [gameModal, setGameModal] = useContext(GameModalContext);
-  const [login, setLogin] = useContext(LoginContext);
+  const [game, setGame] = useContext<any>(GameContext);
+  const [gameModal, setGameModal] = useContext<any>(GameModalContext);
+  const [login, setLogin] = useContext<any>(LoginContext);
   const [option, setOption] = useState({
     speed: 5,
     ballSize: 5,

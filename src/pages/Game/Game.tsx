@@ -17,36 +17,28 @@ function Game()
 	const [gameModal, setGameModal] = useState<any>({open:false, content:null});
 	const invite = useLocation().state.invite;
 	const [game, setGame] = useState<any>();
-	const [login, setLogin] = useContext(LoginContext);
-	const [render, setRender] = useState(false);
+	const [login, setLogin] = useContext<any>(LoginContext);
+
 
 	useEffect(()=>{
-		console.log(socket.connect());
-
-		socket.on("RELOAD", (data) => {
-            console.log("reload?")
-            setGame(data); 
-        });
 		socket.on("NOTICE", (data) => {
-			console.log(data);
 			switch (data.code) {
-			  case 201:
-				axios.defaults.withCredentials = true;
-				axios.post("http://" + import.meta.env.VITE_BACKEND + "/auth/logout")
-				.then(() => {setLogin(false)})
-				.catch(() => {setLogin(false)})
-				break;
-			  case 202:
-				socket.disconnect();
-				axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
-				.then(()=>{
-					socket.connect()}
-					)
-				.catch(() => {setLogin(false)});
-				break;
+				case 201:
+					axios.defaults.withCredentials = true;
+					axios.post("http://" + import.meta.env.VITE_BACKEND + "/auth/logout")
+					.then(() => {setLogin(false)})
+					.catch(() => {setLogin(false)})
+					break;
+				case 202:
+					socket.disconnect();
+					axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+					.then(()=>{socket.connect()})
+					.catch(() => {setLogin(false)});
+					break;
 			}
-		  })
+		})
 
+		socket.connect();
 		return (()=>{
 			socket.disconnect();
 		});

@@ -6,36 +6,18 @@ import GameModal from "../GameModal/GameModal";
 import styles from "./RankMatch.module.css";
 import Timer from "../Timer/Timer";
 import LoadingAnimation from "../../../components/LoadingAnimation/LoadingAnimation";
-import axios from "axios";
 import { LoginContext } from "../../../App";
+import { freshAxios, freshSocket } from "../../../Utils";
 
 function RankMatch() {
-  const [login, setLogin] = useContext(LoginContext);
-  const [game, setGame] = useContext(GameContext);
-  const [gameModal, setGameModal] = useContext(GameModalContext);
+  const [login, setLogin] = useContext<any>(LoginContext);
+  const [game, setGame] = useContext<any>(GameContext);
+  const [gameModal, setGameModal] = useContext<any>(GameModalContext);
   const [rate, setRate] = useState(null);
   const navigate = useNavigate();
 
   function clickMatch() {
-    socket.emit("MATCH");
-  }
-
-  function freshAxios(axObj:any, resFunc:any, errFunc:any) {
-    axios(axObj)
-    .then((res)=>{
-      resFunc(res)
-    })
-    .catch((error)=>{
-      if (error.response.data.message === "Unauthorized") {
-        axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login")
-        .then(()=>{
-          axios(axObj).then((res)=>{resFunc(res)})
-        })
-        .catch(()=>{
-          errFunc();
-        })
-      }
-    })
+    freshSocket(socket, "MATCH", {}, ()=>{setLogin(false)});
   }
 
   useEffect(() => {
@@ -79,7 +61,6 @@ function RankMatch() {
     });
 
     socket.on("WAIT", ()=>{
-      console.log("wait");
       setGameModal({
         open: true,
         content: (
