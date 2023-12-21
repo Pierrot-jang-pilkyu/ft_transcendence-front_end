@@ -91,6 +91,7 @@ function Chatting(props: any) {
   // const { state } = useLocation();
   const navigate = useNavigate();
   // const userId = state;
+  const [login, setLogin] = useContext(LoginContext);
   const [openRoomAddModal, setOpenRoomAddModal] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode | null>(
@@ -542,11 +543,14 @@ function Chatting(props: any) {
       .catch((error) => {
         console.log(error);
         if (error.response.data.message === "Unauthorized") {
-          axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/login")
+          axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
             .then(() => {
+              console.log(
+                "refresh"
+              )
               axios(axObj).then((res) => { resFunc(res) })
-              .catch(() => {
-                errFunc();
+              .catch((error) => {
+                console.log(error);
               })
             })
             .catch(() => {
@@ -572,7 +576,7 @@ function Chatting(props: any) {
     }
 
     freshAxios("http://" + import.meta.env.VITE_BACKEND + "/users/players/me",
-            getUserRes, () => { console.log("User's Info Error."); } );
+            getUserRes, () => { setLogin(false); } );
     
     if (clientChatList.length === 1) {
 
@@ -614,7 +618,7 @@ function Chatting(props: any) {
       }
 
       freshAxios("http://" + import.meta.env.VITE_BACKEND + "/users/channels/me/in",
-            getChatListMe, () => { console.log("ChatListMe Info Error."); } );
+            getChatListMe, () => { setLogin(false); } );
 
     }
     if (publicChatList.length === 0) {
@@ -658,7 +662,7 @@ function Chatting(props: any) {
       }
 
       freshAxios("http://" + import.meta.env.VITE_BACKEND + "/users/channels/me/out",
-            getChatListPublic, () => { console.log("ChatListPublic Info Error."); } );
+            getChatListPublic, () => { setLogin(false); } );
     
     }
     if (dmChatList.length === 0) {
@@ -685,7 +689,7 @@ function Chatting(props: any) {
       }
 
       freshAxios("http://" + import.meta.env.VITE_BACKEND + "/users/channels/me/dm",
-            getChatListDM, () => { console.log("ChatListDm Info Error."); } );
+            getChatListDM, () => { setLogin(false); } );
 
     }
 
@@ -1329,18 +1333,6 @@ function Chatting(props: any) {
                 );
               }
               console.log(error);
-            });
-          break;
-        case 202:
-          axios
-            .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
-            .then((res) => {
-              console.log(res.data);
-            })
-            .catch((error) => {
-              setLogin(false);
-              console.log("");
-              navigate("/");
             });
           break;
         default: // 그 외
