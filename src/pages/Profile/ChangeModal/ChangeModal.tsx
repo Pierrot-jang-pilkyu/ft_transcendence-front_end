@@ -3,6 +3,7 @@ import socket from "../../../hooks/socket/socket";
 import { useState, useEffect, ChangeEvent, useContext } from "react";
 import { LoginContext } from "../../../App";
 import axios from "axios";
+import { freshSocket } from "../../../Utils";
 
 function ChangeModal({ onClose }) {
   const [login, setLogin] = useContext(LoginContext);
@@ -82,7 +83,9 @@ function ChangeModal({ onClose }) {
   };
 
   const sendToServer = (imageUrl: string, username: string) => {
-    socket.emit("UPDATE", { name: username, avatar: imageUrl });
+    freshSocket(socket, "UPDATE", { name: username, avatar: imageUrl }, () => {
+      setLogin(false);
+    });
   };
   function onChangeName(e) {
     setUserName(e.target.value);
