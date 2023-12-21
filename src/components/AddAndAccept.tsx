@@ -1,7 +1,10 @@
+import { freshSocket } from "../Utils";
 import styles from "./AddAndAccept.module.css";
-// import socket from "../hooks/socket/socket";
+import { useContext } from "react";
+import { LoginContext } from "../App";
 
 function AddAndAccept({ type, onClose, data, socket }) {
+  const [Login, setLogin] = useContext(LoginContext);
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       if (type === "REQUEST_FRIEND") {
@@ -13,19 +16,27 @@ function AddAndAccept({ type, onClose, data, socket }) {
   };
   let modalContent;
   const handleFriendClose = () => {
-    socket.emit("REFUSE_FRIEND", data);
+    freshSocket(socket, "REFUSE_FRIEND", data, () => {
+      setLogin(false);
+    });
     onClose();
   };
   const handleFriendAccept = () => {
-    socket.emit("ACCEPT_FRIEND", data);
+    freshSocket(socket, "ACCEPT_FRIEND", data, () => {
+      setLogin(false);
+    });
     onClose();
   };
   const handleGameClose = () => {
-    socket.emit("REFUSE_GAME", data);
+    freshSocket(socket, "REFUSE_GAME", data, () => {
+      setLogin(false);
+    });
     onClose();
   };
   const handleGameAccept = () => {
-    socket.emit("ACCEPT_GAME", data);
+    freshSocket(socket, "ACCEPT_GAME", data, () => {
+      setLogin(false);
+    });
     onClose();
   };
 
@@ -37,21 +48,18 @@ function AddAndAccept({ type, onClose, data, socket }) {
         <div className={`${styles.avatar_container}`}>
           <img
             className={`${styles.avatar_image}`}
-            src={data == undefined ? null : data.send.avatar}
-          ></img>
+            src={data == undefined ? null : data.send.avatar}></img>
           <div className={`${styles.avatar_name}`}>{data.send.name}</div>
         </div>
         <div className={`${styles.button_container}`}>
           <button
             className={`${styles.button_close}`}
-            onClick={handleFriendClose}
-          >
+            onClick={handleFriendClose}>
             취소
           </button>
           <button
             className={`${styles.button_accept}`}
-            onClick={handleFriendAccept}
-          >
+            onClick={handleFriendAccept}>
             친구 수락하기
           </button>
         </div>
@@ -65,15 +73,13 @@ function AddAndAccept({ type, onClose, data, socket }) {
         <div className={`${styles.avatar_container}`}>
           <img
             className={`${styles.avatar_image}`}
-            src={data == undefined ? null : data.send.avatar}
-          ></img>
+            src={data == undefined ? null : data.send.avatar}></img>
           <div className={`${styles.avatar_name}`}>{data.send.name}</div>
         </div>
         <div className={`${styles.button_container}`}>
           <button
             className={`${styles.button_close}`}
-            onClick={handleGameClose}
-          >
+            onClick={handleGameClose}>
             취소
           </button>
           <div className={`${styles.button_accept}`} onClick={handleGameAccept}>
@@ -83,7 +89,6 @@ function AddAndAccept({ type, onClose, data, socket }) {
       </div>
     );
   }
-  //   avatar부분에 닉네임과 아바타를 따와서 넣어줘야하는데 아직 방법을 모르니 남겨두고 처리
   return (
     <div className={`${styles.popup_wrap}`} onClick={handleOutsideClick}>
       <div className={`${styles.popup}`}>{modalContent}</div>

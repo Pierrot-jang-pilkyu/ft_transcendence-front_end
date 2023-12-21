@@ -8,6 +8,7 @@ import axios from "axios";
 import socket from "../../../../hooks/socket/socket";
 import { LoginContext } from "../../../../App";
 import icon from "../../../../assets/alert.svg";
+import { freshSocket } from "../../../../Utils";
 
 interface Friend {
   name: string;
@@ -211,7 +212,14 @@ function FriendsList() {
       return "";
     }
 
-    socket.emit("REQUEST_FRIEND", { userId: userId, target: nick });
+    freshSocket(
+      socket,
+      "REQUEST_FRIEND",
+      { userId: userId, target: nick },
+      () => {
+        setLogin(false);
+      }
+    );
   };
 
   const activeEnter = (e: KeyboardEvent<HTMLInputElement>) => {
