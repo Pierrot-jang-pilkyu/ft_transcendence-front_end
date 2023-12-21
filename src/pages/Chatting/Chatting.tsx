@@ -5,7 +5,6 @@ import Avatar from "./Avatar";
 import {
   useContext,
   useRef,
-  useCallback,
   useEffect,
   useState,
   KeyboardEvent,
@@ -170,7 +169,7 @@ function Chatting(props: any) {
 
   const timeStamp_this = (flag:any, date:string) => {
     let res: string = " ";
-    console.log(typeof(date));
+
     let thisDay: any = new Date(
       parseInt(date.substring(0, 4)), // year
       parseInt(date.substring(5, 7)) - 1, // month
@@ -289,6 +288,7 @@ function Chatting(props: any) {
 
   clientChatList = roomListMe;
   publicChatList = roomListOther;
+  dmChatList = dmList;
 
   currentCR.chatId = chatId;
   currentCR.title = chatTitle;
@@ -363,7 +363,6 @@ function Chatting(props: any) {
 
     if (cr.backLogList.length === 0 && cr.start === 0) {
       cr.start = 1;
-      console.log("111");
       // cr.chatLogList = chatLog;
       res.push(
         <li>
@@ -373,7 +372,6 @@ function Chatting(props: any) {
         </li>
       );
     } else if (cr.start === -1) {
-      console.log("222");
       res.push(
         <li>
           <div className={styles.chatting_start}>
@@ -556,10 +554,6 @@ function Chatting(props: any) {
     }
   }
 
-  // useEffect(() => {
-
-  // }, [viewRoomList, chatLog]);
-
   function freshAxios(axObj: any, resFunc: any, errFunc: any) {
     axios(axObj)
       .then((res) => {
@@ -586,15 +580,6 @@ function Chatting(props: any) {
   }
 
   useEffect(() => {
-
-    console.log(state);
-    if (state.flag)
-    {
-      console.log("check");
-      freshSocket(socket, "DM",
-      state.data,
-      () => { console.log("DM error."); });
-    }
 
     function getUserRes(Response:any) {
       // console.log("me");
@@ -700,11 +685,11 @@ function Chatting(props: any) {
     
     }
     if (dmChatList.length === 0) {
-
+      console.log("dm");
       function getChatListDM(Response:any) {
         setOther(Response.data);
-          // console.log("dm");
-          // console.log(Response.data);
+          console.log("dm");
+          console.log(Response.data);
           for (let i = 0; i < Response.data.length; ++i) {
             dmChatList.push({
               start: 0,
@@ -728,6 +713,15 @@ function Chatting(props: any) {
     }
 
     socket.connect();
+
+    console.log(state);
+    if (state.flag)
+    {
+      console.log("check");
+      freshSocket(socket, "DM",
+      state.data,
+      () => { console.log("DM error."); });
+    }
 
     function onLoadChat(responseData: any) {
       console.log("LOADCHAT");
@@ -1217,6 +1211,8 @@ function Chatting(props: any) {
           } else setChatLog(onNoticeChatMSG(responseData.content));
           break;
         case 6: // 6	QUIT	채팅방 퇴장	유저님이 채팅방에서 퇴장하였습니다.
+          if (currentCR.chatId === -1)
+            break ;
           setChatLog(onNoticeChatMSG(responseData.content));
           break;
         case 7: // 7	EXIT	채팅방 강퇴	유저님이 채팅방에서 강퇴되었습니다.
@@ -1408,6 +1404,30 @@ function Chatting(props: any) {
       currentCR.backLogList.splice(0, currentCR.backLogList.length);
     }
 
+    function onDM_QUIT() {
+      // socket.emit("QUIT", { channelId: chatId, userId: userId });
+      console.log("recv Quit");
+      console.log("chatId", currentCR.chatId);   
+      freshSocket(socket, "QUIT",
+        { channelId: currentCR.chatId, userId: userId },
+        () => { console.log("QUIT error."); });
+
+      setMenuChecked(false);
+
+      logDay = "";
+      setChatTitle(clientChatList[0].title);
+      setChatId(clientChatList[0].chatId);
+      currentCR.start = clientChatList[0].start;
+      currentCR.backLogList = clientChatList[0].backLogList;
+      currentCR.users = clientChatList[0].users;
+      setChatAvatar(viewAvatar());
+      setChatLog(onChatting(currentCR));
+      // socket.emit("JOIN", { channelId: -1, userId: userId, password: "" });
+      freshSocket(socket, "JOIN",
+        { channelId: -1, userId: userId, password: "" },
+        () => { console.log("Lobby join error."); });
+    }
+
     function onRequestFriend(responseData: any) {
       console.log("REQUEST_FRIEND");
       console.log(responseData);
@@ -1460,6 +1480,7 @@ function Chatting(props: any) {
 
     socket.on("HOST", onHost);
     socket.on("DM", onDM);
+    socket.on("DM_QUIT", onDM_QUIT);
 
     socket.on("LOADCHAT", onLoadChat);
     socket.on("INFO_CH_LIST", onInfoChList);
@@ -1604,9 +1625,10 @@ function Chatting(props: any) {
   }, []);
 
   function clickQuit() {
-    socket.emit("QUIT", { channelId: chatId, userId: userId });
+    // socket.emit("QUIT", { channelId: chatId, userId: userId });
+    console.log("quit current chatId: ", currentCR.chatId);
     freshSocket(socket, "QUIT",
-    { channelId: chatId, userId: userId },
+    { channelId: currentCR.chatId, userId: userId },
     () => { console.log("QUIT error."); } );
 
     setMenuChecked(false);

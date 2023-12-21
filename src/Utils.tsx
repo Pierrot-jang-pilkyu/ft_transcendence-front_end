@@ -22,5 +22,5 @@ export function freshSocket(socket:Socket, protocol:string, data:object, errFunc
 {
     axios.get("http://" + import.meta.env.VITE_BACKEND + "/auth/check/socket")
     .then(()=>{socket.emit(protocol, data)})
-    .catch(()=>{errFunc()})
+    .catch(()=>{ errFunc();})
 }
