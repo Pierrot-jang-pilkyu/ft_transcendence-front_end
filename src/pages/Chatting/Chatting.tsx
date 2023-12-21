@@ -89,7 +89,7 @@ let userId:number = 0;
 function Chatting(props: any) {
   // const userId:number = parseInt(getCookie("user.id"));
   // const [userId, setUserId] = useState<number>(0);
-  // const { state } = useLocation();
+  const { state } = useLocation();
   const navigate = useNavigate();
   // const userId = state;
   const [login, setLogin] = useContext(LoginContext);
@@ -168,8 +168,9 @@ function Chatting(props: any) {
     return res;
   };
 
-  const timeStamp_this = (flag: any, date: string) => {
+  const timeStamp_this = (flag:any, date:string) => {
     let res: string = " ";
+    console.log(typeof(date));
     let thisDay: any = new Date(
       parseInt(date.substring(0, 4)), // year
       parseInt(date.substring(5, 7)) - 1, // month
@@ -218,6 +219,8 @@ function Chatting(props: any) {
     + "전체 유저 명령어\n\n"
     + "친구 요청 : /REQUEST_FRIEND Nick_Name\n"
     + "게임 초대 : /INVITE Nick_Name\n"
+    + "친구 차단 : /BLOCK Nick_Name\n"
+    + "친구 차단 해제 : /UNBLOCK Nick_Name\n"
     + "\n"
     + "방장 권한\n\n"
     + "강퇴 : /KICK Nick_Name\n"
@@ -225,8 +228,6 @@ function Chatting(props: any) {
     + "상위 항목 해제 : /UNBAN Nick_Name\n"
     + "1분간 채팅 금지 : /MUTE Nick_Name\n"
     + "방장 권한 부여 : /OP Nick_Name\n"
-    + "친구 차단 : /BLOCK Nick_Name\n"
-    + "친구 차단 해제 : /UNBLOCK Nick_Name\n"
     + "방 비밀번호 변경 : /PASS New_Password";
 
   const [menuChecked, setMenuChecked] = useState(false);
@@ -360,10 +361,9 @@ function Chatting(props: any) {
   const onChatting = (cr: ChattingRoom) => {
     const res: any = [];
 
-    cr.chatLogList.splice(0, cr.chatLogList.length);
-
     if (cr.backLogList.length === 0 && cr.start === 0) {
       cr.start = 1;
+      console.log("111");
       // cr.chatLogList = chatLog;
       res.push(
         <li>
@@ -373,6 +373,7 @@ function Chatting(props: any) {
         </li>
       );
     } else if (cr.start === -1) {
+      console.log("222");
       res.push(
         <li>
           <div className={styles.chatting_start}>
@@ -467,6 +468,8 @@ function Chatting(props: any) {
       }
     }
 
+    currentCR.chatLogList = res;
+
     console.log(res);
 
     return res;
@@ -536,12 +539,20 @@ function Chatting(props: any) {
   function roomAdd(name: string, limits: string, pw: string) {
     if (2 <= parseInt(limits) && parseInt(limits) <= 10) {
 
-      socket.emit("HOST", {
+      // socket.emit("HOST", {
+      //   userId: userId,
+      //   title: name,
+      //   password: pw,
+      //   limit: parseInt(limits),
+      // });
+      freshSocket(socket, "HOST",
+      {
         userId: userId,
         title: name,
         password: pw,
         limit: parseInt(limits),
-      });
+      },
+      () => { console.log("HOST error."); });
     }
   }
 
@@ -575,6 +586,15 @@ function Chatting(props: any) {
   }
 
   useEffect(() => {
+
+    console.log(state);
+    if (state.flag)
+    {
+      console.log("check");
+      freshSocket(socket, "DM",
+      state.data,
+      () => { console.log("DM error."); });
+    }
 
     function getUserRes(Response:any) {
       // console.log("me");
@@ -726,7 +746,7 @@ function Chatting(props: any) {
 
       // onChatting(currentCR);
       setChatLog(onChatting(currentCR));
-      currentCR.chatLogList = chatLog;
+      // currentCR.chatLogList = chatLog;
     }
 
     function onInfoChList(responseData: any) {
@@ -861,7 +881,7 @@ function Chatting(props: any) {
       if (flag === 0) {
         // if (cr.backLogList[i].name === props.name)
         if (responseData.user.name === thisUser.name) {
-          thisDayStamp(res, responseData.date);
+          thisDayStamp(res, responseData.user.date);
           res.push(
             <li>
               <div className={`${styles.chat} ${styles.chat_end}`}>
@@ -876,7 +896,7 @@ function Chatting(props: any) {
                 <div className={`${styles.chat_header}`}>
                   {responseData.user.name}
                   <time className={`${styles.text_xs} ${styles.opacity_50}`}>
-                    {timeStamp_this(0, responseData.date)}
+                    {timeStamp_this(0, responseData.user.date)}
                   </time>
                 </div>
                 {/* <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div> */}
@@ -890,7 +910,7 @@ function Chatting(props: any) {
             </li>
           );
         } else {
-          thisDayStamp(res, responseData.date);
+          thisDayStamp(res, responseData.user.date);
           res.push(
             <li>
               <div className={`${styles.chat} ${styles.chat_start}`}>
@@ -905,7 +925,7 @@ function Chatting(props: any) {
                 <div className={`${styles.chat_header}`}>
                   {responseData.user.name}
                   <time className={`${styles.text_xs} ${styles.opacity_50}`}>
-                    {timeStamp_this(0, responseData.date)}
+                    {timeStamp_this(0, responseData.user.date)}
                   </time>
                 </div>
                 {/* <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div> */}
@@ -922,7 +942,7 @@ function Chatting(props: any) {
       } else if (flag === 1) {
         // if (cr.backLogList[i].name === props.name)
         if (responseData.user.name === thisUser.name) {
-          thisDayStamp(res, responseData.date);
+          thisDayStamp(res, responseData.user.date);
           res.push(
             <li>
               <div className={`${styles.chat} ${styles.chat_end}`}>
@@ -937,7 +957,7 @@ function Chatting(props: any) {
                 <div className={`${styles.chat_header}`}>
                   {responseData.user.name}
                   <time className={`${styles.text_xs} ${styles.opacity_50}`}>
-                    {timeStamp_this(0, responseData.date)}
+                    {timeStamp_this(0, responseData.user.date)}
                   </time>
                 </div>
                 <div className={`${styles.chat_bubble}`}>
@@ -950,7 +970,7 @@ function Chatting(props: any) {
             </li>
           );
         } else {
-          thisDayStamp(res, responseData.date);
+          thisDayStamp(res, responseData.user.date);
           res.push(
             <li>
               <div className={`${styles.chat} ${styles.chat_start}`}>
@@ -965,7 +985,7 @@ function Chatting(props: any) {
                 <div className={`${styles.chat_header}`}>
                   {responseData.user.name}
                   <time className={`${styles.text_xs} ${styles.opacity_50}`}>
-                    {timeStamp_this(0, responseData.date)}
+                    {timeStamp_this(0, responseData.user.date)}
                   </time>
                 </div>
                 <div className={`${styles.chat_bubble}`}>
@@ -1053,11 +1073,11 @@ function Chatting(props: any) {
       });
     }
 
-    function onBlock(responseData: any) {
+    function onBlock(responseData:any) {
       console.log("BLOCK");
       console.log(responseData);
 
-      const thisTime: string =
+      const thisTime:string =
         today.getFullYear() +
         "-" +
         (today.getMonth() + 1) +
@@ -1074,6 +1094,9 @@ function Chatting(props: any) {
         "Z";
 
       let content: string = "  BLOCK LIST\n--------------\n    ";
+
+      console.log(thisTime);
+      console.log(typeof(thisTime));
 
       for (let i = 0; i < responseData.length; ++i) {
         content += responseData[i].target.name + "\n    ";
@@ -1368,14 +1391,21 @@ function Chatting(props: any) {
       console.log("HOST");
       console.log(responseData);
 
-      console.log("check2");
-      console.log(thisUser);
-
       currentCR.chatId = responseData.channelId;
       setChatId(responseData.channelId);
       setChatTitle(responseData.title);
       currentCR.backLogList.splice(0, currentCR.backLogList.length);
       handleCloseRoomModal();
+    }
+
+    function onDM(responseData: any) {
+      console.log("DM");
+      console.log(responseData);
+
+      currentCR.chatId = responseData.channelId;
+      setChatId(responseData.channelId);
+      setChatTitle(responseData.title);
+      currentCR.backLogList.splice(0, currentCR.backLogList.length);
     }
 
     function onRequestFriend(responseData: any) {
@@ -1429,6 +1459,7 @@ function Chatting(props: any) {
     socket.on("NOTICE", onNotice);
 
     socket.on("HOST", onHost);
+    socket.on("DM", onDM);
 
     socket.on("LOADCHAT", onLoadChat);
     socket.on("INFO_CH_LIST", onInfoChList);
@@ -1452,7 +1483,8 @@ function Chatting(props: any) {
       // notice
       socket.off("NOTICE", onNotice);
 
-      socket.off("HOST", onNotice);
+      socket.off("HOST", onHost);
+      socket.off("DM", onDM);
 
       socket.off("LOADCHAT", onLoadChat);
       socket.off("INFO_CH_LIST", onInfoChList);
@@ -1481,11 +1513,18 @@ function Chatting(props: any) {
     // console.log(
     //   "channelId: " + chatId + ", userId: " + userId + ", password: " + password
     // );
-    socket.emit("JOIN", {
+    // socket.emit("JOIN", {
+    //   channelId: chatId,
+    //   userId: userId,
+    //   password: password,
+    // });
+    freshSocket(socket, "JOIN",
+    {
       channelId: chatId,
       userId: userId,
       password: password,
-    });
+    },
+    () => { console.log("chatId join error."); });
   }
 
   function enterRoom(pw: string) {
@@ -1511,11 +1550,14 @@ function Chatting(props: any) {
           } else {
             setChatAvatar(viewAvatar());
             setChatLog(onChatting(currentCR));
-            socket.emit("JOIN", {
-              channelId: -1,
-              userId: userId,
-              password: "",
-            });
+            // socket.emit("JOIN", {
+            //   channelId: -1,
+            //   userId: userId,
+            //   password: "",
+            // });
+            freshSocket(socket, "JOIN",
+              { channelId: -1, userId: userId, password: "" },
+              () => { console.log("Lobby join error."); });
           }
         }
       }
@@ -1563,6 +1605,9 @@ function Chatting(props: any) {
 
   function clickQuit() {
     socket.emit("QUIT", { channelId: chatId, userId: userId });
+    freshSocket(socket, "QUIT",
+    { channelId: chatId, userId: userId },
+    () => { console.log("QUIT error."); } );
 
     setMenuChecked(false);
 
@@ -1575,7 +1620,9 @@ function Chatting(props: any) {
     setChatAvatar(viewAvatar());
     setChatLog(onChatting(currentCR));
     // socket.emit("JOIN", { channelId: -1, userId: userId, password: "" });
-    freshSocket(socket, "JOIN", { channelId: -1, userId: userId, password: "" }, () => { console.log("Lobby join error."); });
+    freshSocket(socket, "JOIN",
+    { channelId: -1, userId: userId, password: "" },
+    () => { console.log("Lobby join error."); });
   }
 
   function checkInput(input: string) {
@@ -1632,97 +1679,187 @@ function Chatting(props: any) {
 
       switch (cmdList[0]) {
         case "kick":
-          socket.emit("KICK", {
-            channelId: currentCR.chatId,
-            userId: userId,
-            target: cmdList[1],
-          });
+          // socket.emit("KICK", {
+          //   channelId: currentCR.chatId,
+          //   userId: userId,
+          //   target: cmdList[1],
+          // });
+          freshSocket(socket, "KICK",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("KICK error."); });
           break;
         case "ban":
           if (cmdList.length === 2) {
-            socket.emit("BAN", {
+            // socket.emit("BAN", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: cmdList[1],
+            // });
+            freshSocket(socket, "BAN",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: cmdList[1],
-            });
+            },
+            () => { console.log("BAN error."); });
           } else {
-            socket.emit("BAN", {
+            // socket.emit("BAN", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: "",
+            // });
+            freshSocket(socket, "BAN",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: "",
-            });
+            },
+            () => { console.log("BAN error."); });
           }
-
           break;
         case "unban":
-          socket.emit("UNBAN", {
-            channelId: currentCR.chatId,
-            userId: userId,
-            target: cmdList[1],
-          });
+          // socket.emit("UNBAN", {
+          //   channelId: currentCR.chatId,
+          //   userId: userId,
+          //   target: cmdList[1],
+          // });
+          freshSocket(socket, "UNBAN",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("UNBAN error."); });
           break;
         case "mute":
-          socket.emit("MUTE", {
-            channelId: currentCR.chatId,
-            userId: userId,
-            target: cmdList[1],
-          });
+          // socket.emit("MUTE", {
+          //   channelId: currentCR.chatId,
+          //   userId: userId,
+          //   target: cmdList[1],
+          // });
+          freshSocket(socket, "MUTE",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("MUTE error."); });
           break;
         case "op":
-          socket.emit("OP", {
-            channelId: currentCR.chatId,
-            userId: userId,
-            target: cmdList[1],
-          });
+          // socket.emit("OP", {
+          //   channelId: currentCR.chatId,
+          //   userId: userId,
+          //   target: cmdList[1],
+          // });
+          freshSocket(socket, "OP",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("OP error."); });
           break;
         case "block":
           if (cmdList.length === 2) {
-            socket.emit("BLOCK", {
+            // socket.emit("BLOCK", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: cmdList[1],
+            // });
+            freshSocket(socket, "BLOCK",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: cmdList[1],
-            });
+            },
+            () => { console.log("BLOCK error."); });
           } else {
-            socket.emit("BLOCK", {
+            // socket.emit("BLOCK", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: "",
+            // });
+            freshSocket(socket, "BLOCK",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: "",
-            });
+            },
+            () => { console.log("BLOCK error."); });
           }
           break;
         case "unblock":
-          socket.emit("UNBLOCK", {
-            channelId: currentCR.chatId,
-            userId: userId,
-            target: cmdList[1],
-          });
-          break;
-        case "pass":
-          if (cmdList.length === 2) {
-            socket.emit("PASS", {
+          // socket.emit("UNBLOCK", {
+          //   channelId: currentCR.chatId,
+          //   userId: userId,
+          //   target: cmdList[1],
+          // });
+          freshSocket(socket, "UNBLOCK",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: cmdList[1],
-            });
+            },
+            () => { console.log("UNBLOCK error."); });
+          break;
+        case "pass":
+          if (cmdList.length === 2) {
+            // socket.emit("PASS", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: cmdList[1],
+            // });
+            freshSocket(socket, "PASS",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("PASS error."); });
           } else {
-            socket.emit("PASS", {
+            // socket.emit("PASS", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: null,
+            // });
+            freshSocket(socket, "PASS",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: null,
-            });
+            },
+            () => { console.log("PASS error."); });
           }
           break;
         case "request_friend":
           if (cmdList.length === 1) {
             break;
           }
-          socket.emit("REQUEST_FRIEND", { userId: userId, target: cmdList[1] });
+          // socket.emit("REQUEST_FRIEND", { userId: userId, target: cmdList[1] });
+          freshSocket(socket, "REQUEST_FRIEND",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("REQUEST_FRIEND error."); });
           break;
         case "invite":
           if (cmdList.length === 1) {
             break;
           }
-          socket.emit("INVITE", { userId: userId, target: cmdList[1] });
+          // socket.emit("INVITE", { userId: userId, target: cmdList[1] });
+          freshSocket(socket, "INVITE",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("INVITE error."); });
           break;
         default:
           break;

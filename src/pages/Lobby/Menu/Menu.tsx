@@ -12,7 +12,7 @@ function Menu() {
     navigate("/Game", { state: { invite: null } });
   };
   const handlerButtonChatting = () => {
-    navigate("/Chatting");
+    navigate("/Chatting", { state: { flag: false }});
   };
 
   return (

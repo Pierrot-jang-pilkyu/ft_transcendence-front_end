@@ -33,44 +33,45 @@
 }
 
 .fl_background {
-  position: fixed;
-  top: 0%;
-  width: 20rem;
-  height: 100vh;
-  height: 100dvh;
-  background-color: rgb(229 231 235);
-
-  z-index: 9;
+    position: fixed;
+    right: 0px;
+    top: 0%;
+    width: 350px;
+    height: 100vh;
+    height: 100dvh;
+    background-color: rgb(229 231 235);
+    z-index: 9;
 }
 
 .input_container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  position: fixed;
-  left: 1vw;
-  bottom: 2vh;
-  height: 3rem;
+    display: flex;
+    flex-direction: row;
+	justify-content: space-between;
+	position: relative;
+    left: 30px;
+    top: 15px;
+    height: 3rem;
+
 }
 
 .add_container {
-  display: inline-flex;
-  flex-shrink: 0;
-  position: relative;
-  left: 0.7vw;
-  bottom: 0.2vh;
-  width: 3rem;
-  height: 3rem;
+    display: inline-flex;
+    flex-shrink: 0;
+    position: relative;
+    left: 21px;
+	bottom: 1px;
+    width: 3rem;
+    height: 3rem;
 }
 
 .add_container:active {
-  display: inline-flex;
-  flex-shrink: 0;
-  position: relative;
-  left: 0.8vw;
-  bottom: 0.3vh;
-  width: 2.7rem;
-  height: 2.7rem;
+    display: inline-flex;
+    flex-shrink: 0;
+    position: relative;
+    left: 24px;
+	bottom: 2px;
+    width: 2.7rem;
+    height: 2.7rem;
 }
 
 .drawer {
@@ -163,25 +164,26 @@
 }
 
 .drawer-side {
-  pointer-events: none;
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  grid-column-start: 1;
-  grid-row-start: 1;
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  grid-template-rows: repeat(1, minmax(0, 1fr));
-  align-items: flex-start;
-  justify-items: start;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  height: 100vh;
-  height: 100dvh;
-  scrollbar-width: none;
+    pointer-events: none;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    grid-column-start: 1;
+    grid-row-start: 1;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-template-rows: repeat(1, minmax(0, 1fr));
+    align-items: flex-start;
+    justify-items: start;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    height: 100vh;
+    height: 100dvh;
+    scrollbar-width: none;
 
-  z-index: 10;
+    z-index: 10;
+    -webkit-user-select: none;
 }
 .drawer-side::-webkit-scrollbar {
   display: none;
@@ -590,23 +592,25 @@
 /* -------------------------------------------------------------------------------- */
 
 .input {
-  flex-shrink: 1;
-  height: 3rem /* 48px */;
-  padding-left: 1rem /* 16px */;
-  padding-right: 1rem /* 16px */;
-  font-size: 0.875rem /* 14px */;
-  font-size: 1rem /* 16px */;
-  line-height: 1.25rem /* 20px */;
-  line-height: 2;
-  line-height: 1.5rem /* 24px */;
-  border-width: 1px;
-  border-color: hsl(var(--bc) / var(--tw-border-opacity));
-  --tw-border-opacity: 0;
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--b1) / var(--tw-bg-opacity));
-  border-radius: var(--rounded-btn, 0.5rem /* 8px */);
-  position: relative;
-  right: 0vw;
+    flex-shrink: 1;
+    height: 3rem/* 48px */;
+    padding-left: 1rem/* 16px */;
+    padding-right: 1rem/* 16px */;
+    margin: 0 auto;
+    font-size: 0.875rem/* 14px */;
+    font-size: 1rem/* 16px */;
+    line-height: 1.25rem/* 20px */;
+    line-height: 2;
+    line-height: 1.5rem/* 24px */;
+    border-width: 1px;
+    border-color: hsl(var(--bc) / var(--tw-border-opacity));
+    --tw-border-opacity: 0;
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--b1) / var(--tw-bg-opacity));
+    border-radius: var(--rounded-btn, 0.5rem/* 8px */);
+	position: relative;
+	right: 0vw;
+    -webkit-user-select: none;
 }
 .input-group > .input {
   isolation: isolate;
