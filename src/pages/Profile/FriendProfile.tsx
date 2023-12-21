@@ -2,7 +2,7 @@ import Header from "../../components/Header";
 import ProfileCard from "./profileCard/PofileCard";
 import MatchHistory from "./Match History/MatchHistory";
 import styles from "./Profile.module.css";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import socket from "../../hooks/socket/socket";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -11,7 +11,9 @@ import { LoginContext } from "../../App";
 function Friendprofile(props: any) {
   const { id } = useParams();
   const [profile, setProfile] = useState<any>();
+  const [otherProfile, setOtherProfile] = useState<any>();
   const [login, setLogin] = useContext(LoginContext);
+  const navigate = useNavigate();
   useEffect(() => {
     socket.io.opts = {
       autoConnect: false,
@@ -50,10 +52,42 @@ function Friendprofile(props: any) {
             });
         }
       });
+    axios
+      .get("http://" + import.meta.env.VITE_BACKEND + `/users/players/${id}`)
+      .then((res) => {
+        setOtherProfile(res.data);
+      })
+      .catch((error) => {
+        if (error.res.data.message === "Unauthorized") {
+          console.log("test");
+          axios
+            .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
+            .then(() => {
+              axios
+                .get(
+                  "http://" + import.meta.env.VITE_BACKEND + "/users/players/me"
+                )
+                .then((res) => setOtherProfile(res.data));
+            })
+            .catch(() => {
+              setLogin(false);
+            });
+        }
+      });
   }, []);
 
   const handlerButton = () => {
-    console.log(profile);
+    navigate("/Chatting", {
+      state: {
+        flag: true,
+        data: {
+          userId: profile.id,
+          userName: profile.name,
+          targetId: id,
+          targetName: otherProfile.name,
+        },
+      },
+    });
   };
 
   return (
