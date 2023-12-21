@@ -26,7 +26,7 @@
   .logo {
     position: absolute;
     left: 15%;
-    top: 5%;
+    top: 8%;
     color: #353535;
     font-family: "Noto Sans", sans-serif;
     font-size: 2.22vh;
@@ -82,18 +82,21 @@
   
   .logoline {
     position: absolute;
-    top: 30%;
+    top: 25%;
     width: 100%;
     border-top: 1px solid #d9d9d9;
   }
   
   .close {
-    width: 2.6042vw;
-    height: 4.6296vh;
+    position: absolute;
+    top: 8%;
+    right: 15%;
+    width: 1.3021vw;
+    height: 2.3148vh;
     opacity: 0.8;
   }
   
-  .close:before,
+  /* .close:before,
   .close:after {
     position: absolute;
     top: 5%;
@@ -108,7 +111,7 @@
   }
   .close:after {
     transform: rotate(-45deg);
-  }
+  } */
   
   .input {
     flex-shrink: 1;

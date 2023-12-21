@@ -65,11 +65,11 @@ function RoomAddModal({ onClose, roomAdd, id }) {
               <span className={`${styles.logo}`}>방 생성</span>
             </div>
             <div className={`${styles.logoline}`} />
-            <div className={`${styles.close}`} onClick={onClose}></div>
+            <img className={`${styles.close}`} src="./src/assets/Modal_cancle.png" onClick={onClose}/>
             <div className={`${styles.inputcontainer_name}`}>
               <input
                 type="text"
-                placeholder="방이름을 입력해주세요."
+                placeholder="방이름을 입력해주세요. (30자 미만)"
                 className={`${styles.input} ${
                   textError ? styles["shake-animation"] : ""
                 }`}
