@@ -20,6 +20,7 @@ import socket from "./Socket";
 import TestChatList from "./TestChatList";
 import ModalAccept from "../../components/AddAndAccept";
 import { LoginContext } from "../../App";
+import { freshSocket } from "../../Utils";
 
 interface User {
   name: string;
@@ -213,7 +214,20 @@ function Chatting(props: any) {
     return res;
   };
 
-  const announce: string = "명령어";
+  const announce: string = "명령어(대/소문자 구분 없음)\n"
+    + "전체 유저 명령어\n\n"
+    + "친구 요청 : /REQUEST_FRIEND Nick_Name\n"
+    + "게임 초대 : /INVITE Nick_Name\n"
+    + "\n"
+    + "방장 권한\n\n"
+    + "강퇴 : /KICK Nick_Name\n"
+    + "입장 불가 명단 등재 : /BAN Nick_Name\n"
+    + "상위 항목 해제 : /UNBAN Nick_Name\n"
+    + "1분간 채팅 금지 : /MUTE Nick_Name\n"
+    + "방장 권한 부여 : /OP Nick_Name\n"
+    + "친구 차단 : /BLOCK Nick_Name\n"
+    + "친구 차단 해제 : /UNBLOCK Nick_Name\n"
+    + "방 비밀번호 변경 : /PASS New_Password";
 
   const [menuChecked, setMenuChecked] = useState(false);
 
@@ -247,7 +261,7 @@ function Chatting(props: any) {
             {timeStamp(0)}
           </time>
         </div>
-        <div className={`${styles.chat_bubble}`}>{announce}</div>
+        <div className={`${styles.chat_bubble}`}><pre><pre>{announce}</pre></pre></div>
         <div className={`${styles.chat_footer} ${styles.opacity_50}`}></div>
       </div>
     </li>,
@@ -383,7 +397,7 @@ function Chatting(props: any) {
                 {timeStamp(0)}
               </time>
             </div>
-            <div className={`${styles.chat_bubble}`}>{announce}</div>
+            <div className={`${styles.chat_bubble}`}><pre>{announce}</pre></div>
             <div className={`${styles.chat_footer} ${styles.opacity_50}`}></div>
           </div>
         </li>
@@ -1560,7 +1574,8 @@ function Chatting(props: any) {
     currentCR.users = clientChatList[0].users;
     setChatAvatar(viewAvatar());
     setChatLog(onChatting(currentCR));
-    socket.emit("JOIN", { channelId: -1, userId: userId, password: "" });
+    // socket.emit("JOIN", { channelId: -1, userId: userId, password: "" });
+    freshSocket(socket, "JOIN", { channelId: -1, userId: userId, password: "" }, () => { console.log("Lobby join error."); });
   }
 
   function checkInput(input: string) {
