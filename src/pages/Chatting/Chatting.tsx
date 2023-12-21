@@ -168,8 +168,9 @@ function Chatting(props: any) {
     return res;
   };
 
-  const timeStamp_this = (flag: any, date: string) => {
+  const timeStamp_this = (flag:any, date:string) => {
     let res: string = " ";
+    console.log(typeof(date));
     let thisDay: any = new Date(
       parseInt(date.substring(0, 4)), // year
       parseInt(date.substring(5, 7)) - 1, // month
@@ -218,6 +219,8 @@ function Chatting(props: any) {
     + "전체 유저 명령어\n\n"
     + "친구 요청 : /REQUEST_FRIEND Nick_Name\n"
     + "게임 초대 : /INVITE Nick_Name\n"
+    + "친구 차단 : /BLOCK Nick_Name\n"
+    + "친구 차단 해제 : /UNBLOCK Nick_Name\n"
     + "\n"
     + "방장 권한\n\n"
     + "강퇴 : /KICK Nick_Name\n"
@@ -225,8 +228,6 @@ function Chatting(props: any) {
     + "상위 항목 해제 : /UNBAN Nick_Name\n"
     + "1분간 채팅 금지 : /MUTE Nick_Name\n"
     + "방장 권한 부여 : /OP Nick_Name\n"
-    + "친구 차단 : /BLOCK Nick_Name\n"
-    + "친구 차단 해제 : /UNBLOCK Nick_Name\n"
     + "방 비밀번호 변경 : /PASS New_Password";
 
   const [menuChecked, setMenuChecked] = useState(false);
@@ -359,8 +360,6 @@ function Chatting(props: any) {
 
   const onChatting = (cr: ChattingRoom) => {
     const res: any = [];
-
-    cr.chatLogList.splice(0, cr.chatLogList.length);
 
     if (cr.backLogList.length === 0 && cr.start === 0) {
       cr.start = 1;
@@ -861,7 +860,7 @@ function Chatting(props: any) {
       if (flag === 0) {
         // if (cr.backLogList[i].name === props.name)
         if (responseData.user.name === thisUser.name) {
-          thisDayStamp(res, responseData.date);
+          thisDayStamp(res, responseData.user.date);
           res.push(
             <li>
               <div className={`${styles.chat} ${styles.chat_end}`}>
@@ -876,7 +875,7 @@ function Chatting(props: any) {
                 <div className={`${styles.chat_header}`}>
                   {responseData.user.name}
                   <time className={`${styles.text_xs} ${styles.opacity_50}`}>
-                    {timeStamp_this(0, responseData.date)}
+                    {timeStamp_this(0, responseData.user.date)}
                   </time>
                 </div>
                 {/* <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div> */}
@@ -890,7 +889,7 @@ function Chatting(props: any) {
             </li>
           );
         } else {
-          thisDayStamp(res, responseData.date);
+          thisDayStamp(res, responseData.user.date);
           res.push(
             <li>
               <div className={`${styles.chat} ${styles.chat_start}`}>
@@ -905,7 +904,7 @@ function Chatting(props: any) {
                 <div className={`${styles.chat_header}`}>
                   {responseData.user.name}
                   <time className={`${styles.text_xs} ${styles.opacity_50}`}>
-                    {timeStamp_this(0, responseData.date)}
+                    {timeStamp_this(0, responseData.user.date)}
                   </time>
                 </div>
                 {/* <div className={ `${styles.chat_bubble}` }><pre>{responseData.content}</pre></div> */}
@@ -922,7 +921,7 @@ function Chatting(props: any) {
       } else if (flag === 1) {
         // if (cr.backLogList[i].name === props.name)
         if (responseData.user.name === thisUser.name) {
-          thisDayStamp(res, responseData.date);
+          thisDayStamp(res, responseData.user.date);
           res.push(
             <li>
               <div className={`${styles.chat} ${styles.chat_end}`}>
@@ -937,7 +936,7 @@ function Chatting(props: any) {
                 <div className={`${styles.chat_header}`}>
                   {responseData.user.name}
                   <time className={`${styles.text_xs} ${styles.opacity_50}`}>
-                    {timeStamp_this(0, responseData.date)}
+                    {timeStamp_this(0, responseData.user.date)}
                   </time>
                 </div>
                 <div className={`${styles.chat_bubble}`}>
@@ -950,7 +949,7 @@ function Chatting(props: any) {
             </li>
           );
         } else {
-          thisDayStamp(res, responseData.date);
+          thisDayStamp(res, responseData.user.date);
           res.push(
             <li>
               <div className={`${styles.chat} ${styles.chat_start}`}>
@@ -965,7 +964,7 @@ function Chatting(props: any) {
                 <div className={`${styles.chat_header}`}>
                   {responseData.user.name}
                   <time className={`${styles.text_xs} ${styles.opacity_50}`}>
-                    {timeStamp_this(0, responseData.date)}
+                    {timeStamp_this(0, responseData.user.date)}
                   </time>
                 </div>
                 <div className={`${styles.chat_bubble}`}>
@@ -1053,11 +1052,11 @@ function Chatting(props: any) {
       });
     }
 
-    function onBlock(responseData: any) {
+    function onBlock(responseData:any) {
       console.log("BLOCK");
       console.log(responseData);
 
-      const thisTime: string =
+      const thisTime:string =
         today.getFullYear() +
         "-" +
         (today.getMonth() + 1) +
@@ -1074,6 +1073,9 @@ function Chatting(props: any) {
         "Z";
 
       let content: string = "  BLOCK LIST\n--------------\n    ";
+
+      console.log(thisTime);
+      console.log(typeof(thisTime));
 
       for (let i = 0; i < responseData.length; ++i) {
         content += responseData[i].target.name + "\n    ";
