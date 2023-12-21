@@ -20,7 +20,6 @@ function AnnounceBar()
     return (
         <div className={`${styles.container}`}>
             {content}
-            {/* {"game will be start in 20s..."} */}
         </div>
     );
 }
