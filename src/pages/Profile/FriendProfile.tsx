@@ -59,7 +59,6 @@ function Friendprofile(props: any) {
       })
       .catch((error) => {
         if (error.res.data.message === "Unauthorized") {
-          console.log("test");
           axios
             .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
             .then(() => {
