@@ -1481,11 +1481,18 @@ function Chatting(props: any) {
     // console.log(
     //   "channelId: " + chatId + ", userId: " + userId + ", password: " + password
     // );
-    socket.emit("JOIN", {
+    // socket.emit("JOIN", {
+    //   channelId: chatId,
+    //   userId: userId,
+    //   password: password,
+    // });
+    freshSocket(socket, "JOIN",
+    {
       channelId: chatId,
       userId: userId,
       password: password,
-    });
+    },
+    () => { console.log("chatId join error."); });
   }
 
   function enterRoom(pw: string) {
@@ -1511,11 +1518,14 @@ function Chatting(props: any) {
           } else {
             setChatAvatar(viewAvatar());
             setChatLog(onChatting(currentCR));
-            socket.emit("JOIN", {
-              channelId: -1,
-              userId: userId,
-              password: "",
-            });
+            // socket.emit("JOIN", {
+            //   channelId: -1,
+            //   userId: userId,
+            //   password: "",
+            // });
+            freshSocket(socket, "JOIN",
+              { channelId: -1, userId: userId, password: "" },
+              () => { console.log("Lobby join error."); });
           }
         }
       }
@@ -1575,7 +1585,9 @@ function Chatting(props: any) {
     setChatAvatar(viewAvatar());
     setChatLog(onChatting(currentCR));
     // socket.emit("JOIN", { channelId: -1, userId: userId, password: "" });
-    freshSocket(socket, "JOIN", { channelId: -1, userId: userId, password: "" }, () => { console.log("Lobby join error."); });
+    freshSocket(socket, "JOIN",
+    { channelId: -1, userId: userId, password: "" },
+    () => { console.log("Lobby join error."); });
   }
 
   function checkInput(input: string) {
@@ -1632,97 +1644,187 @@ function Chatting(props: any) {
 
       switch (cmdList[0]) {
         case "kick":
-          socket.emit("KICK", {
-            channelId: currentCR.chatId,
-            userId: userId,
-            target: cmdList[1],
-          });
+          // socket.emit("KICK", {
+          //   channelId: currentCR.chatId,
+          //   userId: userId,
+          //   target: cmdList[1],
+          // });
+          freshSocket(socket, "KICK",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("KICK error."); });
           break;
         case "ban":
           if (cmdList.length === 2) {
-            socket.emit("BAN", {
+            // socket.emit("BAN", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: cmdList[1],
+            // });
+            freshSocket(socket, "BAN",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: cmdList[1],
-            });
+            },
+            () => { console.log("BAN error."); });
           } else {
-            socket.emit("BAN", {
+            // socket.emit("BAN", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: "",
+            // });
+            freshSocket(socket, "BAN",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: "",
-            });
+            },
+            () => { console.log("BAN error."); });
           }
-
           break;
         case "unban":
-          socket.emit("UNBAN", {
-            channelId: currentCR.chatId,
-            userId: userId,
-            target: cmdList[1],
-          });
+          // socket.emit("UNBAN", {
+          //   channelId: currentCR.chatId,
+          //   userId: userId,
+          //   target: cmdList[1],
+          // });
+          freshSocket(socket, "UNBAN",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("UNBAN error."); });
           break;
         case "mute":
-          socket.emit("MUTE", {
-            channelId: currentCR.chatId,
-            userId: userId,
-            target: cmdList[1],
-          });
+          // socket.emit("MUTE", {
+          //   channelId: currentCR.chatId,
+          //   userId: userId,
+          //   target: cmdList[1],
+          // });
+          freshSocket(socket, "MUTE",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("MUTE error."); });
           break;
         case "op":
-          socket.emit("OP", {
-            channelId: currentCR.chatId,
-            userId: userId,
-            target: cmdList[1],
-          });
+          // socket.emit("OP", {
+          //   channelId: currentCR.chatId,
+          //   userId: userId,
+          //   target: cmdList[1],
+          // });
+          freshSocket(socket, "OP",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("OP error."); });
           break;
         case "block":
           if (cmdList.length === 2) {
-            socket.emit("BLOCK", {
+            // socket.emit("BLOCK", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: cmdList[1],
+            // });
+            freshSocket(socket, "BLOCK",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: cmdList[1],
-            });
+            },
+            () => { console.log("BLOCK error."); });
           } else {
-            socket.emit("BLOCK", {
+            // socket.emit("BLOCK", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: "",
+            // });
+            freshSocket(socket, "BLOCK",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: "",
-            });
+            },
+            () => { console.log("BLOCK error."); });
           }
           break;
         case "unblock":
-          socket.emit("UNBLOCK", {
-            channelId: currentCR.chatId,
-            userId: userId,
-            target: cmdList[1],
-          });
-          break;
-        case "pass":
-          if (cmdList.length === 2) {
-            socket.emit("PASS", {
+          // socket.emit("UNBLOCK", {
+          //   channelId: currentCR.chatId,
+          //   userId: userId,
+          //   target: cmdList[1],
+          // });
+          freshSocket(socket, "UNBLOCK",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: cmdList[1],
-            });
+            },
+            () => { console.log("UNBLOCK error."); });
+          break;
+        case "pass":
+          if (cmdList.length === 2) {
+            // socket.emit("PASS", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: cmdList[1],
+            // });
+            freshSocket(socket, "PASS",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("PASS error."); });
           } else {
-            socket.emit("PASS", {
+            // socket.emit("PASS", {
+            //   channelId: currentCR.chatId,
+            //   userId: userId,
+            //   target: null,
+            // });
+            freshSocket(socket, "PASS",
+            {
               channelId: currentCR.chatId,
               userId: userId,
               target: null,
-            });
+            },
+            () => { console.log("PASS error."); });
           }
           break;
         case "request_friend":
           if (cmdList.length === 1) {
             break;
           }
-          socket.emit("REQUEST_FRIEND", { userId: userId, target: cmdList[1] });
+          // socket.emit("REQUEST_FRIEND", { userId: userId, target: cmdList[1] });
+          freshSocket(socket, "REQUEST_FRIEND",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("REQUEST_FRIEND error."); });
           break;
         case "invite":
           if (cmdList.length === 1) {
             break;
           }
-          socket.emit("INVITE", { userId: userId, target: cmdList[1] });
+          // socket.emit("INVITE", { userId: userId, target: cmdList[1] });
+          freshSocket(socket, "INVITE",
+            {
+              channelId: currentCR.chatId,
+              userId: userId,
+              target: cmdList[1],
+            },
+            () => { console.log("INVITE error."); });
           break;
         default:
           break;
