@@ -363,6 +363,7 @@ function Chatting(props: any) {
 
     if (cr.backLogList.length === 0 && cr.start === 0) {
       cr.start = 1;
+      console.log("111");
       // cr.chatLogList = chatLog;
       res.push(
         <li>
@@ -372,6 +373,7 @@ function Chatting(props: any) {
         </li>
       );
     } else if (cr.start === -1) {
+      console.log("222");
       res.push(
         <li>
           <div className={styles.chatting_start}>
@@ -465,6 +467,8 @@ function Chatting(props: any) {
         );
       }
     }
+
+    currentCR.chatLogList = res;
 
     console.log(res);
 
@@ -725,7 +729,7 @@ function Chatting(props: any) {
 
       // onChatting(currentCR);
       setChatLog(onChatting(currentCR));
-      currentCR.chatLogList = chatLog;
+      // currentCR.chatLogList = chatLog;
     }
 
     function onInfoChList(responseData: any) {
