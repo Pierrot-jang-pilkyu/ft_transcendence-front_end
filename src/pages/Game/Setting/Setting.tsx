@@ -1,4 +1,3 @@
-import styles from "./Setting.module.css";
 import { useContext, useEffect, useState } from "react";
 import { GameContext, GameModalContext, socket } from "../Utils";
 import ChattingRoom from "../ChattingRoom/ChattingRoom";
@@ -6,7 +5,6 @@ import AnnounceBar from "../AnnounceBar/AnnounceBar";
 import Mode from "./Mode/Mode";
 import { useNavigate } from "react-router-dom";
 import GameModal from "../GameModal/GameModal";
-import axios from "axios";
 import { LoginContext } from "../../../App";
 
 function Setting() {
@@ -61,51 +59,8 @@ function Setting() {
         ),
       });
     });
-    const handleNotice = (data) => {
-      console.log(data);
-      switch (data.code) {
-        case 201:
-          axios.defaults.withCredentials = true;
-          axios
-            .post("http://" + import.meta.env.VITE_BACKEND + "/auth/logout")
-            .then((response) => {
-              setLogin(false);
-              navigate("/");
-            })
-            .catch((error) => {
-              if (error.response.data.message === "Unauthorized") {
-                axios
-                  .get(
-                    "http://" +
-                      import.meta.env.VITE_BACKEND +
-                      "/auth/refresh/login"
-                  )
-                  .then((response) => {
-                    axios.post(
-                      "http://" + import.meta.env.VITE_BACKEND + "/auth/logout"
-                    );
-                    setLogin(false);
-                    navigate("/");
-                  })
-                  .catch(() => {
-                    setLogin(false);
-                  });
-              }
-            });
-          break;
-        case 202:
-          axios
-            .get("http://" + import.meta.env.VITE_BACKEND + "/auth/refresh/2fa")
-            .catch(() => {
-              setLogin(false);
-            });
-          break;
-      }
-    };
-    socket.on("NOTICE", (data) => handleNotice(data));
 
     return () => {
-      socket.off("NOTICE");
       socket.off("READY");
       socket.off("START");
       socket.off("OPTION");

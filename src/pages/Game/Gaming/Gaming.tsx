@@ -98,6 +98,12 @@ function Gaming() {
 
 		//main
 		canvas.addEventListener("mousemove", moveUser);
+		render();
+		if (game.room.stop == true)
+		{
+			socket.emit("RESUME");
+			renderPause();
+		}
 
 		//socket_on
 		socket.on("PONG", (data) => {
@@ -105,7 +111,6 @@ function Gaming() {
 			ball.y = data.ball.y;
 			left.y = data.left;
 			right.y = data.right;
-			console.log(data);
 			render();
 		});
 
@@ -127,6 +132,7 @@ function Gaming() {
 		
 		socket.on("RESUME", ()=>{
 			render();
+			console.log("resume");
 		})
 
 		return (()=>{

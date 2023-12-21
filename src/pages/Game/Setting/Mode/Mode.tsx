@@ -2,7 +2,6 @@ import styles from "./Mode.module.css"
 import Option from "./Option/Option";
 import { socket } from "../../Utils";
 import BorderButton from "../../../../components/BorderButton/BorderButton";
-import { useEffect, useState } from "react";
 
 function Mode({option, author, ready}:{option:{speed:number, ballSize:number, barSize:number}, author:boolean, ready:{left:boolean, right:boolean}})
 {
