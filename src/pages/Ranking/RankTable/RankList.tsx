@@ -12,12 +12,6 @@ function RankList(props: any) {
       <div className={`${styles.listnick}`} onClick={handlerButton}>
         {props.nickname}
       </div>
-      <text className={`${styles.winnum}`}>{props.win}</text>
-      <text className={`${styles.slash}`}>{props.win == null ? "" : "/"}</text>
-      <text className={`${styles.losenum}`}>{props.lose}</text>
-      <text className={`${styles.divide}`}>
-        {props.lose == null ? "" : "|"}
-      </text>
       <text className={`${styles.point}`}>{props.score}</text>
     </div>
   );
