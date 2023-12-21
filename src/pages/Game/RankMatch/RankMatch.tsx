@@ -34,7 +34,7 @@ function RankMatch() {
       setGameModal({ open: close });
     });
 
-    socket.on("PENALTY", () => {
+    socket.on("PENALTY", (data) => {
       setGameModal({
         open: true,
         content: (
@@ -42,10 +42,10 @@ function RankMatch() {
             title={"닷지 패널티"}
             content={
               <Timer
-                min={1}
-                sec={5}
+                min={data.min}
+                sec={data.sec}
                 action={() => {
-                  setGameModal({ open: false });
+                  freshSocket(socket, "MATCH", {}, ()=>{setLogin(false)});
                 }}
               />
             }

@@ -5,15 +5,15 @@ import { useContext, useEffect, useState } from "react";
 import { GameContext, socket } from "../Utils";
 
 
-function ChattingRoom({isLeft})
+function ChattingRoom({isLeft} : {isLeft:boolean})
 {
-    const [game, setGame] = useContext(GameContext);
-    const [input, setInput] = useState();
-    const [logs, setLogs] = useState([]);
- 
+    const [game, setGame] = useContext<any>(GameContext);
+    const [input, setInput] = useState<any>();
+    const [logs, setLogs] = useState<any>([]);
+
     useEffect(()=>{
         socket.on("MSG", (data)=>{
-            setLogs(prev => [
+            setLogs( (prev:any) => [
                 ...prev,
                 { content: data, isUser: false, isLeft: !isLeft}
             ]);
@@ -21,7 +21,7 @@ function ChattingRoom({isLeft})
     }, []);
 
     useEffect(()=>{
-        setLogs(prev => [
+        setLogs( (prev:any) => [
             ...prev,
             { content: input, isUser: true, isLeft: isLeft}
         ]);

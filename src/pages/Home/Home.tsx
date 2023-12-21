@@ -20,11 +20,10 @@ function Home() {
       i++;
       axios.defaults.withCredentials = true;
       axios
-        .post("http://"+import.meta.env.VITE_BACKEND+"/auth/login", {
+        .post("http://" + import.meta.env.VITE_BACKEND + "/auth/login", {
           code: code,
         })
         .then((response) => {
-          console.log(response.data);
           setShowQRModal(true);
         });
     }
