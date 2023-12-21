@@ -1,9 +1,9 @@
 import { useContext, useEffect } from "react";
 import { GameContext, socket } from "../Utils";
 
-function FriendMatch({invite})
+function FriendMatch({invite} : {invite:any})
 {
-    const [game, setGame] = useContext(GameContext);
+    const [game, setGame] = useContext<any>(GameContext);
 
     useEffect(()=>{
         socket.on("LOAD", (data) => {

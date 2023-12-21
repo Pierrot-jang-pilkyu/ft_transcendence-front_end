@@ -3,17 +3,16 @@ import { GameContext, socket } from "../Utils"
 
 
 function Reloading() {
-    const [game, setGame] = useContext(GameContext);
+    const [game, setGame] = useContext<any>(GameContext);
 
     useEffect(()=>{
-        // socket.on("RELOAD", (data) => {
-        //     console.log("reload?")
-        //     setGame(data); 
-        // });
+        socket.on("RELOAD", (data) => {
+            setGame(data); 
+        });
 
-        // return (()=>{
-        //     socket.off("RELOAD");
-        // })
+        return (()=>{
+            socket.off("RELOAD");
+        })
     }, [])
 
     return (

@@ -10,13 +10,13 @@ function Gaming() {
 	const canvasRef = useRef(null);
 	const [end, setEnd] = useState(0);
 	const navigate = useNavigate();
-	const [game, setGame] = useContext(GameContext);
+	const [game, setGame] = useContext<any>(GameContext);
 	const {isLeft, room } = game;
 	const {score, option } = room;
 	const start_ball = room.gameInfo.ball;
 
 	useEffect(() => {
-		const canvas = canvasRef.current;
+		const canvas:any = canvasRef.current;
 		const width = 800;
 		const height = 700;
 		// 디스플레이 크기 설정 (css 픽셀)
@@ -35,17 +35,17 @@ function Gaming() {
 		context.scale(dpr, dpr);
 		context.font = 	"bold 50px sans-serif";
 
-		function moveUser(event) {
+		function moveUser(event:any) {
 			const rect = canvas.getBoundingClientRect();
 			socket.emit("PING", {bar: event.clientY - rect.top - 70, isLeft: isLeft})
 		}
 
-		function drawRect(x, y, w, h, color) {
+		function drawRect(x:number, y:number, w:number, h:number, color:string) {
 			context.fillStyle = color;
 			context.fillRect(x, y, w, h);
 		}
 
-		function drawCircle(x, y, r, color) {
+		function drawCircle(x:number, y:number, r:number, color:string) {
 			context.fillStyle = color;
 			context.beginPath();
 			context.arc(x, y, r, 0, Math.PI*2, false);
