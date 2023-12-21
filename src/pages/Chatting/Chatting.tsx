@@ -89,7 +89,7 @@ let userId:number = 0;
 function Chatting(props: any) {
   // const userId:number = parseInt(getCookie("user.id"));
   // const [userId, setUserId] = useState<number>(0);
-  // const { state } = useLocation();
+  const { state } = useLocation();
   const navigate = useNavigate();
   // const userId = state;
   const [login, setLogin] = useContext(LoginContext);
@@ -539,12 +539,20 @@ function Chatting(props: any) {
   function roomAdd(name: string, limits: string, pw: string) {
     if (2 <= parseInt(limits) && parseInt(limits) <= 10) {
 
-      socket.emit("HOST", {
+      // socket.emit("HOST", {
+      //   userId: userId,
+      //   title: name,
+      //   password: pw,
+      //   limit: parseInt(limits),
+      // });
+      freshSocket(socket, "HOST",
+      {
         userId: userId,
         title: name,
         password: pw,
         limit: parseInt(limits),
-      });
+      },
+      () => { console.log("HOST error."); });
     }
   }
 
@@ -578,6 +586,15 @@ function Chatting(props: any) {
   }
 
   useEffect(() => {
+
+    console.log(state);
+    if (state.flag)
+    {
+      console.log("check");
+      freshSocket(socket, "DM",
+      state.data,
+      () => { console.log("DM error."); });
+    }
 
     function getUserRes(Response:any) {
       // console.log("me");
@@ -1374,14 +1391,21 @@ function Chatting(props: any) {
       console.log("HOST");
       console.log(responseData);
 
-      console.log("check2");
-      console.log(thisUser);
-
       currentCR.chatId = responseData.channelId;
       setChatId(responseData.channelId);
       setChatTitle(responseData.title);
       currentCR.backLogList.splice(0, currentCR.backLogList.length);
       handleCloseRoomModal();
+    }
+
+    function onDM(responseData: any) {
+      console.log("DM");
+      console.log(responseData);
+
+      currentCR.chatId = responseData.channelId;
+      setChatId(responseData.channelId);
+      setChatTitle(responseData.title);
+      currentCR.backLogList.splice(0, currentCR.backLogList.length);
     }
 
     function onRequestFriend(responseData: any) {
@@ -1435,6 +1459,7 @@ function Chatting(props: any) {
     socket.on("NOTICE", onNotice);
 
     socket.on("HOST", onHost);
+    socket.on("DM", onDM);
 
     socket.on("LOADCHAT", onLoadChat);
     socket.on("INFO_CH_LIST", onInfoChList);
@@ -1458,7 +1483,8 @@ function Chatting(props: any) {
       // notice
       socket.off("NOTICE", onNotice);
 
-      socket.off("HOST", onNotice);
+      socket.off("HOST", onHost);
+      socket.off("DM", onDM);
 
       socket.off("LOADCHAT", onLoadChat);
       socket.off("INFO_CH_LIST", onInfoChList);
