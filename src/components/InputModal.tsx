@@ -5,17 +5,12 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../App";
 
-function InputModal({ onClose, onOpenModal }) {
+function InputModal({ onOpenModal }) {
   const [textError, setTextError] = useState(false);
   const [login, setLogin] = useContext(LoginContext);
-  const handleOutsideClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
 
   const handleOpenQRModal = () => {
-        onOpenModal();
+    onOpenModal();
   };
 
   const [text, setText] = useState("");
@@ -51,7 +46,7 @@ function InputModal({ onClose, onOpenModal }) {
   };
 
   return (
-    <div className="modal" onClick={handleOutsideClick}>
+    <div className="modal">
       <div className="modal-content">
         <div className={`${styles.popup_wrap}`}>
           <div className={`${styles.popup}`}>
@@ -59,7 +54,6 @@ function InputModal({ onClose, onOpenModal }) {
               <span className={`${styles.logo}`}>PIN 입력</span>
             </div>
             <div className={`${styles.logoline}`} />
-            <div className={`${styles.close}`} onClick={onClose}></div>
             <div className={`${styles.inputcontainer}`}>
               <input
                 type="text"
