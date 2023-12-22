@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import styles from "./rankList.module.css";
+import styles from "./RankList.module.css";
 import axios from "axios";
 import { useEffect, useContext, useState } from "react";
 import { LoginContext } from "../../../App";

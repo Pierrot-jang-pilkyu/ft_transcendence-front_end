@@ -1,4 +1,4 @@
-import styles from "./inputModal.module.css";
+import styles from "./InputModal.module.css";
 import React from "react";
 import axios from "axios";
 import { useContext, useState, useEffect } from "react";

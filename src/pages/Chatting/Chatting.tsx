@@ -20,6 +20,7 @@ import TestChatList from "./TestChatList";
 import ModalAccept from "../../components/AddAndAccept";
 import { LoginContext } from "../../App";
 import { freshSocket } from "../../Utils";
+import { dmContext } from "../../App";
 
 interface User {
   name: string;
@@ -85,6 +86,8 @@ export const getCookie = (name: string) => {
 let thisUser:User = { id: "", name: "", img: "", state: "", op: false };
 let userId:number = 0;
 
+let dmFlag:boolean = true;
+
 function Chatting(props: any) {
   // const userId:number = parseInt(getCookie("user.id"));
   // const [userId, setUserId] = useState<number>(0);
@@ -92,6 +95,7 @@ function Chatting(props: any) {
   const navigate = useNavigate();
   // const userId = state;
   const [login, setLogin] = useContext(LoginContext);
+  const [dm, setDm] = useContext(dmContext);
   const [openRoomAddModal, setOpenRoomAddModal] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode | null>(
@@ -715,8 +719,9 @@ function Chatting(props: any) {
     socket.connect();
 
     console.log(state);
-    if (state.flag)
+    if (dm)
     {
+      setDm(false);
       console.log("check");
       freshSocket(socket, "DM",
       state.data,
@@ -1211,7 +1216,7 @@ function Chatting(props: any) {
           } else setChatLog(onNoticeChatMSG(responseData.content));
           break;
         case 6: // 6	QUIT	채팅방 퇴장	유저님이 채팅방에서 퇴장하였습니다.
-          if (currentCR.chatId === -1)
+          if (currentCR.chatId === 0)
             break ;
           setChatLog(onNoticeChatMSG(responseData.content));
           break;

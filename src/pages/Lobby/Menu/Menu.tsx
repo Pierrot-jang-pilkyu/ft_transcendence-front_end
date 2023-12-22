@@ -1,18 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { dmContext } from "../../../App";
 import styles from "./Menu.module.css";
 import GameStart from "../../../assets/GameStart.svg";
 import ChattingRoom from "../../../assets/Chatting.svg";
 import FriendsList from "./Friends/FriendsList";
 
 function Menu() {
+  const [dm, setDm] = dmContext(dmContext);
   const navigate = useNavigate();
   const [alert, setAlert] = useState<React.ReactNode | null>(null);
   const handlerButton = () => {
     navigate("/Game", { state: { invite: null } });
   };
   const handlerButtonChatting = () => {
-    navigate("/Chatting", { state: { flag: false }});
+    navigate("/Chatting");
+    setDm(false);
+    // navigate("/Chatting", { state: { flag: false }});
   };
 
   return (

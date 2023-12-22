@@ -4,6 +4,7 @@ import { useState, createContext, useEffect } from "react";
 import AfterLogin from "./pages/AfterLogin";
 export const LoginContext = createContext();
 export const RenderContext = createContext();
+export const dmContext = createContext();
 import { Cookies } from "react-cookie";
 import axios from "axios";
 import Loading from "./pages/Loading/Loading";
@@ -23,6 +24,7 @@ export const getCookie = (name: string) => {
 function App() {
   const [render, setRender] = useState<boolean | undefined>();
   const [login, setLogin] = useState<boolean | undefined>();
+  const [dm, setDm] = useState<boolean | undefined>();
   const [ifLoginPage, setIfLoginPage] = useState<React.ReactNode | null>(
     <Loading />
   );
@@ -78,7 +80,9 @@ function App() {
       />
       <LoginContext.Provider value={[login, setLogin] as any}>
         <RenderContext.Provider value={[render, setRender] as any}>
-        <BrowserRouter>{ifLoginPage}</BrowserRouter>
+          <dmContext.Provider value={[dm, setDm] as any}>
+          <BrowserRouter>{ifLoginPage}</BrowserRouter>
+          </dmContext.Provider>
         </RenderContext.Provider>
       </LoginContext.Provider>
     </div>
